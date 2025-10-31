@@ -331,6 +331,7 @@
                     if (Array.isArray(pendingFormImages) && pendingFormImages.length > 0) {
                         saveTradeImages(newTrade.id, pendingFormImages.slice(0,3));
                         pendingFormImages = [];
+                        try { localStorage.removeItem('fx_temp_form_images'); } catch(_) {}
                         const cont = document.getElementById('imagePreviewContainer');
                         if (cont) cont.innerHTML = '';
                     }
@@ -553,6 +554,7 @@
             initializeLocalApp();
             showPage(currentPage);
             setupFormImageButtons();
+            loadPendingFormImagesFromLocal();
         };
 
         // ===== AI分析機能 =====
@@ -1058,6 +1060,7 @@ ${csv}
         // ===== フォーム用アップロード（新規記録に紐づく一時画像） =====
         let pendingFormImages = [];
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const TEN_MB = 10 * 1024 * 1024;
 
         function renderFormPreviews() {
             const previews = document.getElementById('imagePreviewContainer');
@@ -1076,19 +1079,157 @@ ${csv}
             });
         }
 
+        function syncPendingFormImagesToLocal() {
+            try { localStorage.setItem('fx_temp_form_images', JSON.stringify(pendingFormImages)); } catch(_) {}
+        }
+        function loadPendingFormImagesFromLocal() {
+            try {
+                const raw = localStorage.getItem('fx_temp_form_images');
+                const arr = raw ? JSON.parse(raw) : [];
+                if (Array.isArray(arr)) { pendingFormImages = arr; renderFormPreviews(); }
+            } catch(_) {}
+        }
+
+        function showProgress(text, pct) {
+            const box = document.getElementById('uploadProgress');
+            const fill = document.getElementById('uploadProgressFill');
+            const t = document.getElementById('uploadProgressText');
+            if (!box || !fill || !t) return;
+            box.classList.remove('hidden');
+            if (typeof pct === 'number') fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
+            if (text) t.textContent = text;
+        }
+        function hideProgress() {
+            const box = document.getElementById('uploadProgress');
+            const fill = document.getElementById('uploadProgressFill');
+            if (!box || !fill) return;
+            box.classList.add('hidden');
+            fill.style.width = '0%';
+        }
+
+        function showPreview(previewUrl, tempId) {
+            const previews = document.getElementById('imagePreviewContainer');
+            const wrap = document.createElement('div');
+            wrap.className = 'relative';
+            wrap.dataset.tempId = tempId;
+            const im = document.createElement('img');
+            im.src = previewUrl; im.width = 80; im.height = 80; im.className = 'rounded object-cover border border-gray-700';
+            const del = document.createElement('button');
+            del.className = 'absolute -top-2 -right-2 bg-black/70 text-white rounded-full w-6 h-6 text-xs';
+            del.textContent = '×';
+            del.onclick = () => {
+                const idx = pendingFormImages.findIndex(x => x.tempId === tempId);
+                if (idx >= 0) { pendingFormImages.splice(idx,1); syncPendingFormImagesToLocal(); }
+                if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+            };
+            wrap.appendChild(im); wrap.appendChild(del); previews.appendChild(wrap);
+        }
+        function updateThumbnailFor(tempId, thumbUrl) {
+            const wrap = Array.from(document.querySelectorAll('#imagePreviewContainer > div')).find(d => d.dataset.tempId === String(tempId));
+            if (!wrap) return;
+            const im = wrap.querySelector('img');
+            if (im) im.src = thumbUrl;
+        }
+        function showSuccessFor(tempId) {
+            hideProgress();
+        }
+        function showErrorFor(tempId, msg) {
+            hideProgress();
+            showCustomMessage(msg || '画像の保存に失敗しました', 'error');
+        }
+
+        async function createThumbnail(file, maxSize) {
+            return await resizeImage(file, maxSize, 0.7);
+        }
+        function resizeImage(file, maxSize, quality) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width; let height = img.height;
+                        if (width > height && width > maxSize) { height = (height * maxSize) / width; width = maxSize; }
+                        else if (height > maxSize) { width = (width * maxSize) / height; height = maxSize; }
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d', { alpha: false });
+                        ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const reader = new FileReader();
+                                reader.onload = (e) => resolve(e.target.result);
+                                reader.onerror = reject;
+                                reader.readAsDataURL(blob);
+                            } else { reject(new Error('Blob生成失敗')); }
+                        }, 'image/jpeg', quality);
+                        canvas.width = 0; canvas.height = 0;
+                        URL.revokeObjectURL(img.src);
+                    } catch (err) { reject(err); }
+                };
+                img.onerror = reject;
+                const url = URL.createObjectURL(file);
+                img.src = url;
+            });
+        }
+
+        async function saveToStorageEntry(tempId, dataBase64, thumbBase64) {
+            const idx = pendingFormImages.findIndex(x => x.tempId === tempId);
+            if (idx >= 0) {
+                pendingFormImages[idx].data = dataBase64;
+                if (thumbBase64) pendingFormImages[idx].thumb = thumbBase64;
+            }
+            syncPendingFormImagesToLocal();
+        }
+
+        async function handleImageUpload(file) {
+            if (!file) return;
+            if (file.size > TEN_MB) {
+                showCustomMessage('画像サイズが大きすぎます（10MBまで）。', 'error');
+                return;
+            }
+            if (pendingFormImages.length >= 3) {
+                showCustomMessage('画像が多すぎます。古い画像を削除してください', 'error');
+                return;
+            }
+            const tempId = crypto.randomUUID();
+            const previewUrl = URL.createObjectURL(file);
+            pendingFormImages.push({ tempId, previewUrl, createdAt: Date.now() });
+            showPreview(previewUrl, tempId);
+            showProgress('サムネイル生成中...', 20);
+
+            // ステップ2: サムネイル
+            setTimeout(async () => {
+                try {
+                    const thumb = await createThumbnail(file, 150);
+                    updateThumbnailFor(tempId, thumb);
+                    const idx = pendingFormImages.findIndex(x => x.tempId === tempId);
+                    if (idx >= 0) pendingFormImages[idx].thumb = thumb;
+                    showProgress('保存用画像を生成中...', 60);
+                } catch (err) {
+                    console.error('サムネイル生成失敗:', err);
+                }
+            }, 100);
+
+            // ステップ3: 保存用
+            setTimeout(async () => {
+                const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000));
+                try {
+                    const data = await Promise.race([resizeImage(file, 600, 0.6), timeout]);
+                    await saveToStorageEntry(tempId, data, null);
+                    showProgress('保存しました', 100);
+                    setTimeout(hideProgress, 500);
+                    showSuccessFor(tempId);
+                } catch (err) {
+                    console.error('画像保存失敗:', err);
+                    showErrorFor(tempId, err.message === 'timeout' ? '画像の処理がタイムアウトしました' : '画像の保存に失敗しました');
+                }
+            }, 200);
+        }
+
         async function addFilesToPending(files) {
             const valid = files.filter(f => /^image\//i.test(f.type));
-            if (valid.length === 0) return;
-            try {
-                for (const f of valid) {
-                    const { data, thumb } = await readResizeCompress(f);
-                    pendingFormImages.push({ data, thumb, type: 'image/jpeg', createdAt: Date.now() });
-                }
-                if (pendingFormImages.length > 3) pendingFormImages = pendingFormImages.slice(0,3);
-                renderFormPreviews();
-            } catch (e) {
-                console.error('フォーム画像処理エラー:', e);
-                showCustomMessage('画像の処理に失敗しました', 'error');
+            for (const f of valid) {
+                await handleImageUpload(f);
             }
         }
 
@@ -1305,6 +1446,12 @@ ${csv}
                             <div id="form-image-buttons" class="flex gap-2 mb-2"></div>
                             <input type="file" id="imageUpload" accept="image/*" multiple style="display:none;" />
                             <div id="imagePreviewContainer" class="flex flex-wrap gap-2"></div>
+                            <div id="uploadProgress" class="mt-2 hidden">
+                                <div class="w-full h-2 bg-gray-700 rounded">
+                                    <div id="uploadProgressFill" class="h-2 bg-green-500 rounded" style="width:0%"></div>
+                                </div>
+                                <span id="uploadProgressText" class="text-xs text-gray-300 mt-1 inline-block">画像を処理中...</span>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn-primary w-full mt-6">
