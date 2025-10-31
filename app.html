@@ -1,97 +1,727 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FXトレード記録 - ミニアプリ</title>
-  <link rel="stylesheet" href="./css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FXトレードマネージャー</title>
+    <!-- Tailwind CSS CDNをロード --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Interフォントを使用 --><style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif, 'Noto Sans JP', sans-serif; 
+            /* シンプルな暗い背景色 */
+            background-color: #1a1a1a; /* ダークグレー */
+            min-height: 100vh;
+            color: #e5e7eb; /* 基本フォントカラーを明るい色に */
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 1rem;
+            padding-bottom: 5rem; 
+        }
+
+        /* ------------------------------------- */
+        /* グラスモーフィズムの基本スタイル (シンプル化) */
+        /* ------------------------------------- */
+
+        /* カードの基本スタイル */
+        .card {
+            background: rgba(255, 255, 255, 0.1); /* 半透明の白 */
+            backdrop-filter: blur(8px); /* ぼかし */
+            -webkit-backdrop-filter: blur(8px); 
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08); /* 細い枠線 */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* ソフトな影 */
+            transition: all 0.3s ease;
+        }
+
+        /* 入力フィールドのスタイル */
+        .input-style {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3); /* 暗く、やや透明な背景 */
+            color: #ffffff; /* 入力文字を白に */
+            box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5); /* 凹み影 */
+            transition: all 0.3s ease;
+        }
+        .input-style:focus {
+            background: rgba(0, 0, 0, 0.4); 
+            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.7);
+            outline: none;
+        }
+        .input-style::placeholder {
+            color: rgba(255, 255, 255, 0.4); 
+        }
+        /* Selectタグの矢印の色 */
+        select.input-style {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23ffffff'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em 1.5em;
+        }
+
+
+        /* プライマリーボタン */
+        .btn-primary {
+            background-color: #3b82f6; /* 青 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3); /* シンプルな影 */
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.5);
+            transform: translateY(-1px);
+        }
+
+        /* 下部ナビゲーション */
+        .bottom-nav {
+            background: rgba(0, 0, 0, 0.7); /* 暗い半透明 */
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5); 
+        }
+        .nav-button-active {
+            color: #93c5fd; /* アクティブな色を明るい青に */
+            background: rgba(255, 255, 255, 0.08); /* アクティブ時の背景 */
+            border-radius: 10px;
+        }
+        
+        /* ロード中 */
+        .loading-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #3b82f6;
+        }
+        
+        @media (min-width: 640px) {
+            .container {
+                max-width: 800px;
+                margin: auto;
+            }
+        }
+        
+        /* 統計サマリーカード */
+        .summary-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+        }
+        /* CSVボタン */
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+        /* カスタムロゴのスタイル */
+        .app-logo-text {
+            font-size: 1.8rem; 
+            font-weight: 900; 
+            color: #ffffff; /* 白抜き */
+            letter-spacing: -0.025em; 
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 5px rgba(59, 130, 246, 0.4); /* 青いソフトグロー */
+        }
+        /* メッセージボックスの調整 */
+        #message-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+        .text-green-700 { color: #84cc16; } 
+        .text-red-700 { color: #ef4444; }   
+
+        @media (min-width: 640px) {
+             .app-logo-text {
+                font-size: 2.25rem; 
+            }
+        }
+    </style>
+
+    <!-- Firebase SDKのインポート --><script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, collection, onSnapshot, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // デバッグログを有効にする
+        setLogLevel('Debug');
+
+        // グローバル変数
+        let app;
+        let db;
+        let auth;
+        let userId = 'loading';
+        let tradeDataCache = []; 
+        let currentPage = 'money-management'; 
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // 初期化と認証
+        async function initializeFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // 認証処理
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // 認証状態の変更をリッスン
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        document.getElementById('user-info').textContent = `ユーザーID: ${userId}`;
+                        setupRealtimeListener();
+                    } else {
+                        userId = crypto.randomUUID();
+                        document.getElementById('user-info').textContent = `セッションID: ${userId} (匿名)`;
+                        setupRealtimeListener();
+                    }
+                    hideLoading();
+                });
+
+            } catch (error) {
+                console.error("Firebase初期化または認証エラー:", error);
+                document.getElementById('user-info').textContent = 'エラー: Firebase接続に失敗しました。';
+                hideLoading();
+            }
+        }
+
+        // ロード画面非表示
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        // トレード記録のFirestoreパス
+        function getTradeCollectionRef() {
+            return collection(db, `artifacts/${appId}/users/${userId}/trades`);
+        }
+
+        // リアルタイムリスナーの設定
+        function setupRealtimeListener() {
+            if (!db || userId === 'loading') return;
+
+            const tradesCollection = getTradeCollectionRef();
+            const q = query(tradesCollection);
+
+            onSnapshot(q, (snapshot) => {
+                const trades = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.timestamp ? data.timestamp.toDate() : new Date(0); 
+                    trades.push({
+                        id: doc.id,
+                        dateObj: date, 
+                        date: date.toLocaleString('ja-JP'), 
+                        ...data
+                    });
+                });
+                // 最新の記録が上に来るように並べ替え
+                trades.sort((a, b) => b.dateObj - a.dateObj);
+                tradeDataCache = trades; 
+                renderTrades(trades);
+                calculateStats(trades);
+            }, (error) => {
+                console.error("リアルタイムリスナーエラー:", error);
+                showCustomMessage('データの読み込み中にエラーが発生しました。', 'error');
+            });
+        }
+
+        // カスタムメッセージ（アラート代替）を表示する関数
+        function showCustomMessage(message, type = 'info') {
+            const messageBox = document.getElementById('message-box');
+            messageBox.textContent = message;
+            
+            messageBox.className = `p-3 rounded-lg text-center mt-4 mb-4 transition-all duration-300 ${
+                type === 'success' ? 'text-green-700' :
+                type === 'error' ? 'text-red-700' :
+                'text-blue-400'
+            }`; 
+            
+            messageBox.style.opacity = '1';
+            messageBox.style.background = 'rgba(0, 0, 0, 0.5)'; 
+            messageBox.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+
+            setTimeout(() => {
+                messageBox.style.opacity = '0';
+            }, 5000);
+        }
+
+        // トレード記録をFirestoreに保存
+        window.recordTrade = async function() {
+            const pair = document.getElementById('pair').value;
+            const direction = document.getElementById('direction').value;
+            const lotSize = parseFloat(document.getElementById('lotSize').value);
+            const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+            const exitPrice = parseFloat(document.getElementById('exitPrice').value);
+            const pips = parseFloat(document.getElementById('pips').value);
+            const pnl = parseFloat(document.getElementById('pnl').value);
+            const chartUrl = document.getElementById('chartUrl').value;
+            const notes = document.getElementById('notes').value;
+
+            // 必須入力チェック
+            if (!pair || !direction || isNaN(lotSize) || isNaN(entryPrice) || isNaN(exitPrice) || isNaN(pips) || isNaN(pnl)) {
+                showCustomMessage('必須項目をすべて入力してください。', 'error');
+                return;
+            }
+
+            document.getElementById('loading-overlay').style.display = 'flex';
+
+            const tradeData = {
+                pair,
+                direction,
+                lotSize,
+                entryPrice,
+                exitPrice,
+                pips,
+                pnl,
+                chartUrl,
+                notes,
+                timestamp: serverTimestamp(),
+                userId: userId
+            };
+
+            try {
+                const newTradeRef = doc(getTradeCollectionRef());
+                await setDoc(newTradeRef, tradeData);
+                showCustomMessage('トレード記録が正常に保存されました！', 'success');
+                document.getElementById('tradeForm').reset();
+            } catch (e) {
+                console.error("トレード記録の追加エラー: ", e);
+                showCustomMessage('記録の保存中にエラーが発生しました。', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // トレード記録をHTMLテーブルにレンダリング
+        function renderTrades(trades) {
+            const tableBody = document.getElementById('tradeHistoryBody');
+            tableBody.innerHTML = ''; 
+
+            if (trades.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="9" class="p-3 text-center text-gray-500">まだトレード記録がありません。</td></tr>';
+                return;
+            }
+
+            trades.forEach(trade => {
+                const pnlClass = trade.pnl > 0 ? 'text-green-400 font-bold' : trade.pnl < 0 ? 'text-red-400 font-bold' : 'text-gray-400';
+                const row = tableBody.insertRow();
+                row.className = 'border-b border-gray-800 hover:bg-gray-800/50 transition-colors text-sm'; 
+
+                row.insertCell().textContent = trade.date;
+                row.insertCell().textContent = trade.pair;
+                row.insertCell().textContent = trade.direction === 'buy' ? '買い' : '売り';
+                row.insertCell().textContent = trade.lotSize.toFixed(2);
+                const priceDecimals = trade.pair.includes('JPY') ? 3 : 5;
+                row.insertCell().textContent = trade.entryPrice.toFixed(priceDecimals);
+                row.insertCell().textContent = trade.exitPrice.toFixed(priceDecimals);
+                row.insertCell().textContent = trade.pips.toFixed(2);
+
+                const pnlCell = row.insertCell();
+                pnlCell.className = pnlClass;
+                pnlCell.textContent = trade.pnl.toFixed(0).toLocaleString() + '円'; 
+
+                const chartCell = row.insertCell();
+                if (trade.chartUrl) {
+                    const link = document.createElement('a');
+                    link.href = trade.chartUrl;
+                    link.target = '_blank';
+                    link.textContent = 'チャート';
+                    link.className = 'text-blue-400 hover:text-blue-300 text-sm font-medium';
+                    chartCell.appendChild(link);
+                } else {
+                    chartCell.textContent = 'なし';
+                    chartCell.className = 'text-gray-500';
+                }
+            });
+        }
+        
+        // 統計情報の計算と表示
+        function calculateStats(trades) {
+            if (trades.length === 0) {
+                document.getElementById('totalTrades').textContent = 0;
+                document.getElementById('winRate').textContent = '0.00%';
+                document.getElementById('profitFactor').textContent = '0.00';
+                document.getElementById('totalPnl').textContent = '0 円';
+                
+                document.getElementById('totalPnl').className = 'text-2xl font-bold text-gray-400';
+                return;
+            }
+
+            const totalTrades = trades.length;
+            let winningTrades = 0;
+            let totalPnl = 0;
+            let grossProfit = 0;
+            let grossLoss = 0;
+
+            trades.forEach(trade => {
+                totalPnl += trade.pnl;
+                if (trade.pnl > 0) {
+                    winningTrades++;
+                    grossProfit += trade.pnl;
+                } else {
+                    grossLoss += Math.abs(trade.pnl);
+                }
+            });
+
+            const winRate = (winningTrades / totalTrades) * 100;
+            const profitFactor = grossLoss > 0 ? grossProfit / grossLoss : (grossProfit > 0 ? '---' : '0.00');
+
+            document.getElementById('totalTrades').textContent = totalTrades;
+            document.getElementById('winRate').textContent = `${winRate.toFixed(2)}%`;
+            document.getElementById('profitFactor').textContent = profitFactor === '---' ? '∞' : profitFactor.toFixed(2);
+            
+            const totalPnlElement = document.getElementById('totalPnl');
+            totalPnlElement.textContent = `${totalPnl.toFixed(0).toLocaleString()} 円`;
+            totalPnlElement.className = totalPnl >= 0 ? 'text-2xl font-bold text-green-400' : 'text-2xl font-bold text-red-400';
+        }
+
+        // 資金管理：ロットサイズ計算
+        window.calculateLotSize = function() {
+            const balance = parseFloat(document.getElementById('accountBalance').value);
+            const riskPct = parseFloat(document.getElementById('riskPercentage').value);
+            const stopLossPips = parseFloat(document.getElementById('stopLossPips').value);
+            const pipValuePerLot = parseFloat(document.getElementById('pipValuePerLot').value);
+
+            if (isNaN(balance) || balance <= 0 || isNaN(riskPct) || riskPct <= 0 || isNaN(stopLossPips) || stopLossPips <= 0 || isNaN(pipValuePerLot) || pipValuePerLot <= 0) {
+                document.getElementById('calculatedLotSize').textContent = '無効な入力値';
+                document.getElementById('calculatedLotSize').className = 'text-xl text-red-400 font-semibold';
+                document.getElementById('riskAmountDisplay').textContent = '';
+                return;
+            }
+
+            const riskAmount = balance * (riskPct / 100);
+            const calculatedLotSize = riskAmount / (stopLossPips * pipValuePerLot);
+
+            const resultElement = document.getElementById('calculatedLotSize');
+            resultElement.textContent = calculatedLotSize.toFixed(2) + ' ロット';
+            resultElement.className = 'text-2xl text-blue-400 font-bold';
+            
+            document.getElementById('riskAmountDisplay').textContent = `許容リスク額: ${riskAmount.toLocaleString()} 円相当`;
+            document.getElementById('riskAmountDisplay').className = 'text-sm text-gray-400 mt-1';
+            
+            showCustomMessage(`適切なロットサイズは ${calculatedLotSize.toFixed(2)} ロットです。`, 'info');
+        }
+
+        // CSVエクスポート機能
+        window.exportToCSV = function() {
+            if (tradeDataCache.length === 0) {
+                showCustomMessage('エクスポートするトレード記録がありません。', 'error');
+                return;
+            }
+            
+            const headers = ["日付", "通貨ペア", "方向", "ロット数", "エントリー価格", "エグジット価格", "獲得/損失 pips", "損益(円)", "チャートURL", "メモ"];
+            
+            const csvRows = tradeDataCache.map(trade => {
+                const dateString = trade.dateObj.toISOString(); 
+                const directionText = trade.direction === 'buy' ? '買い' : '売り';
+                
+                return [
+                    `"${dateString}"`, 
+                    `"${trade.pair}"`,
+                    `"${directionText}"`,
+                    trade.lotSize,
+                    trade.entryPrice,
+                    trade.exitPrice,
+                    trade.pips,
+                    trade.pnl,
+                    `"${trade.chartUrl || ''}"`,
+                    `"${trade.notes ? trade.notes.replace(/"/g, '""') : ''}"` 
+                ].join(',');
+            });
+            
+            const csvContent = headers.join(',') + '\n' + csvRows.join('\n');
+            const blob = new Blob(['\ufeff', csvContent], { type: 'text/csv;charset=utf-8;' }); 
+            const link = document.createElement("a");
+            
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `fx_trade_history_${new Date().toISOString().slice(0, 10)}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showCustomMessage('トレード履歴をCSVとしてエクスポートしました。', 'success');
+            } else {
+                showCustomMessage('お使いのブラウザではCSVエクスポート機能がサポートされていません。', 'error');
+            }
+        }
+
+        // ページ切り替えロジック
+        window.showPage = function(pageId) {
+            currentPage = pageId;
+            const pages = ['money-management', 'trade-recording', 'history-analysis'];
+            
+            // コンテンツの切り替え
+            pages.forEach(id => {
+                const page = document.getElementById(id);
+                if (pageId === id) {
+                    page.classList.remove('hidden');
+                } else {
+                    page.classList.add('hidden');
+                }
+            });
+
+            // ナビゲーションボタンのスタイリング切り替え
+            pages.forEach(id => {
+                const navItem = document.getElementById(`nav-${id}`);
+                const icon = navItem.querySelector('svg');
+
+                if (pageId === id) {
+                    navItem.classList.add('nav-button-active');
+                    icon.classList.add('text-blue-400'); 
+                    navItem.classList.remove('text-gray-400');
+                } else {
+                    navItem.classList.remove('nav-button-active');
+                    icon.classList.remove('text-blue-400');
+                    navItem.classList.add('text-gray-400');
+                }
+            });
+        }
+
+        // Firebase初期化と初期ページ表示をウィンドウロード後に実行
+        window.onload = () => {
+            initializeFirebase();
+            showPage(currentPage);
+        };
+    </script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <h1 class="site-title">FXトレード記録</h1>
-      <nav><a href="./index.html">ホーム</a></nav>
+    <!-- ロードオーバーレイ --><div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
     </div>
-  </header>
+    
+    <!-- コンテンツラッパー (以前のオーバーレイは削除) --><div>
+        <div class="container min-h-screen mx-auto pt-6 pb-2">
+            <header class="text-center mb-6">
+                <!-- ユーザー様の文字ロゴをCSSで再現し、h1タグとして配置 --><h1 class="app-logo-text">FX トレードマネージャー</h1>
+                <p id="user-info" class="text-sm text-gray-400 mt-1">認証中...</p>
+            </header>
 
-  <main class="container">
-    <section>
-      <h2>新規トレードの記録</h2>
-      <form id="trade-form" class="card">
-        <div class="grid">
-          <label>
-            <span>日付</span>
-            <input type="date" name="date" required>
-          </label>
-          <label>
-            <span>通貨ペア</span>
-            <input type="text" name="pair" placeholder="USD/JPY" required>
-          </label>
-          <label>
-            <span>方向</span>
-            <select name="side" required>
-              <option value="long">ロング</option>
-              <option value="short">ショート</option>
-            </select>
-          </label>
-          <label>
-            <span>数量 (lot)</span>
-            <input type="number" name="size" step="0.01" min="0" required>
-          </label>
-          <label>
-            <span>エントリー</span>
-            <input type="number" name="entry" step="0.0001" required>
-          </label>
-          <label>
-            <span>エグジット</span>
-            <input type="number" name="exit" step="0.0001" required>
-          </label>
-          <label>
-            <span>結果 (pips)</span>
-            <input type="number" name="pips" step="0.1">
-          </label>
+            <!-- メッセージボックス (Alert代替) --><div id="message-box" style="opacity:0;" class="p-3 rounded-lg text-center mt-4 transition-all duration-300"></div>
+
+            <!-- ページコンテンツエリア --><!-- 1. 資金管理：ロット計算ツール --><section id="money-management" class="hidden px-2 sm:px-0">
+                <div class="mb-8 p-5 rounded-xl card">
+                    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">ロット計算ツール</h2>
+                    <p class="text-sm text-gray-400 mb-4">許容リスクに基づき、適切なポジションサイズを計算します。</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="accountBalance" class="block text-sm font-medium text-gray-300">口座残高 (円相当)</label>
+                            <input type="number" id="accountBalance" value="1000000" min="1" class="input-style mt-1" placeholder="例: 1000000">
+                        </div>
+
+                        <div>
+                            <label for="riskPercentage" class="block text-sm font-medium text-gray-300">1トレードの許容リスク率 (%)</label>
+                            <input type="number" id="riskPercentage" value="1" min="0.1" max="100" step="0.1" class="input-style mt-1" placeholder="例: 1.0">
+                        </div>
+                        
+                        <div>
+                            <label for="stopLossPips" class="block text-sm font-medium text-gray-300">損切り幅 (pips)</label>
+                            <input type="number" id="stopLossPips" value="50" min="1" class="input-style mt-1" placeholder="例: 50">
+                        </div>
+                        
+                        <div>
+                            <label for="pipValuePerLot" class="block text-sm font-medium text-gray-300">1ロットあたりの1pipsの価値 (円相当)</label>
+                            <input type="number" id="pipValuePerLot" value="1000" min="1" class="input-style mt-1" placeholder="例: 1000">
+                            <p class="text-xs text-gray-500 mt-1">※USD/JPYの場合、1ロット=1000円相当</p>
+                        </div>
+                    </div>
+
+                    <button onclick="calculateLotSize()" class="btn-primary w-full mt-4">
+                        ロットサイズを計算
+                    </button>
+
+                    <!-- 結果表示エリア --><div class="mt-6 p-4 summary-card text-center">
+                        <p class="text-sm font-medium text-gray-400 mb-1">推奨ロットサイズ</p>
+                        <div id="calculatedLotSize" class="text-2xl text-white font-bold">-- ロット</div>
+                        <div id="riskAmountDisplay" class="text-sm text-gray-400 mt-2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. トレード記録フォーム --><section id="trade-recording" class="hidden px-2 sm:px-0">
+                <div class="p-5 rounded-xl card">
+                    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">新規トレード記録</h2>
+                    <form id="tradeForm" onsubmit="event.preventDefault(); recordTrade();">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            
+                            <!-- 通貨ペア --><div>
+                                <label for="pair" class="block text-sm font-medium text-gray-300">通貨ペア</label>
+                                <select id="pair" required class="input-style mt-1">
+                                    <option value="">選択してください</option>
+                                    <option value="USD/JPY">USD/JPY</option>
+                                    <option value="EUR/USD">EUR/USD</option>
+                                    <option value="GBP/JPY">GBP/JPY</option>
+                                    <option value="AUD/USD">AUD/USD</option>
+                                    <option value="OTHERS">その他</option>
+                                </select>
+                            </div>
+
+                            <!-- 売買方向 --><div>
+                                <label for="direction" class="block text-sm font-medium text-gray-300">売買方向</label>
+                                <select id="direction" required class="input-style mt-1">
+                                    <option value="">選択してください</option>
+                                    <option value="buy">買い (Buy)</option>
+                                    <option value="sell">売り (Sell)</option>
+                                </select>
+                            </div>
+
+                            <!-- ロット数 --><div>
+                                <label for="lotSize" class="block text-sm font-medium text-gray-300">ロット数 (Lot)</label>
+                                <input type="number" id="lotSize" required step="0.01" min="0.01" class="input-style mt-1" placeholder="例: 1.0">
+                            </div>
+
+                            <!-- エントリー価格 --><div>
+                                <label for="entryPrice" class="block text-sm font-medium text-gray-300">エントリー価格</label>
+                                <input type="number" id="entryPrice" required step="any" class="input-style mt-1" placeholder="例: 150.050">
+                            </div>
+
+                            <!-- エグジット価格 --><div>
+                                <label for="exitPrice" class="block text-sm font-medium text-gray-300">エグジット価格</label>
+                                <input type="number" id="exitPrice" required step="any" class="input-style mt-1" placeholder="例: 150.100">
+                            </div>
+
+                            <!-- 獲得/損失 pips --><div>
+                                <label for="pips" class="block text-sm font-medium text-gray-300">獲得/損失 pips</label>
+                                <input type="number" id="pips" required step="any" class="input-style mt-1" placeholder="例: 50.0">
+                            </div>
+
+                            <!-- 損益 (円相当) --><div class="sm:col-span-2">
+                                <label for="pnl" class="block text-sm font-medium text-gray-300">損益 (円相当)</label>
+                                <input type="number" id="pnl" required step="any" class="input-style mt-1" placeholder="例: 5000">
+                            </div>
+
+                        </div>
+
+                        <!-- チャート画像URL --><div class="mt-4">
+                            <label for="chartUrl" class="block text-sm font-medium text-gray-300">チャート画像URL (任意)</label>
+                            <input type="url" id="chartUrl" class="input-style mt-1" placeholder="外部ホスティングサービスでアップロードした画像のURL">
+                        </div>
+
+                        <!-- メモ --><div class="mt-4">
+                            <label for="notes" class="block text-sm font-medium text-gray-300">トレードの考察/メモ</label>
+                            <textarea id="notes" rows="3" class="input-style mt-1 resize-none" placeholder="エントリー根拠、反省点などを記述..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full mt-6">
+                            トレードを記録
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 3. 履歴・分析セクション --><section id="history-analysis" class="hidden px-2 sm:px-0">
+                <!-- 統計サマリー --><div class="mb-6 summary-card grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <p class="text-xs font-medium text-gray-400">合計トレード数</p>
+                        <p id="totalTrades" class="text-xl font-bold text-white">0</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-400">勝率</p>
+                        <p id="winRate" class="text-xl font-bold text-white">0.00%</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-400">プロフィットファクター</p>
+                        <p id="profitFactor" class="text-xl font-bold text-white">0.00</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-400">合計損益</p>
+                        <p id="totalPnl" class="text-xl font-bold text-white">0 円</p>
+                    </div>
+                </div>
+
+                <div class="p-5 rounded-xl card">
+                    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">トレード履歴</h2>
+
+                    <!-- CSVボタン --><button onclick="exportToCSV()" class="btn-secondary px-4 py-2 text-sm font-medium mb-4">
+                        <!-- アイコンの色を白に調整 --><svg class="inline-block w-4 h-4 mr-2 -mt-0.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        CSVエクスポート
+                    </button>
+                    
+                    <div class="overflow-x-auto rounded-lg shadow-inner">
+                        <table class="min-w-full divide-y divide-gray-700 text-white">
+                            <thead class="bg-gray-800/60">
+                                <tr>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">日付</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ペア</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">方向</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ロット</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">E.価格</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">X.価格</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Pips</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">損益</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">チャート</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tradeHistoryBody" class="divide-y divide-gray-800 bg-transparent">
+                                <tr><td colspan="9" class="p-3 text-center text-gray-400">履歴を読み込み中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- フッター --><footer class="text-center text-xs text-gray-500 py-4 mt-8">
+                <p>Powered by Firebase Firestore | ユーザーID: ${userId}</p>
+            </footer>
         </div>
-        <label>
-          <span>メモ</span>
-          <textarea name="note" rows="3" placeholder="戦略や感情など"></textarea>
-        </label>
-        <div class="actions">
-          <button type="submit" class="button primary">保存</button>
-          <button type="button" id="clear-all" class="button">全削除</button>
-        </div>
-      </form>
-    </section>
-
-    <section>
-      <h2>記録一覧</h2>
-      <div class="card">
-        <table class="table" id="trades-table">
-          <thead>
-            <tr>
-              <th>日付</th>
-              <th>ペア</th>
-              <th>方向</th>
-              <th>数量</th>
-              <th>エントリー</th>
-              <th>エグジット</th>
-              <th>pips</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <small>&copy; 2025 FX Trade Log</small>
     </div>
-  </footer>
-
-  <script src="./js/app.js" defer></script>
+    
+    <!-- 固定された下部ナビゲーションバー --><div class="fixed bottom-0 left-0 right-0 border-t border-gray-800 shadow-2xl z-50 bottom-nav">
+        <nav class="flex justify-around max-w-xl mx-auto">
+            <!-- 資金管理タブ (ウォレット/シンプル) --><button id="nav-money-management" onclick="showPage('money-management')" class="flex-1 flex flex-col items-center p-2 text-xs font-semibold rounded-xl transition-colors text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V9m0 4v1m-4 5h8a2 2 0 002-2V6a2 2 0 00-2-2H8a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                資金管理
+            </button>
+            <!-- トレード記録タブ (ペン/シンプル) --><button id="nav-trade-recording" onclick="showPage('trade-recording')" class="flex-1 flex flex-col items-center p-2 text-xs font-semibold rounded-xl transition-colors text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                トレード記録
+            </button>
+            <!-- 履歴・分析タブ (上昇トレンド/シンプル) --><button id="nav-history-analysis" onclick="showPage('history-analysis')" class="flex-1 flex flex-col items-center p-2 text-xs font-semibold rounded-xl transition-colors text-gray-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                履歴・分析
+            </button>
+        </nav>
+    </div>
 </body>
 </html>
-
