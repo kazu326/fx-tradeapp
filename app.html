@@ -552,6 +552,7 @@
         window.onload = () => {
             initializeLocalApp();
             showPage(currentPage);
+            setupFormImageButtons();
         };
 
         // ===== AI分析機能 =====
@@ -650,6 +651,50 @@ ${csv}
             modal.classList.remove('hidden');
         }
 
+        // 既定AIの管理
+        function setPreferredAI(type) {
+            try { localStorage.setItem('preferredAI', type); } catch(_) {}
+        }
+        function getPreferredAI() {
+            try { return localStorage.getItem('preferredAI') || null; } catch(_) { return null; }
+        }
+        function resetPreferredAI() {
+            try { localStorage.removeItem('preferredAI'); } catch(_) {}
+            showCustomMessage('既定AIをリセットしました', 'success');
+        }
+        function displayNameForAI(type) {
+            const map = { chatgpt: 'ChatGPT', gemini: 'Gemini', claude: 'Claude' };
+            return map[type] || type;
+        }
+
+        // アクション付きトースト
+        function showActionToast(message, actionLabel, actionHandler, secondaryLabel, secondaryHandler) {
+            const box = document.getElementById('message-box');
+            box.className = 'p-3 rounded-lg text-center mt-4 mb-4 transition-all duration-300 text-green-700';
+            box.style.opacity = '1';
+            box.style.background = 'rgba(0, 0, 0, 0.5)';
+            box.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+            box.innerHTML = '';
+            const span = document.createElement('span');
+            span.textContent = message + ' ';
+            box.appendChild(span);
+            if (actionLabel && actionHandler) {
+                const btn = document.createElement('button');
+                btn.className = 'underline text-blue-300 ml-2';
+                btn.textContent = actionLabel;
+                btn.onclick = actionHandler;
+                box.appendChild(btn);
+            }
+            if (secondaryLabel && secondaryHandler) {
+                const btn2 = document.createElement('button');
+                btn2.className = 'underline text-blue-300 ml-3';
+                btn2.textContent = secondaryLabel;
+                btn2.onclick = secondaryHandler;
+                box.appendChild(btn2);
+            }
+            setTimeout(() => { box.style.opacity = '0'; }, 6000);
+        }
+
         window.handleAiAnalyze = async function() {
             const trades = getTradesFromLocalStorage();
             if (!trades || trades.length === 0) {
@@ -704,11 +749,26 @@ ${csv}
 
                 // 初回は巨大チュートリアル、2回目以降はトーストのみ
                 const completed = localStorage.getItem('ai_tutorial_completed') === '1';
-                if (completed) {
-                    showCustomMessage('✅ コピーしました。AIを選んで開き、Ctrl+V で貼り付けてください。', 'success');
-                    openAiSelectModal();
+                const pref = getPreferredAI();
+                if (pref) {
+                    const name = displayNameForAI(pref);
+                    // 自動で既定AIを開く
+                    const urlMap = { chatgpt: 'https://chat.openai.com/', gemini: 'https://gemini.google.com/app', claude: 'https://claude.ai/new' };
+                    const url = urlMap[pref];
+                    let opened = null;
+                    if (url) opened = window.open(url, '_blank', 'noopener');
+                    if (!opened) {
+                        showActionToast(`前回のAI（${name}）を開けませんでした（ブロック）。`, '開く', () => window.open(url, '_blank', 'noopener'), '変更する', () => openAiSelectModal());
+                    } else {
+                        showActionToast(`前回のAI（${name}）を開きました。`, '変更する', () => openAiSelectModal());
+                    }
                 } else {
-                    showAiTutorialPopup();
+                    if (completed) {
+                        showCustomMessage('✅ コピーしました。AIを選んで開き、Ctrl+V で貼り付けてください。', 'success');
+                        openAiSelectModal();
+                    } else {
+                        showAiTutorialPopup();
+                    }
                 }
             }
         }
@@ -769,7 +829,13 @@ ${csv}
                 claude: 'https://claude.ai/new'
             };
             const url = urlMap[type];
-            if (url) window.open(url, '_blank', 'noopener');
+            if (url) {
+                setPreferredAI(type);
+                const win = window.open(url, '_blank', 'noopener');
+                if (!win) {
+                    showActionToast('ポップアップがブロックされました。', '開く', () => window.open(url, '_blank', 'noopener'));
+                }
+            }
         }
 
         window.downloadPromptTxt = function() {
@@ -991,58 +1057,133 @@ ${csv}
 
         // ===== フォーム用アップロード（新規記録に紐づく一時画像） =====
         let pendingFormImages = [];
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        function renderFormPreviews() {
+            const previews = document.getElementById('imagePreviewContainer');
+            if (!previews) return;
+            previews.innerHTML = '';
+            pendingFormImages.forEach((img, idx) => {
+                const wrap = document.createElement('div');
+                wrap.className = 'relative';
+                const im = document.createElement('img');
+                im.src = img.thumb; im.width = 80; im.height = 80; im.className = 'rounded object-cover border border-gray-700';
+                const del = document.createElement('button');
+                del.className = 'absolute -top-2 -right-2 bg-black/70 text-white rounded-full w-6 h-6 text-xs';
+                del.textContent = '×';
+                del.onclick = () => { pendingFormImages.splice(idx,1); renderFormPreviews(); };
+                wrap.appendChild(im); wrap.appendChild(del); previews.appendChild(wrap);
+            });
+        }
+
+        async function addFilesToPending(files) {
+            const valid = files.filter(f => /^image\//i.test(f.type));
+            if (valid.length === 0) return;
+            try {
+                for (const f of valid) {
+                    const { data, thumb } = await readResizeCompress(f);
+                    pendingFormImages.push({ data, thumb, type: 'image/jpeg', createdAt: Date.now() });
+                }
+                if (pendingFormImages.length > 3) pendingFormImages = pendingFormImages.slice(0,3);
+                renderFormPreviews();
+            } catch (e) {
+                console.error('フォーム画像処理エラー:', e);
+                showCustomMessage('画像の処理に失敗しました', 'error');
+            }
+        }
+
+        // 既存inputへのonchangeをシンプル化
         (function setupFormImageUpload(){
             const input = document.getElementById('imageUpload');
             if (!input) return;
             input.onchange = async () => {
                 const files = Array.from(input.files || []);
-                if (files.length === 0) return;
-                const previews = document.getElementById('imagePreviewContainer');
-                try {
-                    for (const f of files) {
-                        if (!/^image\//i.test(f.type)) continue;
-                        const { data, thumb } = await readResizeCompress(f);
-                        pendingFormImages.push({ data, thumb, type: 'image/jpeg', createdAt: Date.now() });
-                    }
-                    // 上限3枚
-                    if (pendingFormImages.length > 3) pendingFormImages = pendingFormImages.slice(0,3);
-                    // プレビュー表示
-                    previews.innerHTML = '';
-                    pendingFormImages.forEach((img, idx) => {
-                        const wrap = document.createElement('div');
-                        wrap.className = 'relative';
-                        const im = document.createElement('img');
-                        im.src = img.thumb; im.width = 80; im.height = 80; im.className = 'rounded object-cover border border-gray-700';
-                        const del = document.createElement('button');
-                        del.className = 'absolute -top-2 -right-2 bg-black/70 text-white rounded-full w-6 h-6 text-xs';
-                        del.textContent = '×';
-                        del.onclick = () => {
-                            pendingFormImages.splice(idx,1);
-                            setupFormImageUpload(); // 再描画
-                            // 再描画のために手動でトリガ
-                            previews.innerHTML = '';
-                            pendingFormImages.forEach((imx, i) => {
-                                const w2 = document.createElement('div');
-                                w2.className = 'relative';
-                                const im2 = document.createElement('img');
-                                im2.src = imx.thumb; im2.width = 80; im2.height = 80; im2.className = 'rounded object-cover border border-gray-700';
-                                const d2 = document.createElement('button');
-                                d2.className = 'absolute -top-2 -right-2 bg-black/70 text-white rounded-full w-6 h-6 text-xs';
-                                d2.textContent = '×';
-                                d2.onclick = () => { pendingFormImages.splice(i,1); previews.removeChild(w2); };
-                                w2.appendChild(im2); w2.appendChild(d2); previews.appendChild(w2);
-                            });
-                        };
-                        wrap.appendChild(im); wrap.appendChild(del); previews.appendChild(wrap);
-                    });
-                } catch (e) {
-                    console.error('フォーム画像処理エラー:', e);
-                    showCustomMessage('画像の処理に失敗しました', 'error');
-                } finally {
-                    input.value = '';
-                }
+                input.value = '';
+                await addFilesToPending(files);
             };
         })();
+
+        // デバイス別ボタンの描画
+        function setupFormImageButtons() {
+            const box = document.getElementById('form-image-buttons');
+            if (!box) return;
+            box.innerHTML = '';
+            if (isMobile) {
+                const cam = document.createElement('button');
+                cam.type = 'button'; cam.className = 'btn-secondary flex-1'; cam.textContent = '📷 カメラで撮影';
+                cam.onclick = () => openCamera();
+                const gal = document.createElement('button');
+                gal.type = 'button'; gal.className = 'btn-secondary flex-1'; gal.textContent = '🖼️ ギャラリーから選択';
+                gal.onclick = () => selectFromGallery();
+                box.appendChild(cam); box.appendChild(gal);
+            } else {
+                const sel = document.createElement('button');
+                sel.type = 'button'; sel.className = 'btn-secondary flex-1'; sel.textContent = '📷 画像を選択';
+                sel.onclick = () => selectImageFile();
+                const pst = document.createElement('button');
+                pst.type = 'button'; pst.className = 'btn-secondary flex-1'; pst.textContent = '📋 クリップボードから貼り付け';
+                pst.onclick = () => pasteFromClipboard();
+                box.appendChild(sel); box.appendChild(pst);
+            }
+        }
+
+        // PC: ファイル選択
+        window.selectImageFile = function() {
+            const input = document.getElementById('imageUpload');
+            if (input) input.click();
+        }
+
+        // PC: クリップボード貼り付け
+        window.pasteFromClipboard = function() {
+            if (!navigator.clipboard || !navigator.clipboard.read) {
+                alert('クリップボードから画像を読み取れませんでした。\n画像をコピーしてから再度お試しください。');
+                return;
+            }
+            navigator.clipboard.read().then(async (items) => {
+                const files = [];
+                for (const item of items) {
+                    for (const type of item.types) {
+                        if (type.startsWith('image/')) {
+                            const blob = await item.getType(type);
+                            files.push(new File([blob], 'clipboard-image', { type: blob.type }));
+                        }
+                    }
+                }
+                if (files.length === 0) {
+                    alert('クリップボードに画像が見つかりませんでした。');
+                    return;
+                }
+                addFilesToPending(files);
+            }).catch(() => {
+                alert('クリップボードから画像を読み取れませんでした。\n画像をコピーしてから再度お試しください。');
+            });
+        }
+
+        // スマホ: カメラ起動
+        window.openCamera = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            input.onchange = (e) => {
+                const files = Array.from(e.target.files || []);
+                addFilesToPending(files);
+            };
+            input.click();
+        }
+
+        // スマホ: ギャラリー選択
+        window.selectFromGallery = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.multiple = true;
+            input.onchange = (e) => {
+                const files = Array.from(e.target.files || []);
+                addFilesToPending(files);
+            };
+            input.click();
+        }
     </script>
 </head>
 <body>
@@ -1161,11 +1302,8 @@ ${csv}
                         <!-- 画像アップロード（任意） -->
                         <div class="mt-4">
                             <label class="block text-sm font-medium text-gray-300">チャート画像（任意）</label>
-                            <div class="flex gap-2 mb-2">
-                                <button type="button" onclick="document.getElementById('imageUpload').click()" class="btn-secondary flex-1">📷 画像を選択</button>
-                                <button type="button" onclick="document.getElementById('imageUpload').click()" class="btn-secondary flex-1">📋 貼り付け</button>
-                            </div>
-                            <input type="file" id="imageUpload" accept="image/*" multiple capture="environment" style="display:none;" />
+                            <div id="form-image-buttons" class="flex gap-2 mb-2"></div>
+                            <input type="file" id="imageUpload" accept="image/*" multiple style="display:none;" />
                             <div id="imagePreviewContainer" class="flex flex-wrap gap-2"></div>
                         </div>
 
@@ -1303,6 +1441,9 @@ ${csv}
             <div class="text-sm text-gray-300 font-medium">【方法2: ファイルをダウンロード】</div>
             <button id="btn-download-prompt" class="btn-secondary mt-2 w-full md:w-auto" onclick="downloadPromptTxt()"><span class="mr-1">📄</span> プロンプトファイルをダウンロード</button>
             <p class="mt-2 text-xs text-gray-400">※ダウンロードしたファイルをAIにアップロードしてください</p>
+            <div class="mt-3 text-xs text-gray-400 text-right">
+                <button class="underline hover:text-white" onclick="resetPreferredAI()">既定AI設定をリセット</button>
+            </div>
         </div>
     </div>
 
