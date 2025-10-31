@@ -252,6 +252,27 @@
                 tradeDataCache = trades; 
                 renderTrades(trades);
                 calculateStats(trades);
+
+                // LocalStorageへ同期（AI分析用）
+                try {
+                    const lsTrades = trades.map(t => {
+                        const dateStr = t.dateObj instanceof Date && !isNaN(t.dateObj) ? t.dateObj.toISOString().slice(0,10) : '';
+                        return {
+                            date: dateStr,
+                            pair: t.pair || '',
+                            side: t.direction === 'buy' ? '買' : '売',
+                            lot: typeof t.lotSize === 'number' ? t.lotSize : Number(t.lotSize) || 0,
+                            entry: t.entryPrice,
+                            exit: t.exitPrice,
+                            pnl: t.pnl,
+                            rule: typeof t.ruleCompliance === 'string' ? t.ruleCompliance : '—',
+                            memo: t.notes || ''
+                        };
+                    });
+                    localStorage.setItem('fx_trades', JSON.stringify(lsTrades));
+                } catch (e) {
+                    console.warn('LocalStorageへの同期に失敗:', e);
+                }
             }, (error) => {
                 console.error("リアルタイムリスナーエラー:", error);
                 showCustomMessage('データの読み込み中にエラーが発生しました。', 'error');
@@ -517,6 +538,185 @@
             initializeFirebase();
             showPage(currentPage);
         };
+
+        // ===== AI分析機能 =====
+        let lastGeneratedPrompt = '';
+        function getTradesFromLocalStorage() {
+            try {
+                const raw = localStorage.getItem('fx_trades');
+                if (!raw) return [];
+                const list = JSON.parse(raw);
+                return Array.isArray(list) ? list : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function convertTradesToCsv(trades) {
+            const headers = ['日付','通貨ペア','売買','ロット数','エントリー価格','決済価格','損益','ルール遵守','メモ'];
+            const rows = trades.map(t => {
+                const safeMemo = String(t.memo || '').replace(/"/g, '""');
+                const pnlStr = typeof t.pnl === 'number' ? (t.pnl >= 0 ? `+${t.pnl}` : `${t.pnl}`) : String(t.pnl || '');
+                return [
+                    t.date || '',
+                    t.pair || '',
+                    t.side || '',
+                    t.lot ?? '',
+                    t.entry ?? '',
+                    t.exit ?? '',
+                    pnlStr,
+                    (t.rule === true || t.rule === '○') ? '○' : (t.rule === false || t.rule === '×') ? '×' : (t.rule || '—'),
+                    `"${safeMemo}` + `"`
+                ].join(',');
+            });
+            return headers.join(',') + '\n' + rows.join('\n');
+        }
+
+        function buildAiPrompt(csv) {
+            const template = `あなたはFXトレードのプロアナリストです。
+以下のCSVデータは私の今週のトレード記録です。
+
+【分析項目】
+1. 勝ちパターンと負けパターンの特徴
+2. 時間帯・通貨ペア別の傾向
+3. ルール遵守率と勝率の相関
+4. メンタル面の課題（連敗時の行動パターンなど）
+5. 次週改善すべき具体的行動3つ
+
+━━━━━━━━━━━━━━━━━━━━
+[トレードデータ]
+${csv}
+━━━━━━━━━━━━━━━━━━━━
+
+初心者にも分かりやすく、箇条書きで分析してください。
+特に改善点は具体的な数値目標付きでお願いします。`;
+            return template;
+        }
+
+        async function copyToClipboardWithFallback(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                } catch (e) {
+                    // fallthrough to fallback
+                }
+            }
+            // Fallback: create textarea and select
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.top = '-1000px';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                const ok = document.execCommand('copy');
+                if (!ok) {
+                    // 表示用フォールバック
+                    showAiPromptFallback(text);
+                    document.body.removeChild(ta);
+                    return false;
+                }
+                document.body.removeChild(ta);
+                return true;
+            } catch (e) {
+                showAiPromptFallback(text);
+                return false;
+            }
+        }
+
+        function showAiPromptFallback(text) {
+            const area = document.getElementById('ai-fallback-area');
+            const modal = document.getElementById('ai-modal');
+            area.value = text;
+            area.focus();
+            area.select();
+            modal.classList.remove('hidden');
+        }
+
+        window.handleAiAnalyze = async function() {
+            const trades = getTradesFromLocalStorage();
+            if (!trades || trades.length === 0) {
+                showCustomMessage('⚠️ トレード記録がありません。先にトレードを記録してください。', 'error');
+                return;
+            }
+            const csv = convertTradesToCsv(trades);
+            const prompt = buildAiPrompt(csv);
+            lastGeneratedPrompt = prompt;
+            const copied = await copyToClipboardWithFallback(prompt);
+            if (copied) {
+                openAiSelectModal();
+            }
+        }
+
+        window.closeAiModal = function() {
+            document.getElementById('ai-modal').classList.add('hidden');
+        }
+
+        // AI選択モーダルの制御
+        function openAiSelectModal() {
+            const modal = document.getElementById('ai-select-modal');
+            const card = document.getElementById('ai-select-card');
+            modal.classList.remove('hidden');
+            // 初期は透明・縮小 → 次フレームで表示
+            card.classList.add('opacity-0','scale-95');
+            requestAnimationFrame(() => {
+                card.classList.remove('opacity-0','scale-95');
+                card.classList.add('opacity-100','scale-100');
+            });
+        }
+
+        window.closeAiSelectModal = function() {
+            const modal = document.getElementById('ai-select-modal');
+            const card = document.getElementById('ai-select-card');
+            card.classList.remove('opacity-100','scale-100');
+            card.classList.add('opacity-0','scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150);
+        }
+
+        window.openAiUrl = function(type) {
+            const urlMap = {
+                chatgpt: 'https://chat.openai.com/',
+                gemini: 'https://gemini.google.com/app',
+                claude: 'https://claude.ai/new'
+            };
+            const url = urlMap[type];
+            if (url) window.open(url, '_blank', 'noopener');
+        }
+
+        window.downloadPromptTxt = function() {
+            const content = lastGeneratedPrompt || '';
+            if (!content) {
+                showCustomMessage('ダウンロード可能なデータがありません。', 'error');
+                return;
+            }
+            const btn = document.getElementById('btn-download-prompt');
+            const originalHtml = btn.innerHTML;
+            const ymd = new Date().toISOString().slice(0,10).replace(/-/g,'');
+            try {
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `FX_analysis_prompt_${ymd}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                btn.textContent = '✅ ファイルをダウンロードしました';
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                }, 3000);
+            } catch (e) {
+                btn.textContent = '❌ ダウンロードに失敗しました。もう一度お試しください。';
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                }, 3000);
+            }
+        }
     </script>
 </head>
 <body>
@@ -667,9 +867,13 @@
                 <div class="p-5 rounded-xl card">
                     <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">トレード履歴</h2>
 
-                    <!-- CSVボタン --><button onclick="exportToCSV()" class="btn-secondary px-4 py-2 text-sm font-medium mb-4">
+                    <!-- CSVボタン --><button onclick="exportToCSV()" class="btn-secondary px-4 py-2 text-sm font-medium mb-4 mr-2">
                         <!-- アイコンの色を白に調整 --><svg class="inline-block w-4 h-4 mr-2 -mt-0.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         CSVエクスポート
+                    </button>
+                    <!-- AI分析ボタン -->
+                    <button onclick="handleAiAnalyze()" class="btn-primary px-4 py-2 text-sm font-bold mb-4">
+                        <span class="mr-1">🤖</span> AIで今週を分析
                     </button>
                     
                     <div class="overflow-x-auto rounded-lg shadow-inner">
@@ -723,5 +927,81 @@
             </button>
         </nav>
     </div>
+    <!-- AI分析モーダル -->
+    <div id="ai-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative mx-auto mt-24 w-[92%] max-w-xl rounded-2xl border border-white/10 bg-gray-900/90 p-5 shadow-2xl">
+            <h3 id="ai-modal-title" class="text-lg font-bold text-white">AI分析</h3>
+            <p id="ai-modal-desc" class="mt-1 text-sm text-gray-300">クリップボードAPIが使えないため、下のテキストを手動でコピーしてください。</p>
+            <textarea id="ai-fallback-area" class="mt-4 w-full h-48 input-style"></textarea>
+            <div class="mt-4 flex justify-end gap-2">
+                <button class="btn-secondary px-4 py-2 text-sm" onclick="closeAiModal()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI選択モーダル（コピー成功時のガイド） -->
+    <div id="ai-select-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/60" onclick="closeAiSelectModal()"></div>
+        <div id="ai-select-card" class="relative mx-auto mt-16 w-[92%] max-w-2xl rounded-2xl border border-white/10 bg-gray-900/90 p-5 shadow-2xl transition-all duration-150 ease-out opacity-0 scale-95">
+            <button class="absolute right-3 top-3 text-gray-400 hover:text-white" aria-label="閉じる" onclick="closeAiSelectModal()">×</button>
+            <div class="text-green-400 font-semibold">✅ データをコピーしました</div>
+
+            <div class="mt-3 text-sm text-gray-300 font-medium">【方法1: クリップボードから貼り付け（推奨）】</div>
+            <p class="mt-1 text-sm text-gray-300">どのAIで分析しますか？</p>
+
+            <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+                <button class="btn-primary w-full" onclick="openAiUrl('chatgpt')"><span class="mr-1">🤖</span> ChatGPTで開く</button>
+                <button class="btn-primary w-full" onclick="openAiUrl('gemini')"><span class="mr-1">✨</span> Geminiで開く</button>
+                <button class="btn-primary w-full" onclick="openAiUrl('claude')"><span class="mr-1">🧠</span> Claudeで開く</button>
+            </div>
+
+            <p class="mt-2 text-xs text-gray-400">※開いたら Ctrl+V (Macは ⌘+V) で貼り付けてください</p>
+
+            <div class="my-4 flex items-center text-gray-500 text-xs">
+                <div class="flex-1 h-px bg-gray-700"></div>
+                <span class="px-3">━━━━━ または ━━━━━</span>
+                <div class="flex-1 h-px bg-gray-700"></div>
+            </div>
+
+            <div class="text-sm text-gray-300 font-medium">【方法2: ファイルをダウンロード】</div>
+            <button id="btn-download-prompt" class="btn-secondary mt-2 w-full md:w-auto" onclick="downloadPromptTxt()"><span class="mr-1">📄</span> プロンプトファイルをダウンロード</button>
+            <p class="mt-2 text-xs text-gray-400">※ダウンロードしたファイルをAIにアップロードしてください</p>
+        </div>
+    </div>
+
+    <!-- 🧪 テストデータ追加ボタン（開発用） -->
+    <button id="btn-add-testdata" aria-label="テストデータを追加" onclick="addTestData()" class="fixed bottom-20 right-4 z-[60] px-3 py-2 text-xs font-bold rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2" style="background-color:#f59e0b;color:#111827;">
+        🧪 テストデータを追加
+    </button>
+
+    <script>
+    // 開発用: テストデータをLocalStorageに追加（上書き or 確認の上リセット）
+    window.addTestData = function() {
+        try {
+            const key = 'fx_trades';
+            const existing = localStorage.getItem(key);
+
+            if (existing) {
+                const ok = confirm('テストデータをリセットして追加しますか？\n（既存データは上書きされます）');
+                if (!ok) return;
+            }
+
+            // 既存のAI連携と同一フォーマット: date, pair, side, lot, entry, exit, pnl, rule, memo
+            const samples = [
+                { date: '2025-10-31', pair: 'USD/JPY', side: '買', lot: 0.1, entry: 150.50, exit: 150.80, pnl: 3000, rule: '○', memo: '順張りエントリー成功' },
+                { date: '2025-10-31', pair: 'EUR/USD', side: '売', lot: 0.2, entry: 1.0850, exit: 1.0820, pnl: 6000, rule: '○', memo: '逆張りエントリー成功' },
+                { date: '2025-10-30', pair: 'GBP/JPY', side: '買', lot: 0.15, entry: 195.50, exit: 195.20, pnl: -3000, rule: '×', memo: '損切り遅延で損失拡大' }
+            ];
+
+            localStorage.setItem(key, JSON.stringify(samples));
+            alert('✅ テストデータを3件追加しました');
+            location.reload();
+        } catch (e) {
+            console.error('テストデータ保存エラー:', e);
+            alert('❌ データの保存に失敗しました');
+        }
+    }
+    </script>
 </body>
 </html>
