@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FXトレードマネージャー</title>
     <!-- Tailwind CSS CDNをロード --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.jsをロード --><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Interフォントを使用 --><style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
@@ -294,6 +295,371 @@
         .snackbar .close-btn:hover {
             background: rgba(0, 0, 0, 0.8);
         }
+        
+        /* 広告スタイル */
+        .ad-banner, .ad-inline, .ad-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        .ad-label {
+            display: inline-block;
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .ad-content a {
+            text-decoration: none;
+            color: #ffffff;
+            display: block;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .ad-content a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .ad-cta {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        .pro-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .feature-item {
+            text-align: center;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }
+        .feature-icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .pro-price {
+            font-size: 24px;
+            text-align: center;
+            margin: 24px 0;
+        }
+        
+        /* アクション付きトースト */
+        .action-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transform: translateX(120%);
+            transition: all 0.3s ease;
+            max-width: 400px;
+        }
+        .action-toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-message {
+            flex: 1;
+            font-size: 14px;
+            color: #ffffff;
+        }
+        .toast-action {
+            padding: 6px 12px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toast-action:hover {
+            background: #2563eb;
+        }
+        
+        /* プログレストースト */
+        .progress-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 12px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 10002;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #ffffff;
+        }
+        .progress-toast.show {
+            opacity: 1;
+        }
+        /* トースト位置別スタイル */
+        .action-toast.toast-left {
+            left: 20px;
+            right: auto;
+            transform: translateX(-120%);
+        }
+        .action-toast.toast-left.show {
+            transform: translateX(0);
+        }
+        .action-toast.toast-right {
+            right: 20px;
+            left: auto;
+            transform: translateX(120%);
+        }
+        .action-toast.toast-right.show {
+            transform: translateX(0);
+        }
+        .action-toast.toast-center {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
+        }
+        .action-toast.toast-center.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .progress-toast.toast-left {
+            left: 20px;
+            right: auto;
+            transform: translateX(-120%);
+        }
+        .progress-toast.toast-left.show {
+            transform: translateX(0);
+        }
+        .progress-toast.toast-right {
+            right: 20px;
+            left: auto;
+            transform: translateX(120%);
+        }
+        .progress-toast.toast-right.show {
+            transform: translateX(0);
+        }
+        .progress-toast.toast-center {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
+        }
+        .progress-toast.toast-center.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        /* プログレスバー */
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 2px;
+            animation: progress 2000ms linear;
+        }
+        @keyframes progress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+        kbd {
+            display: inline-block;
+            padding: 2px 6px;
+            font-family: monospace;
+            font-size: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+        
+        /* タブナビゲーション */
+        .app-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .tab-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255,255,255,0.5);
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.8);
+        }
+        .tab-btn.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            background: rgba(59,130,246,0.1);
+        }
+        .tab-icon {
+            font-size: 20px;
+        }
+        .tab-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        .chart-container {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .chart-container h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 12px 0;
+        }
+        @media (max-width: 640px) {
+            .tab-label { font-size: 10px; }
+            .tab-icon { font-size: 18px; }
+            .tab-btn { padding: 8px 12px; }
+        }
+        .completion-toast {
+            position: fixed;
+            top: 20px;
+            z-index: 10003;
+            background: rgba(31, 33, 33, 0.98);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            min-width: 320px;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        .completion-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .completion-toast.toast-left {
+            left: 20px;
+        }
+        .completion-toast.toast-right {
+            right: 20px;
+        }
+        .completion-toast.toast-center {
+            left: 50%;
+            transform: translate(-50%, -10px);
+        }
+        .completion-toast.toast-center.show {
+            transform: translate(-50%, 0);
+        }
+        @media (prefers-color-scheme: light) {
+            .completion-toast {
+                background: rgba(255, 255, 255, 0.98);
+            }
+        }
+        @media (prefers-color-scheme: dark) {
+            .completion-toast {
+                background: rgba(31, 33, 33, 0.98);
+            }
+        }
+        [data-color-scheme="light"] .completion-toast {
+            background: rgba(255, 255, 255, 0.98);
+        }
+        [data-color-scheme="dark"] .completion-toast {
+            background: rgba(31, 33, 33, 0.98);
+        }
+        .summary-header {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .summary-row {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #ffffff;
+        }
+        .summary-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .summary-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
     </style>
 
     <!-- アプリスクリプト（LocalStorage版） --><script>
@@ -304,9 +670,768 @@
         let currentPage = 'money-management'; 
         
         const FULL_TRADES_KEY = 'fx_trades_full';
+        
+        // グラフインスタンスを保持
+        let chartInstances = {};
+        
+        // AIウィンドウとプロンプト管理
+        let lastAIWindow = null;
+        let latestPromptText = '';
+
+        // ===== プラン管理機能 =====
+        function initializePlan() {
+            if (!localStorage.getItem('userPlan')) {
+                localStorage.setItem('userPlan', 'free');
+                localStorage.setItem('planStartDate', new Date().toISOString());
+            }
+        }
+        function getUserPlan() {
+            return localStorage.getItem('userPlan') || 'free';
+        }
+        function isPro() {
+            return getUserPlan() === 'pro';
+        }
+        function setPlan(plan) {
+            localStorage.setItem('userPlan', plan);
+            updateAdDisplay();
+        }
+        function getDaysSinceInstall() {
+            const startDate = localStorage.getItem('planStartDate');
+            if (!startDate) return 0;
+            return Math.floor((Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
+        }
+        function updateAdDisplay() {
+            const plan = getUserPlan();
+            console.log('updateAdDisplay called, plan:', plan);
+            
+            const footerAd = document.getElementById('footerAdBanner');
+            const modalAd = document.getElementById('modalAd');
+            const settingsAd = document.getElementById('settingsAd');
+            
+            console.log('広告要素:', { footerAd: !!footerAd, modalAd: !!modalAd, settingsAd: !!settingsAd });
+            
+            if (plan === 'pro') {
+                if (footerAd) footerAd.style.display = 'none';
+                if (modalAd) modalAd.style.display = 'none';
+                if (settingsAd) settingsAd.style.display = 'none';
+                } else {
+                if (footerAd) footerAd.style.display = 'block';
+                if (settingsAd) settingsAd.style.display = 'block';
+                
+                const days = getDaysSinceInstall();
+                console.log('経過日数:', days);
+                if (modalAd && days >= 7) {
+                    modalAd.style.display = 'block';
+                }
+            }
+        }
+        function logAdClick(placement) {
+            logEvent({
+                type: 'ad_click',
+                placement,
+                plan: getUserPlan(),
+                timestamp: new Date().toISOString()
+            });
+        }
+        window.showProInfo = function() {
+            const modal = document.getElementById('proInfoModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+        window.closeProInfo = function() {
+            const modal = document.getElementById('proInfoModal');
+            if (modal) modal.classList.add('hidden');
+        }
+        window.toggleDevPlan = function() {
+            const current = getUserPlan();
+            const newPlan = current === 'free' ? 'pro' : 'free';
+            setPlan(newPlan);
+            const planDisplay = document.getElementById('currentPlanDisplay');
+            if (planDisplay) {
+                planDisplay.textContent = newPlan === 'pro' ? 'Pro版' : '無料版';
+            }
+            showCustomMessage(`プランを ${newPlan} に変更しました`, 'success');
+            setTimeout(() => location.reload(), 1000);
+        }
+
+        // ===== AIウィンドウオープン機能 =====
+        
+        function getToastPosition() {
+            const position = localStorage.getItem('windowPosition') || 'right';
+            return position === 'right' ? 'left' : position === 'left' ? 'right' : 'center';
+        }
+        
+        function showProgressToast(message, duration = 2000) {
+            const existing = document.querySelector('.progress-toast');
+            if (existing) existing.remove();
+            const position = getToastPosition();
+            const toast = document.createElement('div');
+            toast.className = `progress-toast show toast-${position}`;
+            toast.innerHTML = `
+                <span>⏳ ${message}</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="animation: progress ${duration}ms linear"></div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+        
+        // 完了サマリートーストの表示
+        function showCompletionSummary({ promptType, ai, imageCount, logsOk }) {
+            const windowPos = localStorage.getItem('windowPosition') || 'right';
+            const toastSide = windowPos === 'right' ? 'left' : windowPos === 'left' ? 'right' : 'center';
+            
+            const aiNames = {
+                chatgpt: 'ChatGPT',
+                gemini: 'Gemini',
+                claude: 'Claude'
+            };
+            
+            const promptTypeNames = {
+                basic: '基本分析',
+                trend: 'トレンドフォロー型',
+                range: 'レンジ逆張り型',
+                breakout: 'ブレイクアウト型',
+                mental: 'メンタル分析'
+            };
+            
+            const div = document.createElement('div');
+            div.className = `completion-toast show toast-${toastSide}`;
+            div.innerHTML = `
+                <div class="summary-header">
+                    <span style="font-weight: 600;">✅ AI分析準備完了</span>
+                </div>
+                <div class="summary-row">
+                    <span>📚 ${promptTypeNames[promptType] || promptType || '基本分析'}</span>
+                    <span>🤖 ${aiNames[ai] || 'AI'}</span>
+                </div>
+                <div class="summary-row">
+                    <span>🖼️ 画像 ${imageCount || 0} 枚</span>
+                    <span>${logsOk ? '🗒️ ログ記録済' : ''}</span>
+                </div>
+                <div class="summary-actions">
+                    <button class="btn-secondary px-3 py-1 text-xs" id="reCopyBtn">📋 再コピー</button>
+                    <button class="btn-secondary px-3 py-1 text-xs" id="openOtherBtn">🔄 別AIで開く</button>
+                    <button class="btn-secondary px-3 py-1 text-xs" id="closeToastBtn">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(div);
+            
+            // ボタンイベント
+            div.querySelector('#reCopyBtn').onclick = () => {
+                if (latestPromptText) {
+                    navigator.clipboard.writeText(latestPromptText).then(() => {
+                        showCustomMessage('📋 プロンプトを再コピーしました', 'success');
+                    });
+                }
+            };
+            
+            div.querySelector('#openOtherBtn').onclick = () => {
+                const modal = document.getElementById('ai-select-modal');
+                if (modal) modal.classList.remove('hidden');
+                closeCompletionToast(div);
+            };
+            
+            div.querySelector('#closeToastBtn').onclick = () => {
+                closeCompletionToast(div);
+            };
+            
+            // 5秒後に自動で消す
+            setTimeout(() => {
+                closeCompletionToast(div);
+            }, 5000);
+        }
+        
+        function closeCompletionToast(div) {
+            div.classList.remove('show');
+            setTimeout(() => div.remove(), 300);
+        }
+        
+        function openAITab(type) {
+            const urlMap = {
+                chatgpt: 'https://chat.openai.com/',
+                gemini: 'https://gemini.google.com/app',
+                claude: 'https://claude.ai/new'
+            };
+            
+            const url = urlMap[type];
+            if (!url) return null;
+            
+            console.log('openAITab called:', type, url);
+            console.log('lastAIWindow exists:', !!lastAIWindow);
+            
+            // 既存のウィンドウがあれば再利用を試みる（closedチェックを削除）
+            if (lastAIWindow) {
+                try {
+                    console.log('Attempting to reuse window...');
+                    lastAIWindow.location.href = url;
+                    lastAIWindow.focus();
+                    console.log('Window reused successfully');
+                    showCustomMessage('🔄 既存のAIウィンドウを再利用しました', 'success');
+                    return lastAIWindow;
+                } catch (e) {
+                    console.error('ウィンドウ再利用に失敗（新規作成します）:', e);
+                    lastAIWindow = null;
+                }
+            }
+            
+            // 新しいウィンドウを開く
+            console.log('Opening new window...');
+            
+            const sizePreference = localStorage.getItem('windowSize') || 'half';
+            const positionPreference = localStorage.getItem('windowPosition') || 'right';
+            const autoResize = localStorage.getItem('autoResizeOriginal') === 'true';
+            
+            const screenWidth = window.screen.availWidth;
+            const screenHeight = window.screen.availHeight;
+            
+            let windowWidth, windowHeight, windowLeft, windowTop;
+            
+            switch (sizePreference) {
+                case 'half':
+                    windowWidth = Math.floor(screenWidth * 0.5);
+                    windowHeight = screenHeight;
+                    break;
+                case 'two-thirds':
+                    windowWidth = Math.floor(screenWidth * 0.67);
+                    windowHeight = screenHeight;
+                    break;
+                case 'full':
+                    windowWidth = screenWidth;
+                    windowHeight = screenHeight;
+                    break;
+                case 'small':
+                    windowWidth = 800;
+                    windowHeight = 600;
+                    break;
+                default:
+                    windowWidth = Math.floor(screenWidth * 0.5);
+                    windowHeight = screenHeight;
+            }
+            
+            switch (positionPreference) {
+                case 'right':
+                    windowLeft = screenWidth - windowWidth;
+                    windowTop = 0;
+                    break;
+                case 'left':
+                    windowLeft = 0;
+                    windowTop = 0;
+                    break;
+                case 'center':
+                    windowLeft = Math.floor((screenWidth - windowWidth) / 2);
+                    windowTop = Math.floor((screenHeight - windowHeight) / 2);
+                    break;
+                default:
+                    windowLeft = screenWidth - windowWidth;
+                    windowTop = 0;
+            }
+            
+            const features = [
+                `width=${windowWidth}`,
+                `height=${windowHeight}`,
+                `left=${windowLeft}`,
+                `top=${windowTop}`,
+                'menubar=no',
+                'toolbar=no',
+                'location=yes',
+                'status=no',
+                'resizable=yes',
+                'scrollbars=yes'
+            ].join(',');
+            
+            // 固定名でウィンドウを開く
+            lastAIWindow = window.open(url, 'FXTradeAI', features);
+            
+            if (!lastAIWindow) {
+                console.error('ポップアップがブロックされました');
+                showCustomMessage('⚠️ ポップアップがブロックされました', 'error');
+                lastAIWindow = window.open(url, '_blank');
+            } else {
+                console.log('Window opened successfully');
+                showCustomMessage('✅ AIウィンドウを開きました', 'success');
+                try {
+                    lastAIWindow.focus();
+                } catch (e) {
+                    console.error('フォーカス失敗:', e);
+                }
+                
+                // 元のウィンドウをリサイズ（オプション）
+                if (autoResize && sizePreference === 'half' && window.resizeTo && window.moveTo) {
+                    try {
+                        if (positionPreference === 'right') {
+                            window.resizeTo(windowWidth, windowHeight);
+                            window.moveTo(0, 0);
+                        } else if (positionPreference === 'left') {
+                            window.resizeTo(windowWidth, windowHeight);
+                            window.moveTo(windowWidth, 0);
+                        }
+                    } catch (e) {
+                        console.log('自動リサイズがブロックされました:', e);
+                    }
+                }
+            }
+            
+            return lastAIWindow;
+        }
+        
+        window.saveWindowPreference = function() {
+            try {
+                const size = document.getElementById('windowSizePreference').value;
+                const position = document.getElementById('windowPositionPreference').value;
+                const autoResize = document.getElementById('autoResizeOriginal').checked;
+                localStorage.setItem('windowSize', size);
+                localStorage.setItem('windowPosition', position);
+                localStorage.setItem('autoResizeOriginal', autoResize);
+                showCustomMessage('✅ ウィンドウ設定を保存しました', 'success');
+            } catch (_) {
+                showCustomMessage('❌ 設定の保存に失敗しました', 'error');
+            }
+        }
+        
+        window.saveWindowPreferenceFromSettings = function() {
+            try {
+                const size = document.getElementById('windowSizePreferenceSettings').value;
+                const position = document.getElementById('windowPositionPreferenceSettings').value;
+                const autoResize = document.getElementById('autoResizeOriginalSettings').checked;
+                localStorage.setItem('windowSize', size);
+                localStorage.setItem('windowPosition', position);
+                localStorage.setItem('autoResizeOriginal', autoResize);
+                showCustomMessage('✅ ウィンドウ設定を保存しました', 'success');
+            } catch (_) {
+                showCustomMessage('❌ 設定の保存に失敗しました', 'error');
+            }
+        }
+        
+        window.toggleSurveyFromSettings = function() {
+            const checked = document.getElementById('surveyToggleSettings').checked;
+            const bg = document.getElementById('surveyToggleBgSettings');
+            const thumb = document.getElementById('surveyToggleThumbSettings');
+            localStorage.setItem('surveyDisabled', checked ? '0' : '1');
+            bg.style.background = checked ? '#ef4444' : '#10b981';
+            thumb.style.transform = checked ? 'translateX(0)' : 'translateX(16px)';
+        }
+        
+        // 連続分析モードの保存
+        window.saveContinuousMode = function() {
+            const checked = document.getElementById('continuousMode')?.checked || false;
+            localStorage.setItem('continuousMode', checked);
+            console.log('連続分析モード:', checked);
+            const bg = document.getElementById('continuousModeToggleBg');
+            const thumb = document.getElementById('continuousModeToggleThumb');
+            if (bg && thumb) {
+                bg.style.background = checked ? '#10b981' : '#ef4444';
+                thumb.style.transform = checked ? 'translateX(16px)' : 'translateX(0)';
+            }
+            showCustomMessage(`✅ 連続分析モードを${checked ? '有効' : '無効'}にしました`, 'success');
+        }
+        
+        // 連続分析モードの復元
+        function updateContinuousModeDisplay() {
+            const continuousMode = localStorage.getItem('continuousMode') === 'true';
+            const checkbox = document.getElementById('continuousMode');
+            const bg = document.getElementById('continuousModeToggleBg');
+            const thumb = document.getElementById('continuousModeToggleThumb');
+            if (checkbox) checkbox.checked = continuousMode;
+            if (bg) bg.style.background = continuousMode ? '#10b981' : '#ef4444';
+            if (thumb) thumb.style.transform = continuousMode ? 'translateX(16px)' : 'translateX(0)';
+        }
+        
+        // トレード選択時のハンドラー（連続分析モード用）
+        window.handleSelectTrade = function(tradeId) {
+            console.log('handleSelectTrade called:', tradeId);
+            
+            const continuousMode = localStorage.getItem('continuousMode') === 'true';
+            console.log('continuousMode:', continuousMode);
+            
+            if (!continuousMode) {
+                console.log('連続分析モードがOFFです');
+                return;
+            }
+            
+            const trades = loadFullTrades();
+            const trade = trades.find(t => String(t.id) === String(tradeId));
+            
+            if (!trade) {
+                console.error('トレードが見つかりません:', tradeId);
+                return;
+            }
+            
+            console.log('Selected trade:', trade);
+            
+            // 単一トレードのCSVを生成
+            const singleTradeData = {
+                date: trade.date || (trade.timestamp ? new Date(trade.timestamp).toISOString().slice(0,10) : ''),
+                pair: trade.pair || '',
+                side: trade.direction === 'buy' ? '買' : '売',
+                lot: trade.lotSize || 0,
+                entry: trade.entryPrice || 0,
+                exit: trade.exitPrice || 0,
+                pnl: trade.pnl || 0,
+                rule: '—',
+                memo: trade.notes || trade.memo || ''
+            };
+            
+            const csv = convertTradesToCsv([singleTradeData]);
+            const promptType = getLastPromptType() || 'basic';
+            const prompt = generatePromptByType(promptType, csv);
+            
+            latestPromptText = prompt;
+            
+            navigator.clipboard.writeText(prompt).then(() => {
+                showCustomMessage('📋 選択したトレードをコピーしました', 'success');
+                
+                const preferredAI = getPreferredAI() || 'chatgpt';
+                
+                // 完了サマリートーストを表示
+                showCompletionSummary({
+                    promptType: promptType,
+                    ai: preferredAI,
+                    imageCount: 0,
+                    logsOk: true
+                });
+                
+                // 既存のウィンドウ再利用ロジックを活用
+                setTimeout(() => {
+                    openAITab(preferredAI);
+                }, 400);
+            }).catch((err) => {
+                console.error('コピー失敗:', err);
+                showCustomMessage('❌ コピーに失敗しました', 'error');
+            });
+        }
+
+        // ===== 週次レポート生成機能 =====
+        function startOfWeek(date = new Date()) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            d.setDate(diff);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+        
+        function endOfWeek(date = new Date()) {
+            const start = startOfWeek(date);
+            const end = new Date(start);
+            end.setDate(end.getDate() + 6);
+            end.setHours(23, 59, 59, 999);
+            return end;
+        }
+        
+        function filterTradesByRange(trades, range) {
+            const now = new Date();
+            let fromDate, toDate;
+            
+            switch (range) {
+                case '7d':
+                    toDate = now;
+                    fromDate = new Date(now);
+                    fromDate.setDate(fromDate.getDate() - 6);
+                    fromDate.setHours(0, 0, 0, 0);
+                    break;
+                case '14d':
+                    toDate = now;
+                    fromDate = new Date(now);
+                    fromDate.setDate(fromDate.getDate() - 13);
+                    fromDate.setHours(0, 0, 0, 0);
+                    break;
+                case '30d':
+                    toDate = now;
+                    fromDate = new Date(now);
+                    fromDate.setDate(fromDate.getDate() - 29);
+                    fromDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'thisWeek':
+                    fromDate = startOfWeek(now);
+                    toDate = endOfWeek(now);
+                    break;
+                case 'lastWeek':
+                    const lastWeekDate = new Date(now);
+                    lastWeekDate.setDate(lastWeekDate.getDate() - 7);
+                    fromDate = startOfWeek(lastWeekDate);
+                    toDate = endOfWeek(lastWeekDate);
+                    break;
+                default:
+                    fromDate = new Date(0);
+                    toDate = now;
+            }
+            
+            return trades.filter(trade => {
+                const tradeDate = new Date(trade.date || trade.timestamp || now);
+                return tradeDate >= fromDate && tradeDate <= toDate;
+            });
+        }
+        
+        function summarizeTrades(trades) {
+            const count = trades.length;
+            let wins = 0;
+            let losses = 0;
+            let pnlSum = 0;
+            let ruleKeeps = 0;
+            
+            const byPair = {};
+            const byHour = Array(24).fill(0).map(() => ({ count: 0, wins: 0, pnl: 0 }));
+            
+            trades.forEach(trade => {
+                const pnl = Number(trade.pnl) || 0;
+                pnlSum += pnl;
+                
+                if (pnl >= 0) {
+                    wins++;
+                } else {
+                    losses++;
+                }
+                
+                if (trade.rule === true || trade.rule === '○') {
+                    ruleKeeps++;
+                }
+                
+                const pair = trade.pair || 'N/A';
+                if (!byPair[pair]) {
+                    byPair[pair] = { count: 0, wins: 0, pnl: 0 };
+                }
+                byPair[pair].count++;
+                if (pnl >= 0) byPair[pair].wins++;
+                byPair[pair].pnl += pnl;
+                
+                const tradeDate = new Date(trade.date || trade.timestamp || new Date());
+                const hour = tradeDate.getHours();
+                byHour[hour].count++;
+                if (pnl >= 0) byHour[hour].wins++;
+                byHour[hour].pnl += pnl;
+            });
+            
+            const winRate = count > 0 ? Math.round((wins / count) * 100) : 0;
+            const ruleRate = count > 0 ? Math.round((ruleKeeps / count) * 100) : 0;
+            
+            return { count, wins, losses, pnlSum, winRate, ruleRate, byPair, byHour };
+        }
+        
+        function getRangeLabel(range) {
+            const formatDate = (d) => {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            const now = new Date();
+            
+            if (range === 'thisWeek') {
+                const from = startOfWeek(now);
+                const to = endOfWeek(now);
+                return `${formatDate(from)} 〜 ${formatDate(to)}`;
+            }
+            if (range === 'lastWeek') {
+                const lastWeekDate = new Date(now);
+                lastWeekDate.setDate(lastWeekDate.getDate() - 7);
+                const from = startOfWeek(lastWeekDate);
+                const to = endOfWeek(lastWeekDate);
+                return `${formatDate(from)} 〜 ${formatDate(to)}`;
+            }
+            const days = range === '7d' ? 7 : range === '14d' ? 14 : 30;
+            const from = new Date(now);
+            from.setDate(from.getDate() - (days - 1));
+            from.setHours(0, 0, 0, 0);
+            return `${formatDate(from)} 〜 ${formatDate(now)}`;
+        }
+        
+        function makeWeeklyMarkdown(rangeLabel, trades, summary) {
+            const pairEntries = Object.entries(summary.byPair);
+            const bestPairs = pairEntries.sort((a, b) => b[1].pnl - a[1].pnl).slice(0, 3);
+            const worstPairs = pairEntries.sort((a, b) => a[1].pnl - b[1].pnl).slice(0, 3);
+            
+            const hourStats = summary.byHour
+                .map((v, i) => ({
+                    hour: i,
+                    winRate: v.count > 0 ? Math.round((v.wins / v.count) * 100) : 0,
+                    count: v.count,
+                    pnl: v.pnl
+                }))
+                .filter(v => v.count > 0);
+                
+            const bestHours = hourStats.sort((a, b) => b.pnl - a.pnl).slice(0, 3);
+            const worstHours = hourStats.sort((a, b) => a.pnl - b.pnl).slice(0, 3);
+            
+            const markdown = `# 週次トレードレポート
+
+**期間**: ${rangeLabel}
+
+## 📊 サマリー
+
+- **トレード回数**: ${summary.count} 回
+- **勝率**: ${summary.winRate}% （${summary.wins}勝${summary.losses}敗）
+- **合計損益**: ${summary.pnlSum.toLocaleString()} 円
+- **ルール遵守率**: ${summary.ruleRate}%
+
+---
+
+## ✅ 勝ちパターン（上位3通貨ペア）
+
+${bestPairs.length > 0 
+  ? bestPairs.map(([pair, data]) => 
+      `- **${pair}**: 損益 ${data.pnl.toLocaleString()} 円, 勝率 ${data.count > 0 ? Math.round((data.wins / data.count) * 100) : 0}% (${data.count}回)`
+    ).join('\n')
+  : '- データ不足'
+}
+
+---
+
+## ❌ 負けパターン（下位3通貨ペア）
+
+${worstPairs.length > 0
+  ? worstPairs.map(([pair, data]) => 
+      `- **${pair}**: 損益 ${data.pnl.toLocaleString()} 円, 勝率 ${data.count > 0 ? Math.round((data.wins / data.count) * 100) : 0}% (${data.count}回)`
+    ).join('\n')
+  : '- データ不足'
+}
+
+---
+
+## ⏰ 時間帯の傾向
+
+### 好調な時間帯
+
+${bestHours.length > 0
+  ? bestHours.map(h => `- ${h.hour}時台: 損益 ${h.pnl.toLocaleString()} 円, 勝率 ${h.winRate}% (${h.count}回)`).join('\n')
+  : '- データ不足'
+}
+
+### 不調な時間帯
+
+${worstHours.length > 0
+  ? worstHours.map(h => `- ${h.hour}時台: 損益 ${h.pnl.toLocaleString()} 円, 勝率 ${h.winRate}% (${h.count}回)`).join('\n')
+  : '- データ不足'
+}
+
+---
+
+## 🎯 改善アクション（次週の目標）
+
+1. **ルール遵守率を向上**: 目標 ${Math.min(summary.ruleRate + 5, 100)}% （現在 ${summary.ruleRate}%）
+2. **不調時間帯の対策**: ロット半減または見送りを検討
+3. **好調ペア・時間帯の再現**: 勝ちパターンを型化して継続
+
+---
+
+*このレポートは自動生成されました（${new Date().toLocaleString('ja-JP')}）*
+`;
+            
+            return markdown;
+        }
+        
+        window.generateWeeklyReport = function() {
+            const range = document.getElementById('reportRange')?.value || '7d';
+            const allTrades = loadFullTrades();
+            const filteredTrades = filterTradesByRange(allTrades, range);
+            
+            if (filteredTrades.length === 0) {
+                showCustomMessage('⚠️ 指定期間にトレード記録がありません', 'error');
+                return;
+            }
+            
+            const summary = summarizeTrades(filteredTrades);
+            const rangeLabel = getRangeLabel(range);
+            const markdown = makeWeeklyMarkdown(rangeLabel, filteredTrades, summary);
+            
+            const outputEl = document.getElementById('weeklyReportOutput');
+            if (outputEl) {
+                outputEl.value = markdown;
+            }
+            
+            showCustomMessage('✅ 週次レポートを生成しました', 'success');
+        }
+        
+        window.copyWeeklyReport = function() {
+            const outputEl = document.getElementById('weeklyReportOutput');
+            if (!outputEl || !outputEl.value) {
+                showCustomMessage('⚠️ レポートが生成されていません', 'error');
+                return;
+            }
+            
+            outputEl.select();
+            document.execCommand('copy');
+            showCustomMessage('📋 レポートをコピーしました', 'success');
+        }
+        
+        window.downloadWeeklyReport = function() {
+            const outputEl = document.getElementById('weeklyReportOutput');
+            if (!outputEl || !outputEl.value) {
+                showCustomMessage('⚠️ レポートが生成されていません', 'error');
+                return;
+            }
+            
+            const blob = new Blob([outputEl.value], { type: 'text/markdown;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `weekly_report_${Date.now()}.md`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showCustomMessage('💾 レポートをダウンロードしました', 'success');
+        }
+        
+        // 分析タブ用の週次レポート関数
+        window.generateWeeklyReportFromAnalytics = function() {
+            const range = document.getElementById('reportRangeAnalytics')?.value || '7d';
+            const allTrades = loadFullTrades();
+            const filteredTrades = filterTradesByRange(allTrades, range);
+            
+            if (filteredTrades.length === 0) {
+                showCustomMessage('⚠️ 指定期間にトレード記録がありません', 'error');
+                return;
+            }
+            
+            const summary = summarizeTrades(filteredTrades);
+            const rangeLabel = getRangeLabel(range);
+            const markdown = makeWeeklyMarkdown(rangeLabel, filteredTrades, summary);
+            
+            const outputEl = document.getElementById('weeklyReportOutputAnalytics');
+            if (outputEl) {
+                outputEl.value = markdown;
+            }
+            
+            showCustomMessage('✅ 週次レポートを生成しました', 'success');
+        }
+        
+        window.copyWeeklyReportFromAnalytics = function() {
+            const outputEl = document.getElementById('weeklyReportOutputAnalytics');
+            if (!outputEl || !outputEl.value) {
+                showCustomMessage('⚠️ レポートが生成されていません', 'error');
+                return;
+            }
+            
+            outputEl.select();
+            document.execCommand('copy');
+            showCustomMessage('📋 レポートをコピーしました', 'success');
+        }
+        
+        window.downloadWeeklyReportFromAnalytics = function() {
+            const outputEl = document.getElementById('weeklyReportOutputAnalytics');
+            if (!outputEl || !outputEl.value) {
+                showCustomMessage('⚠️ レポートが生成されていません', 'error');
+                return;
+            }
+            
+            const blob = new Blob([outputEl.value], { type: 'text/markdown;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `weekly_report_${Date.now()}.md`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showCustomMessage('💾 レポートをダウンロードしました', 'success');
+        }
 
         // 初期化（LocalStorage）
         function initializeLocalApp() {
+            initializePlan();
             try {
                 const savedId = localStorage.getItem('fx_user_id');
                 userId = savedId || crypto.randomUUID();
@@ -318,6 +1443,7 @@
             }
             setupRealtimeListener();
             hideLoading();
+            updateAdDisplay();
         }
 
         // ロード画面非表示
@@ -346,27 +1472,27 @@
                 };
             });
             trades.sort((a,b) => b.dateObj - a.dateObj);
-            tradeDataCache = trades;
-            renderTrades(trades);
-            calculateStats(trades);
+                tradeDataCache = trades; 
+                renderTrades(trades);
+                calculateStats(trades);
 
             // AI用の簡易データへ同期
             try {
                 const lsTrades = trades.map(t => ({
                     date: t.dateObj instanceof Date && !isNaN(t.dateObj) ? t.dateObj.toISOString().slice(0,10) : '',
-                    pair: t.pair || '',
-                    side: t.direction === 'buy' ? '買' : '売',
+                            pair: t.pair || '',
+                            side: t.direction === 'buy' ? '買' : '売',
                     lot: t.lotSize,
-                    entry: t.entryPrice,
-                    exit: t.exitPrice,
-                    pnl: t.pnl,
+                            entry: t.entryPrice,
+                            exit: t.exitPrice,
+                            pnl: t.pnl,
                     rule: '—',
-                    memo: t.notes || ''
+                            memo: t.notes || ''
                 }));
-                localStorage.setItem('fx_trades', JSON.stringify(lsTrades));
-            } catch (e) {
-                console.warn('LocalStorageへの同期に失敗:', e);
-            }
+                    localStorage.setItem('fx_trades', JSON.stringify(lsTrades));
+                } catch (e) {
+                    console.warn('LocalStorageへの同期に失敗:', e);
+                }
         }
 
         function loadFullTrades() {
@@ -448,6 +1574,10 @@
                     }
                 } catch (_) {}
                 setupRealtimeListener();
+                // グラフ再描画
+                if (typeof buildCharts === 'function') {
+                    buildCharts();
+                }
             } catch (e) {
                 console.error('トレード記録の保存エラー:', e);
                 showCustomMessage('記録の保存中にエラーが発生しました。', 'error');
@@ -456,6 +1586,7 @@
 
         // トレード記録をHTMLテーブルにレンダリング
         function renderTrades(trades) {
+            console.log('renderTrades called with', trades.length, 'trades');
             const tableBody = document.getElementById('tradeHistoryBody');
             tableBody.innerHTML = ''; 
 
@@ -464,10 +1595,22 @@
                 return;
             }
 
-            trades.forEach(trade => {
+            trades.forEach((trade, index) => {
                 const pnlClass = trade.pnl > 0 ? 'text-green-400 font-bold' : trade.pnl < 0 ? 'text-red-400 font-bold' : 'text-gray-400';
                 const row = tableBody.insertRow();
-                row.className = 'border-b border-gray-800 hover:bg-gray-800/50 transition-colors text-sm'; 
+                row.className = 'border-b border-gray-800 hover:bg-gray-800/50 transition-colors text-sm cursor-pointer';
+                
+                // 連続分析モード用のクリックイベント（子要素クリック時は無視）
+                row.onclick = (e) => {
+                    console.log('Row clicked:', trade.id, e.target);
+                    // ボタンやリンクがクリックされた場合は無視
+                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'IMG' || e.target.closest('button')) {
+                        console.log('Ignoring click on button/image');
+                        return;
+                    }
+                    console.log('Calling handleSelectTrade:', trade.id);
+                    handleSelectTrade(trade.id);
+                }; 
 
                 row.insertCell().textContent = trade.date;
                 row.insertCell().textContent = trade.pair;
@@ -511,6 +1654,8 @@
                 }
                 imgCell.appendChild(imgWrap);
             });
+            
+            console.log('✅ Trade rows rendered with click events');
         }
         
         // 統計情報の計算と表示
@@ -660,12 +1805,386 @@
             });
         }
 
+        // タブ切り替え機能
+        let currentTab = 'record';
+        
+        window.switchTab = function(tabName) {
+            currentTab = tabName;
+            localStorage.setItem('currentTab', tabName);
+            
+            console.log('Switching to tab:', tabName);
+            
+            // すべてのタブボタンとコンテンツを非アクティブ化
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // 選択されたタブをアクティブ化
+            const btn = document.querySelector(`.tab-btn[onclick="switchTab('${tabName}')"]`);
+            if (btn) btn.classList.add('active');
+            
+            const content = document.getElementById(`tab-${tabName}`);
+            if (content) {
+                content.classList.add('active');
+                
+                // タブごとの初期化処理
+                if (tabName === 'record') {
+                    console.log('✅ Record tab activated');
+                    // 少し遅延させて確実にDOMが準備された後に実行
+                    setTimeout(() => {
+                        loadAndDisplayTrades();
+                    }, 100);
+                } else if (tabName === 'analytics') {
+                    updateAnalytics();
+                } else if (tabName === 'settings') {
+                    updateSettingsDisplay();
+                }
+            }
+        }
+        
+        function loadAndDisplayTrades() {
+            console.log('loadAndDisplayTrades called');
+            const trades = loadFullTrades();
+            console.log('Trades loaded:', trades.length);
+            
+            if (trades.length === 0) {
+                console.log('No trades to display');
+            } else {
+                console.log('Displaying trades...');
+            }
+            
+            // 既存のsetupRealtimeListenerがトレードを読み込んで表示する
+            setupRealtimeListener();
+        }
+        
+        function updateAnalytics() {
+            const trades = loadFullTrades();
+            const summary = summarizeTrades(trades);
+            
+            const totalEl = document.getElementById('analyticsTotalTrades');
+            const winEl = document.getElementById('analyticsWinRate');
+            const pnlEl = document.getElementById('analyticsTotalPnl');
+            const ruleEl = document.getElementById('analyticsRuleKeepRate');
+            
+            if (totalEl) totalEl.textContent = summary.count;
+            if (winEl) winEl.textContent = `${summary.winRate}%`;
+            if (pnlEl) pnlEl.textContent = `¥${summary.pnlSum.toLocaleString()}`;
+            if (ruleEl) ruleEl.textContent = `${summary.ruleRate}%`;
+            
+            // グラフ再描画
+            buildCharts();
+        }
+        
+        // 日付でグループ化
+        function groupByDate(trades) {
+            const map = {};
+            
+            trades.forEach(trade => {
+                const date = new Date(trade.date || trade.createdAt || new Date());
+                const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                
+                if (!map[key]) {
+                    map[key] = { pnl: 0, count: 0, wins: 0 };
+                }
+                
+                const pnl = Number(trade.pnl) || Number(trade.profit) || 0;
+                map[key].pnl += pnl;
+                map[key].count += 1;
+                if (pnl >= 0) map[key].wins += 1;
+            });
+            
+            const keys = Object.keys(map).sort();
+            return keys.map(key => ({ date: key, ...map[key] }));
+        }
+        
+        // グラフ描画
+        function buildCharts() {
+            const trades = loadFullTrades();
+            
+            if (trades.length === 0) {
+                console.log('トレードデータがないため、グラフを表示できません');
+                return;
+            }
+            
+            // 既存のグラフを破棄
+            Object.values(chartInstances).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            chartInstances = {};
+            
+            // 日別データ
+            const daily = groupByDate(trades);
+            
+            // 1. 日別損益グラフ
+            const ctx1 = document.getElementById('chartDailyPnl');
+            if (ctx1) {
+                chartInstances.dailyPnl = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: daily.map(d => d.date),
+                        datasets: [{
+                            label: '日別損益 (円)',
+                            data: daily.map(d => d.pnl),
+                            backgroundColor: daily.map(d => 
+                                d.pnl >= 0 ? 'rgba(46, 204, 113, 0.7)' : 'rgba(231, 76, 60, 0.7)'
+                            ),
+                            borderColor: daily.map(d => 
+                                d.pnl >= 0 ? 'rgba(46, 204, 113, 1)' : 'rgba(231, 76, 60, 1)'
+                            ),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `損益: ¥${context.parsed.y.toLocaleString()}`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: (value) => `¥${value.toLocaleString()}`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 2. 勝率推移グラフ
+            const ctx2 = document.getElementById('chartWinRate');
+            if (ctx2) {
+                chartInstances.winRate = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: daily.map(d => d.date),
+                        datasets: [{
+                            label: '勝率 (%)',
+                            data: daily.map(d => d.count > 0 ? Math.round((d.wins / d.count) * 100) : 0),
+                            borderColor: 'rgba(91, 188, 255, 1)',
+                            backgroundColor: 'rgba(91, 188, 255, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `勝率: ${context.parsed.y}%`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    callback: (value) => `${value}%`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 3. 通貨ペア別成績
+            const byPair = {};
+            trades.forEach(trade => {
+                const pair = trade.pair || trade.symbol || trade.currencyPair || 'N/A';
+                if (!byPair[pair]) {
+                    byPair[pair] = { pnl: 0, count: 0, wins: 0 };
+                }
+                const pnl = Number(trade.pnl) || Number(trade.profit) || 0;
+                byPair[pair].pnl += pnl;
+                byPair[pair].count += 1;
+                if (pnl >= 0) byPair[pair].wins += 1;
+            });
+            
+            const pairKeys = Object.keys(byPair).sort((a, b) => byPair[b].pnl - byPair[a].pnl);
+            
+            const ctx3 = document.getElementById('chartByPair');
+            if (ctx3) {
+                chartInstances.byPair = new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                        labels: pairKeys,
+                        datasets: [
+                            {
+                                label: '合計損益 (円)',
+                                data: pairKeys.map(k => byPair[k].pnl),
+                                backgroundColor: 'rgba(155, 89, 182, 0.7)',
+                                borderColor: 'rgba(155, 89, 182, 1)',
+                                borderWidth: 1,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: '勝率 (%)',
+                                data: pairKeys.map(k => 
+                                    byPair[k].count > 0 ? Math.round((byPair[k].wins / byPair[k].count) * 100) : 0
+                                ),
+                                type: 'line',
+                                borderColor: 'rgba(241, 196, 15, 1)',
+                                backgroundColor: 'rgba(241, 196, 15, 0.1)',
+                                borderWidth: 2,
+                                yAxisID: 'y1',
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        if (context.datasetIndex === 0) {
+                                            return `損益: ¥${context.parsed.y.toLocaleString()}`;
+                                        } else {
+                                            return `勝率: ${context.parsed.y}%`;
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: (value) => `¥${value.toLocaleString()}`
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                min: 0,
+                                max: 100,
+                                grid: {
+                                    drawOnChartArea: false
+                                },
+                                ticks: {
+                                    callback: (value) => `${value}%`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // 4. 時間帯別勝率
+            const byHour = Array(24).fill(0).map(() => ({ count: 0, wins: 0 }));
+            trades.forEach(trade => {
+                const date = new Date(trade.date || trade.createdAt || new Date());
+                const hour = date.getHours();
+                const pnl = Number(trade.pnl) || Number(trade.profit) || 0;
+                byHour[hour].count += 1;
+                if (pnl >= 0) byHour[hour].wins += 1;
+            });
+            
+            const ctx4 = document.getElementById('chartByHour');
+            if (ctx4) {
+                chartInstances.byHour = new Chart(ctx4, {
+                    type: 'bar',
+                    data: {
+                        labels: Array.from({ length: 24 }, (_, i) => `${i}時`),
+                        datasets: [{
+                            label: '勝率 (%)',
+                            data: byHour.map(h => 
+                                h.count > 0 ? Math.round((h.wins / h.count) * 100) : 0
+                            ),
+                            backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `勝率: ${context.parsed.y}% (${byHour[context.dataIndex].count}回)`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    callback: (value) => `${value}%`
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        function updateSettingsDisplay() {
+            // プラン表示を更新
+            const planDisplay = document.getElementById('currentPlanDisplaySettings');
+            if (planDisplay) {
+                const plan = getUserPlan();
+                planDisplay.textContent = plan === 'pro' ? 'Pro版' : '無料版';
+            }
+            
+            // ウィンドウ設定を更新
+            const size = localStorage.getItem('windowSize') || 'half';
+            const position = localStorage.getItem('windowPosition') || 'right';
+            const autoResize = localStorage.getItem('autoResizeOriginal') === 'true';
+            
+            const sizeSelect = document.getElementById('windowSizePreferenceSettings');
+            const positionSelect = document.getElementById('windowPositionPreferenceSettings');
+            const autoResizeCheck = document.getElementById('autoResizeOriginalSettings');
+            const autoResizeBg = document.getElementById('autoResizeToggleBgSettings');
+            const autoResizeThumb = document.getElementById('autoResizeToggleThumbSettings');
+            
+            if (sizeSelect) sizeSelect.value = size;
+            if (positionSelect) positionSelect.value = position;
+            if (autoResizeCheck) autoResizeCheck.checked = autoResize;
+            if (autoResizeBg) autoResizeBg.style.background = autoResize ? '#10b981' : '#ef4444';
+            if (autoResizeThumb) autoResizeThumb.style.transform = autoResize ? 'translateX(16px)' : 'translateX(0)';
+            
+            // アンケート設定を更新
+            const surveyToggle = document.getElementById('surveyToggleSettings');
+            const surveyBg = document.getElementById('surveyToggleBgSettings');
+            const surveyThumb = document.getElementById('surveyToggleThumbSettings');
+            if (surveyToggle && surveyBg && surveyThumb) {
+                const disabled = localStorage.getItem('surveyDisabled') === '1';
+                surveyToggle.checked = !disabled;
+                surveyBg.style.background = disabled ? '#ef4444' : '#10b981';
+                surveyThumb.style.transform = disabled ? 'translateX(0)' : 'translateX(16px)';
+            }
+            
+            // 連続分析モードを更新
+            updateContinuousModeDisplay();
+        }
+
         // 初期ページ表示（LocalStorage版）
         window.onload = () => {
             initializeLocalApp();
-            showPage(currentPage);
             setupFormImageButtons();
             loadPendingFormImagesFromLocal();
+            
+            // 前回のタブを復元
+            const savedTab = localStorage.getItem('currentTab') || 'record';
+            switchTab(savedTab);
         };
 
         // ===== AI分析機能 =====
@@ -832,41 +2351,67 @@ ${csv}
         function getPreferredAI() {
             try { return localStorage.getItem('preferredAI') || null; } catch(_) { return null; }
         }
-        function resetPreferredAI() {
-            try { localStorage.removeItem('preferredAI'); } catch(_) {}
-            showCustomMessage('既定AIをリセットしました', 'success');
+        window.resetPreferredAI = function() {
+            const confirmed = confirm('既定AIの設定をリセットしますか？\n次回から選択画面が表示されます。');
+            if (confirmed) {
+                try {
+                    localStorage.removeItem('preferredAI');
+                    showCustomMessage('✅ 既定AI設定をリセットしました', 'success');
+                } catch(_) {
+                    showCustomMessage('❌ リセットに失敗しました', 'error');
+                }
+            }
         }
         function displayNameForAI(type) {
             const map = { chatgpt: 'ChatGPT', gemini: 'Gemini', claude: 'Claude' };
             return map[type] || type;
         }
 
-        // アクション付きトースト
+        // アクション付きトースト（改善版）
         function showActionToast(message, actionLabel, actionHandler, secondaryLabel, secondaryHandler) {
-            const box = document.getElementById('message-box');
-            box.className = 'p-3 rounded-lg text-center mt-4 mb-4 transition-all duration-300 text-green-700';
-            box.style.opacity = '1';
-            box.style.background = 'rgba(0, 0, 0, 0.5)';
-            box.style.border = '1px solid rgba(255, 255, 255, 0.08)';
-            box.innerHTML = '';
-            const span = document.createElement('span');
-            span.textContent = message + ' ';
-            box.appendChild(span);
+            // 既存のトーストを削除
+            const existing = document.querySelector('.action-toast');
+            if (existing) existing.remove();
+            
+            const position = getToastPosition();
+            const toast = document.createElement('div');
+            toast.className = `action-toast toast-${position}`;
+            toast.innerHTML = `<span class="toast-message">${message}</span>`;
+            
             if (actionLabel && actionHandler) {
                 const btn = document.createElement('button');
-                btn.className = 'underline text-blue-300 ml-2';
+                btn.className = 'toast-action';
                 btn.textContent = actionLabel;
-                btn.onclick = actionHandler;
-                box.appendChild(btn);
+                btn.onclick = () => {
+                    actionHandler();
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                };
+                toast.appendChild(btn);
             }
+            
             if (secondaryLabel && secondaryHandler) {
                 const btn2 = document.createElement('button');
-                btn2.className = 'underline text-blue-300 ml-3';
+                btn2.className = 'toast-action';
                 btn2.textContent = secondaryLabel;
-                btn2.onclick = secondaryHandler;
-                box.appendChild(btn2);
+                btn2.onclick = () => {
+                    secondaryHandler();
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                };
+                toast.appendChild(btn2);
             }
-            setTimeout(() => { box.style.opacity = '0'; }, 6000);
+            
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+            
+            // 5秒後に自動で消す
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
         }
 
         window.handleAiAnalyze = async function() {
@@ -878,6 +2423,7 @@ ${csv}
             const csv = convertTradesToCsv(trades);
             const prompt = buildAiPrompt(csv);
             lastGeneratedPrompt = prompt;
+            latestPromptText = prompt; // グローバルに保存
 
             const btn = document.getElementById('btn-ai-analyze');
             const originalHtml = btn ? btn.innerHTML : '';
@@ -937,17 +2483,39 @@ ${csv}
                 const completed = localStorage.getItem('ai_tutorial_completed') === '1';
                 const pref = getPreferredAI();
                 if (pref) {
-                    const name = displayNameForAI(pref);
-                    // 自動で既定AIを開く
-                    const urlMap = { chatgpt: 'https://chat.openai.com/', gemini: 'https://gemini.google.com/app', claude: 'https://claude.ai/new' };
-                    const url = urlMap[pref];
-                    let opened = null;
-                    if (url) opened = window.open(url, '_blank', 'noopener');
-                    if (!opened) {
-                        showActionToast(`前回のAI（${name}）を開けませんでした（ブロック）。`, '開く', () => window.open(url, '_blank', 'noopener'), '変更する', () => openAiSelectModal());
-                    } else {
-                        showActionToast(`前回のAI（${name}）を開きました。`, '変更する', () => openAiSelectModal());
-                    }
+                    const promptType = getLastPromptType();
+                    
+                    // 完了サマリートーストを表示
+                    showCompletionSummary({
+                        promptType: promptType,
+                        ai: pref,
+                        imageCount: 0,
+                        logsOk: true
+                    });
+                    
+                    // プログレス表示とタブを開く
+                    setTimeout(() => {
+                        showProgressToast('🚀 AIウィンドウを開いています...');
+                        
+                        setTimeout(() => {
+                            const opened = openAITab(pref);
+                            
+                            // ログにタブオープン情報を追加
+                            const logs = JSON.parse(localStorage.getItem('fx_logs') || '[]');
+                            if (logs.length > 0) {
+                                logs[logs.length - 1].actions.tabOpened = !!opened;
+                                logs[logs.length - 1].actions.ai = pref;
+                                localStorage.setItem('fx_logs', JSON.stringify(logs));
+                            }
+                            
+                            // アンケート表示判定（3秒後）
+                            setTimeout(() => {
+                                if (shouldShowSurvey()) {
+                                    showSurvey();
+                                }
+                            }, 3000);
+                        }, 500);
+                    }, 1500);
                 } else {
                     if (completed) {
                         showCustomMessage('✅ コピーしました。AIを選んで開き、Ctrl+V で貼り付けてください。', 'success');
@@ -955,14 +2523,14 @@ ${csv}
                     } else {
                         showAiTutorialPopup();
                     }
+                    
+                    // アンケート表示（3秒後）
+                    setTimeout(() => {
+                        if (shouldShowSurvey()) {
+                            showSurvey();
+                        }
+                    }, 3000);
                 }
-                
-                // アンケート表示（3秒後）
-                setTimeout(() => {
-                    if (shouldShowSurvey()) {
-                        showSurvey();
-                    }
-                }, 3000);
             }
         }
 
@@ -1006,6 +2574,36 @@ ${csv}
             renderPromptLibrary();
             // アンケートトグルの状態を更新
             updateSurveyToggle();
+            // プラン表示を更新
+            updatePlanDisplay();
+            // ウィンドウ設定を更新
+            updateWindowPreferencesDisplay();
+        }
+
+        function updatePlanDisplay() {
+            const planDisplay = document.getElementById('currentPlanDisplay');
+            if (planDisplay) {
+                const plan = getUserPlan();
+                planDisplay.textContent = plan === 'pro' ? 'Pro版' : '無料版';
+            }
+        }
+
+        function updateWindowPreferencesDisplay() {
+            const size = localStorage.getItem('windowSize') || 'half';
+            const position = localStorage.getItem('windowPosition') || 'right';
+            const autoResize = localStorage.getItem('autoResizeOriginal') === 'true';
+            
+            const sizeSelect = document.getElementById('windowSizePreference');
+            const positionSelect = document.getElementById('windowPositionPreference');
+            const autoResizeCheck = document.getElementById('autoResizeOriginal');
+            const autoResizeBg = document.getElementById('autoResizeToggleBg');
+            const autoResizeThumb = document.getElementById('autoResizeToggleThumb');
+            
+            if (sizeSelect) sizeSelect.value = size;
+            if (positionSelect) positionSelect.value = position;
+            if (autoResizeCheck) autoResizeCheck.checked = autoResize;
+            if (autoResizeBg) autoResizeBg.style.background = autoResize ? '#10b981' : '#ef4444';
+            if (autoResizeThumb) autoResizeThumb.style.transform = autoResize ? 'translateX(16px)' : 'translateX(0)';
         }
 
         function updateSurveyToggle() {
@@ -1056,29 +2654,53 @@ ${csv}
         }
 
         window.openAiUrl = function(type) {
-            const urlMap = {
-                chatgpt: 'https://chat.openai.com/',
-                gemini: 'https://gemini.google.com/app',
-                claude: 'https://claude.ai/new'
-            };
-            const url = urlMap[type];
-            if (url) {
-                setPreferredAI(type);
-                const win = window.open(url, '_blank', 'noopener');
+            // 既定AI設定を保存
+            setPreferredAI(type);
+            
+            // ログ記録
+            const promptType = getLastPromptType();
+            logEvent({
+                type: 'prompt_use',
+                promptType,
+                device: isMobile ? 'mobile' : 'desktop',
+                actions: { copied: true, ai: type }
+            });
+            
+            // 完了サマリートーストを表示
+            showCompletionSummary({
+                promptType: promptType,
+                ai: type,
+                imageCount: 0,
+                logsOk: true
+            });
+            
+            // プログレス表示とタブを開く
+            setTimeout(() => {
+                showProgressToast('🚀 AIウィンドウを開いています...');
                 
-                // ログ記録
-                const promptType = getLastPromptType();
-                logEvent({
-                    type: 'prompt_use',
-                    promptType,
-                    device: isMobile ? 'mobile' : 'desktop',
-                    actions: { copied: true, tabOpened: !!win, ai: type }
-                });
-                
-                if (!win) {
-                    showActionToast('ポップアップがブロックされました。', '開く', () => window.open(url, '_blank', 'noopener'));
-                }
-            }
+                setTimeout(() => {
+                    const win = openAITab(type);
+                    
+                    // ログにタブオープン情報を追加
+                    const logs = JSON.parse(localStorage.getItem('fx_logs') || '[]');
+                    if (logs.length > 0) {
+                        logs[logs.length - 1].actions.tabOpened = !!win;
+                        localStorage.setItem('fx_logs', JSON.stringify(logs));
+                    }
+                    
+                    if (win) {
+                        // モーダルを閉じる
+                        closeAiSelectModal();
+                        
+                        // アンケート表示判定（3秒後）
+                        setTimeout(() => {
+                            if (shouldShowSurvey()) {
+                                showSurvey();
+                            }
+                        }, 3000);
+                    }
+                }, 500);
+            }, 1500);
         }
 
         window.downloadPromptTxt = function() {
@@ -1694,7 +3316,29 @@ ${csv}
 
             <!-- メッセージボックス (Alert代替) --><div id="message-box" style="opacity:0;" class="p-3 rounded-lg text-center mt-4 transition-all duration-300"></div>
 
-            <!-- ページコンテンツエリア --><!-- 1. 資金管理：ロット計算ツール --><section id="money-management" class="hidden px-2 sm:px-0">
+            <!-- タブナビゲーション -->
+            <div class="app-tabs">
+                <button class="tab-btn active" onclick="switchTab('record')">
+                    <span class="tab-icon">📝</span>
+                    <span class="tab-label">記録</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('analytics')">
+                    <span class="tab-icon">📊</span>
+                    <span class="tab-label">分析</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('settings')">
+                    <span class="tab-icon">🔧</span>
+                    <span class="tab-label">設定</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('pro')">
+                    <span class="tab-icon">⭐</span>
+                    <span class="tab-label">Pro</span>
+                </button>
+            </div>
+
+            <!-- タブコンテンツ -->
+            <div class="tab-content active" id="tab-record">
+                <!-- 1. 資金管理：ロット計算ツール --><section id="money-management" class="px-2 sm:px-0">
                 <div class="mb-8 p-5 rounded-xl card">
                     <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">ロット計算ツール</h2>
                     <p class="text-sm text-gray-400 mb-4">許容リスクに基づき、適切なポジションサイズを計算します。</p>
@@ -1734,7 +3378,7 @@ ${csv}
                 </div>
             </section>
 
-            <!-- 2. トレード記録フォーム --><section id="trade-recording" class="hidden px-2 sm:px-0">
+            <!-- 2. トレード記録フォーム --><section id="trade-recording" class="px-2 sm:px-0">
                 <div class="p-5 rounded-xl card">
                     <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">新規トレード記録</h2>
                     <form id="tradeForm" onsubmit="event.preventDefault(); recordTrade();">
@@ -1814,7 +3458,7 @@ ${csv}
                 </div>
             </section>
 
-            <!-- 3. 履歴・分析セクション --><section id="history-analysis" class="hidden px-2 sm:px-0">
+            <!-- 3. 履歴・分析セクション --><section id="history-analysis" class="px-2 sm:px-0">
                 <!-- 統計サマリー --><div class="mb-6 summary-card grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div>
                         <p class="text-xs font-medium text-gray-400">合計トレード数</p>
@@ -1869,34 +3513,274 @@ ${csv}
                 </div>
             </section>
 
-            <!-- フッター --><footer class="text-center text-xs text-gray-500 py-4 mt-8">
+            <!-- フッター -->
+            <footer class="text-center text-xs text-gray-500 py-4 mt-8">
                 <p>Powered by LocalStorage | ユーザーIDは上部に表示</p>
             </footer>
+            
+            <!-- フッター広告バナー -->
+            <div id="footerAdBanner" class="ad-banner mt-4" style="display:none;">
+                <span class="ad-label">広告</span>
+                <div class="ad-content">
+                    <a href="#" onclick="logAdClick('footer-banner'); return true;">
+                        📖 <strong>無料PDF配布中</strong> - FXトレード完全ガイド
+                        <span class="ad-cta">今すぐ受け取る →</span>
+                    </a>
+                </div>
+            </div>
+            </div>
+
+            <!-- 分析タブ -->
+            <div class="tab-content" id="tab-analytics">
+                <div style="padding: 20px;">
+                    <h2 class="text-2xl font-bold mb-4">📊 データ分析</h2>
+                    
+                    <!-- パフォーマンスサマリー -->
+                    <div class="stats-cards grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="stat-card">
+                            <div class="stat-label">総トレード数</div>
+                            <div class="stat-value" id="analyticsTotalTrades">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">勝率</div>
+                            <div class="stat-value" id="analyticsWinRate">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">合計損益</div>
+                            <div class="stat-value" id="analyticsTotalPnl">¥0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">ルール遵守率</div>
+                            <div class="stat-value" id="analyticsRuleKeepRate">0%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 週次レポート -->
+                    <div class="p-5 rounded-xl card mb-6">
+                        <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">📝 週次レポート</div>
+                        <p class="text-sm text-gray-400 mb-4">指定期間のトレード記録を自動集計してレポートを作成</p>
+                        
+                        <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                            <select id="reportRangeAnalytics" class="input-style flex-1 text-sm">
+                                <option value="7d">直近7日間</option>
+                                <option value="14d">直近14日間</option>
+                                <option value="30d">直近30日間</option>
+                                <option value="thisWeek">今週（月〜日）</option>
+                                <option value="lastWeek">先週（月〜日）</option>
+                            </select>
+                            <button class="btn-primary text-sm px-4 py-2 whitespace-nowrap" onclick="generateWeeklyReportFromAnalytics()">
+                                📝 レポート生成
+                            </button>
+                        </div>
+                        
+                        <textarea 
+                            id="weeklyReportOutputAnalytics" 
+                            class="input-style w-full text-sm font-mono resize-y" 
+                            style="height: 300px;"
+                            placeholder="レポート生成ボタンをクリックすると、ここにMarkdown形式のレポートが表示されます"
+                            readonly
+                        ></textarea>
+                        
+                        <div class="flex gap-2 mt-3">
+                            <button class="btn-secondary text-sm px-4 py-2 flex-1" onclick="copyWeeklyReportFromAnalytics()">
+                                📋 コピー
+                            </button>
+                            <button class="btn-secondary text-sm px-4 py-2 flex-1" onclick="downloadWeeklyReportFromAnalytics()">
+                                💾 ダウンロード
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- パフォーマンスグラフ -->
+                    <div class="p-5 rounded-xl card mb-6">
+                        <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">📈 パフォーマンスグラフ</div>
+                        <p class="text-sm text-gray-400 mb-4">トレードデータを視覚化して傾向を把握できます</p>
+                        
+                        <div style="display: grid; gap: 24px; margin-top: 20px;">
+                            <!-- 日別損益 -->
+                            <div class="chart-container">
+                                <h4>日別損益</h4>
+                                <div style="position: relative; height: 200px;">
+                                    <canvas id="chartDailyPnl"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- 勝率推移 -->
+                            <div class="chart-container">
+                                <h4>勝率推移</h4>
+                                <div style="position: relative; height: 200px;">
+                                    <canvas id="chartWinRate"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- 通貨ペア別成績 -->
+                            <div class="chart-container">
+                                <h4>通貨ペア別成績</h4>
+                                <div style="position: relative; height: 240px;">
+                                    <canvas id="chartByPair"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- 時間帯別勝率 -->
+                            <div class="chart-container">
+                                <h4>時間帯別勝率</h4>
+                                <div style="position: relative; height: 240px;">
+                                    <canvas id="chartByHour"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 使用ログエクスポート -->
+                    <div class="p-5 rounded-xl card">
+                        <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">📤 使用ログ</div>
+                        <button class="btn-secondary px-4 py-2 text-sm" onclick="exportLogs()">
+                            📊 使用ログをエクスポート
+                        </button>
+                        <button class="text-xs text-gray-400 underline hover:text-white mt-3 block" onclick="clearLogs()">🗑️ 使用ログをクリア</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 設定タブ -->
+            <div class="tab-content" id="tab-settings">
+                <div style="padding: 20px;">
+                    <h2 class="text-2xl font-bold mb-4">🔧 設定</h2>
+                    
+                    <!-- プラン管理 -->
+                    <div class="p-5 rounded-xl card mb-6">
+                        <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">現在のプラン</div>
+                        <div class="mb-3 p-3 rounded-lg" style="background: rgba(255,255,255,0.03);">
+                            <div class="text-sm text-gray-300 mb-1">現在のプラン</div>
+                            <div class="flex items-center justify-between">
+                                <span id="currentPlanDisplaySettings" class="font-bold text-white">無料版</span>
+                            </div>
+                        </div>
+                        <button class="text-xs text-gray-500 underline hover:text-white mt-3 block" onclick="toggleDevPlan()">プラン切替（開発用）</button>
+                    </div>
+
+                    <!-- AIウィンドウ設定 -->
+                    <div class="p-5 rounded-xl card mb-6">
+                        <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">🪟 AIウィンドウの設定</div>
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <label class="text-sm text-gray-300">ウィンドウサイズ</label>
+                                <select id="windowSizePreferenceSettings" onchange="saveWindowPreferenceFromSettings()" class="input-style w-full mt-1">
+                                    <option value="half">画面の半分（推奨）</option>
+                                    <option value="two-thirds">画面の2/3</option>
+                                    <option value="full">全画面</option>
+                                    <option value="small">小ウィンドウ（800x600）</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-sm text-gray-300">配置</label>
+                                <select id="windowPositionPreferenceSettings" onchange="saveWindowPreferenceFromSettings()" class="input-style w-full mt-1">
+                                    <option value="right">右側に配置</option>
+                                    <option value="left">左側に配置</option>
+                                    <option value="center">中央に配置</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-sm text-gray-300">元のウィンドウも自動リサイズ</span>
+                                <label class="relative inline-block w-10 h-6 cursor-pointer">
+                                    <input type="checkbox" id="autoResizeOriginalSettings" class="sr-only" onchange="saveWindowPreferenceFromSettings()" />
+                                    <span id="autoResizeToggleBgSettings" class="absolute inset-0 bg-gray-600 rounded-full transition-colors"></span>
+                                    <span id="autoResizeToggleThumbSettings" class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 連続分析モード -->
+                    <div class="p-5 rounded-xl card mb-6">
+                        <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">🔁 連続分析モード</div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-300">連続分析モードを有効にする</span>
+                            <label class="relative inline-block w-10 h-6 cursor-pointer">
+                                <input type="checkbox" id="continuousMode" class="sr-only" onchange="saveContinuousMode()" />
+                                <span id="continuousModeToggleBg" class="absolute inset-0 bg-gray-600 rounded-full transition-colors"></span>
+                                <span id="continuousModeToggleThumb" class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform"></span>
+                            </label>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-3">ONにすると、記録タブでトレードカードをクリックするたびに、そのトレードのAI分析が自動で実行されます。複数のトレードを連続で分析したい場合に便利です。</p>
+                        <div style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; font-size: 12px;">
+                            <strong style="color: #ffffff;">💡 使い方:</strong>
+                            <ol style="margin: 8px 0 0 20px; padding: 0; color: rgba(255,255,255,0.7);">
+                                <li>このモードをONにする</li>
+                                <li>記録タブでトレードをクリック</li>
+                                <li>自動でプロンプトがコピーされ、AIウィンドウが開く</li>
+                                <li>次のトレードをクリックすると、同じウィンドウで開く</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- アンケート設定 -->
+                    <div class="p-5 rounded-xl card mb-6">
+                        <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">アンケート設定</div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-300">アンケートを無効化</span>
+                            <label class="relative inline-block w-10 h-6 cursor-pointer">
+                                <input type="checkbox" id="surveyToggleSettings" class="sr-only" onchange="toggleSurveyFromSettings()" />
+                                <span id="surveyToggleBgSettings" class="absolute inset-0 bg-gray-600 rounded-full transition-colors"></span>
+                                <span id="surveyToggleThumbSettings" class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- データ管理 -->
+                    <div class="p-5 rounded-xl card">
+                        <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">データ管理</div>
+                        <button class="text-xs text-gray-400 underline hover:text-white block mb-2" onclick="resetPreferredAI()">🔄 既定AI設定をリセット</button>
+                        <button class="btn-secondary px-4 py-2 text-sm w-full" onclick="exportToCSV()">
+                            <svg class="inline-block w-4 h-4 mr-2 -mt-0.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            CSVエクスポート
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proタブ -->
+            <div class="tab-content" id="tab-pro">
+                <div style="padding: 20px;">
+                    <div class="text-center p-10 mb-6" style="background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(147,51,234,0.2)); border-radius: 16px;">
+                        <h1 class="text-4xl font-bold mb-4">FXトレード記録 Pro</h1>
+                        <p class="text-xl text-gray-300 mb-6">本格的なトレーダーのための<br>プレミアムプラン</p>
+                        <div class="text-4xl font-bold mb-6">
+                            月額 <span style="color: #3b82f6;">¥2,980</span>
+                        </div>
+                        <button class="btn-primary px-8 py-3 text-lg" onclick="alert('近日公開予定')">
+                            今すぐ始める
+                        </button>
+                    </div>
+                    
+                    <!-- 特典一覧 -->
+                    <div class="pro-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">🚫</span>
+                            <h3 class="text-white font-bold">広告なし</h3>
+                            <p class="text-gray-300 text-sm">快適な環境で集中できます</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📊</span>
+                            <h3 class="text-white font-bold">週次レポート自動生成</h3>
+                            <p class="text-gray-300 text-sm">改善点が一目瞭然</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📈</span>
+                            <h3 class="text-white font-bold">高度なグラフ表示</h3>
+                            <p class="text-gray-300 text-sm">勝率・損益の推移を可視化</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🎯</span>
+                            <h3 class="text-white font-bold">全プロンプトライブラリ</h3>
+                            <p class="text-gray-300 text-sm">戦略別の高度な分析</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
-    <!-- 固定された下部ナビゲーションバー --><div class="fixed bottom-0 left-0 right-0 border-t border-gray-800 shadow-2xl z-50 bottom-nav">
-        <nav class="flex justify-around max-w-xl mx-auto">
-            <!-- 資金管理タブ (ウォレット/シンプル) --><button id="nav-money-management" onclick="showPage('money-management')" class="flex-1 flex flex-col items-center p-2 text-xs font-semibold rounded-xl transition-colors text-gray-400">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V9m0 4v1m-4 5h8a2 2 0 002-2V6a2 2 0 00-2-2H8a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                資金管理
-            </button>
-            <!-- トレード記録タブ (ペン/シンプル) --><button id="nav-trade-recording" onclick="showPage('trade-recording')" class="flex-1 flex flex-col items-center p-2 text-xs font-semibold rounded-xl transition-colors text-gray-400">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-                トレード記録
-            </button>
-            <!-- 履歴・分析タブ (上昇トレンド/シンプル) --><button id="nav-history-analysis" onclick="showPage('history-analysis')" class="flex-1 flex flex-col items-center p-2 text-xs font-semibold rounded-xl transition-colors text-gray-400">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-                履歴・分析
-            </button>
-        </nav>
-    </div>
     <!-- AI分析モーダル -->
     <div id="ai-modal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/60"></div>
@@ -1937,46 +3821,69 @@ ${csv}
 
                 <div class="mt-3 text-sm text-gray-300 font-medium">どのAIで分析しますか？</div>
 
-                <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
-                    <button class="btn-primary w-full" onclick="openAiUrl('chatgpt')"><span class="mr-1">🤖</span> ChatGPTで開く</button>
-                    <button class="btn-primary w-full" onclick="openAiUrl('gemini')"><span class="mr-1">✨</span> Geminiで開く</button>
-                    <button class="btn-primary w-full" onclick="openAiUrl('claude')"><span class="mr-1">🧠</span> Claudeで開く</button>
-                </div>
+            <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+                <button class="btn-primary w-full" onclick="openAiUrl('chatgpt')"><span class="mr-1">🤖</span> ChatGPTで開く</button>
+                <button class="btn-primary w-full" onclick="openAiUrl('gemini')"><span class="mr-1">✨</span> Geminiで開く</button>
+                <button class="btn-primary w-full" onclick="openAiUrl('claude')"><span class="mr-1">🧠</span> Claudeで開く</button>
+            </div>
 
                 <div id="ai-paste-hint" class="mt-3 rounded-lg text-gray-900 font-semibold" style="background:#fde68a; padding:12px; font-size:16px;">
                     <span class="mr-1">⚡</span> 開いたら <span class="font-bold">Ctrl+V</span>（Macは <span class="font-bold">⌘+V</span>）で貼り付けてください
                 </div>
 
-                <div class="my-4 flex items-center text-gray-500 text-xs">
-                    <div class="flex-1 h-px bg-gray-700"></div>
-                    <span class="px-3">━━━━━ または ━━━━━</span>
-                    <div class="flex-1 h-px bg-gray-700"></div>
-                </div>
+            <div class="my-4 flex items-center text-gray-500 text-xs">
+                <div class="flex-1 h-px bg-gray-700"></div>
+                <span class="px-3">━━━━━ または ━━━━━</span>
+                <div class="flex-1 h-px bg-gray-700"></div>
+            </div>
 
-                <div class="text-sm text-gray-300 font-medium">【方法2: ファイルをダウンロード】</div>
-                <button id="btn-download-prompt" class="btn-secondary mt-2 w-full md:w-auto" onclick="downloadPromptTxt()"><span class="mr-1">📄</span> プロンプトファイルをダウンロード</button>
-                <p class="mt-2 text-xs text-gray-400">※ダウンロードしたファイルをAIにアップロードしてください</p>
-                
-                <div class="my-3 flex items-center text-gray-500 text-xs">
-                    <div class="flex-1 h-px bg-gray-700"></div>
-                    <span class="px-3">━━━━━ 設定 ━━━━━</span>
-                    <div class="flex-1 h-px bg-gray-700"></div>
-                </div>
-                
-                <div class="mt-2 flex flex-col gap-2">
-                    <button class="btn-secondary text-xs py-2 px-3 w-full" onclick="exportLogs()">📊 使用ログをエクスポート</button>
-                    <button class="text-xs text-gray-400 underline hover:text-white" onclick="clearLogs()">🗑️ 使用ログをクリア</button>
-                    <div class="flex items-center justify-between mt-2">
-                        <span class="text-xs text-gray-300">アンケートを無効化</span>
-                        <label class="relative inline-block w-10 h-6 cursor-pointer">
-                            <input type="checkbox" id="surveyToggle" class="sr-only" onchange="toggleSurvey()" />
-                            <span id="surveyToggleBg" class="absolute inset-0 bg-gray-600 rounded-full transition-colors"></span>
-                            <span id="surveyToggleThumb" class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform"></span>
-                        </label>
-                    </div>
-                    <button class="text-xs text-gray-400 underline hover:text-white text-right" onclick="resetPreferredAI()">🔄 既定AI設定をリセット</button>
+            <div class="text-sm text-gray-300 font-medium">【方法2: ファイルをダウンロード】</div>
+            <button id="btn-download-prompt" class="btn-secondary mt-2 w-full md:w-auto" onclick="downloadPromptTxt()"><span class="mr-1">📄</span> プロンプトファイルをダウンロード</button>
+            <p class="mt-2 text-xs text-gray-400">※ダウンロードしたファイルをAIにアップロードしてください</p>
+            
+            <!-- AI分析モーダル内広告 -->
+            <div id="modalAd" class="ad-inline mt-4" style="display:none;">
+                <span class="ad-label">広告</span>
+                <div class="ad-content">
+                    <p class="text-white mb-2">🎯 <strong>Pro版</strong>なら広告なし＋週次レポート自動生成</p>
+                    <button class="btn-primary text-xs px-3 py-2" onclick="showProInfo()">詳しく見る</button>
                 </div>
             </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pro版情報モーダル -->
+    <div id="proInfoModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60" onclick="closeProInfo()"></div>
+        <div class="relative mx-auto mt-10 w-[92%] max-w-2xl rounded-2xl border border-white/10 bg-gray-900/95 p-5 shadow-2xl">
+            <button class="absolute right-3 top-3 text-gray-400 hover:text-white" onclick="closeProInfo()">×</button>
+            <h2 class="text-2xl font-bold text-white mb-4">⭐ Pro版の特典</h2>
+            <div class="pro-features">
+                <div class="feature-item">
+                    <span class="feature-icon">🚫</span>
+                    <h3 class="text-white font-bold">広告なし</h3>
+                    <p class="text-gray-300 text-sm">快適な環境で集中できます</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="text-white font-bold">週次レポート自動生成</h3>
+                    <p class="text-gray-300 text-sm">改善点が一目瞭然</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📈</span>
+                    <h3 class="text-white font-bold">高度なグラフ表示</h3>
+                    <p class="text-gray-300 text-sm">勝率・損益の推移を可視化</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🎯</span>
+                    <h3 class="text-white font-bold">全プロンプトライブラリ</h3>
+                    <p class="text-gray-300 text-sm">戦略別の高度な分析</p>
+                </div>
+            </div>
+            <p class="pro-price text-white">月額 <strong class="text-3xl">¥2,980</strong>〜</p>
+            <button class="btn-primary w-full mt-4" onclick="alert('近日公開予定')">今すぐ始める</button>
+            <button class="btn-secondary w-full mt-2" onclick="closeProInfo()">後で検討する</button>
         </div>
     </div>
 
@@ -2111,5 +4018,43 @@ ${csv}
         }
     }
     </script>
+
+    <script>
+        // キーボードショートカット
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Shift + A でAI分析を開く
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'a') {
+                e.preventDefault();
+                const btn = document.getElementById('btn-ai-analyze');
+                if (btn && !btn.closest('.hidden')) {
+                    handleAiAnalyze();
+                }
+            }
+            
+            // Escでモーダルを閉じる
+            if (e.key === 'Escape') {
+                closeAiSelectModal();
+                const proModal = document.getElementById('proInfoModal');
+                if (proModal) proModal.classList.add('hidden');
+                closeSurvey();
+            }
+            
+            // 数字キー1-3でAIを選択（モーダルが開いている時）
+            const aiModal = document.getElementById('ai-select-modal');
+            if (aiModal && !aiModal.classList.contains('hidden')) {
+                if (e.key === '1') {
+                    e.preventDefault();
+                    openAiUrl('chatgpt');
+                } else if (e.key === '2') {
+                    e.preventDefault();
+                    openAiUrl('gemini');
+                } else if (e.key === '3') {
+                    e.preventDefault();
+                    openAiUrl('claude');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
+
