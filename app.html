@@ -183,6 +183,117 @@
             margin: 0 0.15rem;
             font-weight: 700;
         }
+        
+        /* プロンプトライブラリボタン */
+        .prompt-type {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .prompt-type:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(59,130,246,0.4);
+            transform: translateY(-2px);
+        }
+        .prompt-type.active {
+            background: rgba(59,130,246,0.15);
+            border-color: #3b82f6;
+            box-shadow: 0 0 12px rgba(59,130,246,0.2);
+        }
+        .prompt-type .icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .prompt-type .desc {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 0.25rem;
+        }
+        
+        /* アンケートスナックバー */
+        .snackbar {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            max-width: 90%;
+            width: auto;
+            min-width: 300px;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        .snackbar-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .snackbar-content p {
+            margin: 0 0 12px 0;
+            color: #ffffff;
+            font-size: 14px;
+            text-align: center;
+        }
+        .rating-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .rating-buttons button {
+            font-size: 24px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .rating-buttons button:hover {
+            transform: scale(1.2);
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+        .snackbar .close-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .snackbar .close-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
     </style>
 
     <!-- アプリスクリプト（LocalStorage版） --><script>
@@ -591,24 +702,85 @@
         }
 
         function buildAiPrompt(csv) {
-            const template = `あなたはFXトレードのプロアナリストです。
-以下のCSVデータは私の今週のトレード記録です。
+            const type = getLastPromptType();
+            return generatePromptByType(type, csv);
+        }
 
-【分析項目】
-1. 勝ちパターンと負けパターンの特徴
-2. 時間帯・通貨ペア別の傾向
-3. ルール遵守率と勝率の相関
-4. メンタル面の課題（連敗時の行動パターンなど）
-5. 次週改善すべき具体的行動3つ
+        function generatePromptByType(type, csv) {
+            const prompts = {
+                basic: `あなたはFX戦略アナリストです。以下のトレード記録を分析してください。
 
-━━━━━━━━━━━━━━━━━━━━
-[トレードデータ]
+【データ】
 ${csv}
-━━━━━━━━━━━━━━━━━━━━
 
-初心者にも分かりやすく、箇条書きで分析してください。
-特に改善点は具体的な数値目標付きでお願いします。`;
-            return template;
+【出力形式】
+1. 勝ちパターン（時間帯/通貨ペア/エントリー理由別）
+2. 負けパターン（ルール逸脱/感情トレード）
+3. 改善すべきアクション3つ
+4. 注意すべき傾向
+
+前置き不要。箇条書きで明確に。`,
+
+                trend: `あなたはトレンド分析専門家です。以下のトレンドフォロー戦略を分析してください。
+
+【データ】
+${csv}
+
+【出力形式】
+1. トレンド判定の精度（正しく認識できているか）
+2. エントリータイミング分析（遅延/早すぎの傾向）
+3. 利確・損切りの最適化提案
+4. 次回のトレンド判断チェックリスト
+
+数値と具体例を交えて。`,
+
+                range: `あなたはレンジ取引専門家です。以下のレンジ逆張り戦略を分析してください。
+
+【データ】
+${csv}
+
+【出力形式】
+1. レンジ認識の精度
+2. 反発/ブレイク判断の検証
+3. ダマシ回避のポイント
+4. レンジ幅の適切性
+
+具体的な改善策を含めて。`,
+
+                breakout: `あなたはブレイクアウト分析専門家です。以下のブレイクアウト戦略を分析してください。
+
+【データ】
+${csv}
+
+【出力形式】
+1. ブレイク前の圧縮パターン分析
+2. 失敗ブレイク（ダマシ）の特徴
+3. 出来高/ボラティリティとの相関
+4. 再エントリー条件の提案
+
+データに基づいた具体的な指摘を。`,
+
+                mental: `あなたは行動ファイナンス専門家です。以下のトレード記録からメンタル面を分析してください。
+
+【データ】
+${csv}
+
+【出力形式】
+1. 連敗後の行動パターン検出
+2. ポジポジ病/リベンジトレード兆候
+3. 感情トリガーの特定
+4. メンタル改善チェックリスト
+
+行動変容につながる具体的アドバイスを。`
+            };
+            return prompts[type] || prompts.basic;
+        }
+
+        function getLastPromptType() {
+            try { return localStorage.getItem('lastPromptType') || 'basic'; } catch(_) { return 'basic'; }
+        }
+        function setLastPromptType(type) {
+            try { localStorage.setItem('lastPromptType', type); } catch(_) {}
         }
 
         async function copyToClipboardWithFallback(text) {
@@ -712,6 +884,15 @@ ${csv}
 
             const copied = await copyToClipboardWithFallback(prompt);
             if (copied) {
+                // ログ記録
+                const promptType = getLastPromptType();
+                logEvent({
+                    type: 'prompt_use',
+                    promptType,
+                    device: isMobile ? 'mobile' : 'desktop',
+                    actions: { copied: true }
+                });
+                
                 // タップ/クリックの強化フィードバック
                 if (navigator.vibrate) try { navigator.vibrate(200); } catch (_) {}
                 playFeedbackBeep();
@@ -749,6 +930,9 @@ ${csv}
                     }, 1000);
                 }
 
+                // 利用回数をカウント
+                incrementUseCount();
+                
                 // 初回は巨大チュートリアル、2回目以降はトーストのみ
                 const completed = localStorage.getItem('ai_tutorial_completed') === '1';
                 const pref = getPreferredAI();
@@ -772,6 +956,13 @@ ${csv}
                         showAiTutorialPopup();
                     }
                 }
+                
+                // アンケート表示（3秒後）
+                setTimeout(() => {
+                    if (shouldShowSurvey()) {
+                        showSurvey();
+                    }
+                }, 3000);
             }
         }
 
@@ -812,6 +1003,46 @@ ${csv}
                 card.classList.remove('opacity-0','scale-95');
                 card.classList.add('opacity-100','scale-100');
             });
+            renderPromptLibrary();
+            // アンケートトグルの状態を更新
+            updateSurveyToggle();
+        }
+
+        function updateSurveyToggle() {
+            const toggle = document.getElementById('surveyToggle');
+            const bg = document.getElementById('surveyToggleBg');
+            const thumb = document.getElementById('surveyToggleThumb');
+            if (!toggle || !bg || !thumb) return;
+            const disabled = localStorage.getItem('surveyDisabled') === '1';
+            toggle.checked = !disabled;
+            bg.style.background = disabled ? '#ef4444' : '#10b981';
+            thumb.style.transform = disabled ? 'translateX(0)' : 'translateX(16px)';
+        }
+
+        function renderPromptLibrary() {
+            const box = document.getElementById('prompt-library');
+            if (!box) return;
+            const current = getLastPromptType();
+            const types = [
+                { key: 'basic', icon: '📊', name: '基本分析', desc: 'バランス型・初心者推奨' },
+                { key: 'trend', icon: '📈', name: 'トレンドフォロー型', desc: '順張り戦略' },
+                { key: 'range', icon: '🔄', name: 'レンジ逆張り型', desc: 'レンジ戦略' },
+                { key: 'breakout', icon: '💥', name: 'ブレイクアウト型', desc: 'ブレイク戦略' },
+                { key: 'mental', icon: '🧘', name: 'メンタル分析', desc: '感情・行動改善' }
+            ];
+            box.innerHTML = '';
+            types.forEach(t => {
+                const btn = document.createElement('button');
+                btn.className = 'prompt-type' + (t.key === current ? ' active' : '');
+                btn.innerHTML = `<span class="icon">${t.icon}</span><span class="font-bold">${t.name}</span><span class="desc">${t.desc}</span>`;
+                btn.onclick = () => {
+                    setLastPromptType(t.key);
+                    renderPromptLibrary();
+                    // 新しい選択タイプで再生成・コピー
+                    handleAiAnalyze();
+                };
+                box.appendChild(btn);
+            });
         }
 
         window.closeAiSelectModal = function() {
@@ -834,6 +1065,16 @@ ${csv}
             if (url) {
                 setPreferredAI(type);
                 const win = window.open(url, '_blank', 'noopener');
+                
+                // ログ記録
+                const promptType = getLastPromptType();
+                logEvent({
+                    type: 'prompt_use',
+                    promptType,
+                    device: isMobile ? 'mobile' : 'desktop',
+                    actions: { copied: true, tabOpened: !!win, ai: type }
+                });
+                
                 if (!win) {
                     showActionToast('ポップアップがブロックされました。', '開く', () => window.open(url, '_blank', 'noopener'));
                 }
@@ -1061,6 +1302,118 @@ ${csv}
         let pendingFormImages = [];
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         const TEN_MB = 10 * 1024 * 1024;
+
+        // ===== 使用ログ機能 =====
+        function logEvent(eventData) {
+            try {
+                const logs = JSON.parse(localStorage.getItem('fx_logs') || '[]');
+                logs.push({ ...eventData, id: Date.now(), timestamp: new Date().toISOString() });
+                if (logs.length > 100) logs.splice(0, logs.length - 100);
+                localStorage.setItem('fx_logs', JSON.stringify(logs));
+            } catch (err) {
+                console.error('ログ記録エラー:', err);
+            }
+        }
+        window.exportLogs = function() {
+            try {
+                const logs = JSON.parse(localStorage.getItem('fx_logs') || '[]');
+                const csv = [
+                    ['日時', 'プロンプトタイプ', 'デバイス', 'AI', '満足度'].join(','),
+                    ...logs.map(log => [
+                        log.timestamp,
+                        log.promptType || '',
+                        log.device || '',
+                        log.actions?.ai || '',
+                        log.rating || ''
+                    ].join(','))
+                ].join('\n');
+                const blob = new Blob(['\ufeff', csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url; link.download = `fx_logs_${Date.now()}.csv`;
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                showCustomMessage('使用ログをエクスポートしました', 'success');
+            } catch (err) {
+                console.error('ログエクスポートエラー:', err);
+                showCustomMessage('エクスポートに失敗しました', 'error');
+            }
+        }
+        window.clearLogs = function() {
+            if (confirm('使用ログをクリアしますか？（この操作は取り消せません）')) {
+                try {
+                    localStorage.removeItem('fx_logs');
+                    showCustomMessage('ログをクリアしました', 'success');
+                } catch (err) {
+                    console.error('ログクリアエラー:', err);
+                    showCustomMessage('クリアに失敗しました', 'error');
+                }
+            }
+        }
+
+        // ===== ランダムアンケート機能 =====
+        function shouldShowSurvey() {
+            const disabled = localStorage.getItem('surveyDisabled') === '1';
+            if (disabled) return false;
+            
+            const today = new Date().toDateString();
+            const lastShown = localStorage.getItem('lastSurveyDate');
+            const useCount = parseInt(localStorage.getItem('useCount') || '0');
+            
+            // 今日すでに表示済み
+            if (lastShown === today) return false;
+            
+            // 7回利用ごと、または20%の確率
+            if (useCount % 7 === 0 || Math.random() < 0.2) {
+                localStorage.setItem('lastSurveyDate', today);
+                return true;
+            }
+            
+            return false;
+        }
+        
+        function incrementUseCount() {
+            try {
+                const count = parseInt(localStorage.getItem('useCount') || '0');
+                localStorage.setItem('useCount', String(count + 1));
+            } catch(_) {}
+        }
+        
+        function showSurvey() {
+            const snackbar = document.getElementById('surveySnackbar');
+            if (!snackbar) return;
+            snackbar.style.display = 'block';
+            // 5秒で自動消去
+            setTimeout(() => {
+                closeSurvey();
+            }, 5000);
+        }
+        
+        window.closeSurvey = function() {
+            const snackbar = document.getElementById('surveySnackbar');
+            if (snackbar) snackbar.style.display = 'none';
+        }
+        
+        window.submitRating = function(rating) {
+            try {
+                const logs = JSON.parse(localStorage.getItem('fx_logs') || '[]');
+                if (logs.length > 0) {
+                    logs[logs.length - 1].rating = rating;
+                    localStorage.setItem('fx_logs', JSON.stringify(logs));
+                }
+                showCustomMessage('フィードバックありがとうございます！🙏', 'success');
+            } catch (err) {
+                console.error('評価保存エラー:', err);
+            }
+            closeSurvey();
+        }
+        
+        window.toggleSurvey = function() {
+            const disabled = localStorage.getItem('surveyDisabled') === '1';
+            localStorage.setItem('surveyDisabled', disabled ? '0' : '1');
+            updateSurveyToggle();
+            showCustomMessage(disabled ? 'アンケートを有効化しました' : 'アンケートを無効化しました', 'success');
+        }
 
         function renderFormPreviews() {
             const previews = document.getElementById('imagePreviewContainer');
@@ -1560,37 +1913,85 @@ ${csv}
     <!-- AI選択モーダル（コピー成功時のガイド） -->
     <div id="ai-select-modal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/60" onclick="closeAiSelectModal()"></div>
-        <div id="ai-select-card" class="relative mx-auto mt-16 w-[92%] max-w-2xl rounded-2xl border border-white/10 bg-gray-900/90 p-5 shadow-2xl transition-all duration-150 ease-out opacity-0 scale-95">
-            <button class="absolute right-3 top-3 text-gray-400 hover:text-white" aria-label="閉じる" onclick="closeAiSelectModal()">×</button>
-            <div id="ai-copied-title" class="font-bold rounded-lg text-white animate-pulse" style="background:#065f46; padding:16px; font-size:24px;">
-                ✅ データをコピーしました
+        <div id="ai-select-card" class="relative mx-auto mt-8 mb-8 w-[92%] max-w-2xl rounded-2xl border border-white/10 bg-gray-900/90 shadow-2xl transition-all duration-150 ease-out opacity-0 scale-95" style="max-height: 90vh; display: flex; flex-direction: column;">
+            <button class="absolute right-3 top-3 z-10 text-gray-400 hover:text-white" aria-label="閉じる" onclick="closeAiSelectModal()">×</button>
+            
+            <div style="flex-shrink: 0; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div id="ai-copied-title" class="font-bold rounded-lg text-white animate-pulse" style="background:#065f46; padding:16px; font-size:24px;">
+                    ✅ データをコピーしました
+                </div>
             </div>
 
-            <div class="mt-3 text-sm text-gray-300 font-medium">【方法1: クリップボードから貼り付け（推奨）】</div>
-            <p class="mt-1 text-sm text-gray-300">どのAIで分析しますか？</p>
+            <div style="flex: 1; overflow-y: auto; padding: 20px;">
+                <!-- プロンプトライブラリ -->
+                <div class="mt-3">
+                    <div class="text-sm text-gray-300 font-bold mb-2">📚 分析タイプを選択</div>
+                    <div id="prompt-library" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2"></div>
+                </div>
 
-            <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
-                <button class="btn-primary w-full" onclick="openAiUrl('chatgpt')"><span class="mr-1">🤖</span> ChatGPTで開く</button>
-                <button class="btn-primary w-full" onclick="openAiUrl('gemini')"><span class="mr-1">✨</span> Geminiで開く</button>
-                <button class="btn-primary w-full" onclick="openAiUrl('claude')"><span class="mr-1">🧠</span> Claudeで開く</button>
-            </div>
+                <div class="my-3 flex items-center text-gray-500 text-xs">
+                    <div class="flex-1 h-px bg-gray-700"></div>
+                    <span class="px-3">━━━━━</span>
+                    <div class="flex-1 h-px bg-gray-700"></div>
+                </div>
 
-            <div id="ai-paste-hint" class="mt-3 rounded-lg text-gray-900 font-semibold" style="background:#fde68a; padding:12px; font-size:16px;">
-                <span class="mr-1">⚡</span> 開いたら <span class="font-bold">Ctrl+V</span>（Macは <span class="font-bold">⌘+V</span>）で貼り付けてください
-            </div>
+                <div class="mt-3 text-sm text-gray-300 font-medium">どのAIで分析しますか？</div>
 
-            <div class="my-4 flex items-center text-gray-500 text-xs">
-                <div class="flex-1 h-px bg-gray-700"></div>
-                <span class="px-3">━━━━━ または ━━━━━</span>
-                <div class="flex-1 h-px bg-gray-700"></div>
-            </div>
+                <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <button class="btn-primary w-full" onclick="openAiUrl('chatgpt')"><span class="mr-1">🤖</span> ChatGPTで開く</button>
+                    <button class="btn-primary w-full" onclick="openAiUrl('gemini')"><span class="mr-1">✨</span> Geminiで開く</button>
+                    <button class="btn-primary w-full" onclick="openAiUrl('claude')"><span class="mr-1">🧠</span> Claudeで開く</button>
+                </div>
 
-            <div class="text-sm text-gray-300 font-medium">【方法2: ファイルをダウンロード】</div>
-            <button id="btn-download-prompt" class="btn-secondary mt-2 w-full md:w-auto" onclick="downloadPromptTxt()"><span class="mr-1">📄</span> プロンプトファイルをダウンロード</button>
-            <p class="mt-2 text-xs text-gray-400">※ダウンロードしたファイルをAIにアップロードしてください</p>
-            <div class="mt-3 text-xs text-gray-400 text-right">
-                <button class="underline hover:text-white" onclick="resetPreferredAI()">既定AI設定をリセット</button>
+                <div id="ai-paste-hint" class="mt-3 rounded-lg text-gray-900 font-semibold" style="background:#fde68a; padding:12px; font-size:16px;">
+                    <span class="mr-1">⚡</span> 開いたら <span class="font-bold">Ctrl+V</span>（Macは <span class="font-bold">⌘+V</span>）で貼り付けてください
+                </div>
+
+                <div class="my-4 flex items-center text-gray-500 text-xs">
+                    <div class="flex-1 h-px bg-gray-700"></div>
+                    <span class="px-3">━━━━━ または ━━━━━</span>
+                    <div class="flex-1 h-px bg-gray-700"></div>
+                </div>
+
+                <div class="text-sm text-gray-300 font-medium">【方法2: ファイルをダウンロード】</div>
+                <button id="btn-download-prompt" class="btn-secondary mt-2 w-full md:w-auto" onclick="downloadPromptTxt()"><span class="mr-1">📄</span> プロンプトファイルをダウンロード</button>
+                <p class="mt-2 text-xs text-gray-400">※ダウンロードしたファイルをAIにアップロードしてください</p>
+                
+                <div class="my-3 flex items-center text-gray-500 text-xs">
+                    <div class="flex-1 h-px bg-gray-700"></div>
+                    <span class="px-3">━━━━━ 設定 ━━━━━</span>
+                    <div class="flex-1 h-px bg-gray-700"></div>
+                </div>
+                
+                <div class="mt-2 flex flex-col gap-2">
+                    <button class="btn-secondary text-xs py-2 px-3 w-full" onclick="exportLogs()">📊 使用ログをエクスポート</button>
+                    <button class="text-xs text-gray-400 underline hover:text-white" onclick="clearLogs()">🗑️ 使用ログをクリア</button>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-xs text-gray-300">アンケートを無効化</span>
+                        <label class="relative inline-block w-10 h-6 cursor-pointer">
+                            <input type="checkbox" id="surveyToggle" class="sr-only" onchange="toggleSurvey()" />
+                            <span id="surveyToggleBg" class="absolute inset-0 bg-gray-600 rounded-full transition-colors"></span>
+                            <span id="surveyToggleThumb" class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform"></span>
+                        </label>
+                    </div>
+                    <button class="text-xs text-gray-400 underline hover:text-white text-right" onclick="resetPreferredAI()">🔄 既定AI設定をリセット</button>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- アンケートスナックバー -->
+    <div id="surveySnackbar" class="snackbar" style="display:none;">
+        <div class="snackbar-content">
+            <p>今回のAI分析は役立ちましたか？（2タップで完了）</p>
+            <div class="rating-buttons">
+                <button onclick="submitRating(1)">😞</button>
+                <button onclick="submitRating(2)">😐</button>
+                <button onclick="submitRating(3)">🙂</button>
+                <button onclick="submitRating(4)">😊</button>
+                <button onclick="submitRating(5)">🤩</button>
+            </div>
+            <button class="close-btn" onclick="closeSurvey()">×</button>
         </div>
     </div>
 
