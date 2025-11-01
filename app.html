@@ -9,12 +9,107 @@
     <!-- Interフォントを使用 --><style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
+        :root {
+            /* ダークテーマ配色（Tailwind準拠） */
+            --color-background: #020617;        /* slate-950 */
+            --color-surface: rgba(15, 23, 42, 0.5);  /* slate-900/50 */
+            --color-surface-solid: #0f172a;     /* slate-900 */
+            --color-text: #f1f5f9;              /* slate-100 */
+            --color-text-secondary: #cbd5e1;    /* slate-300 */
+            --color-text-tertiary: #94a3b8;     /* slate-400 */
+            
+            /* ティールブルー（プライマリーカラー） */
+            --color-primary: #00A9A5;
+            --color-primary-hover: #008c89;
+            --color-primary-active: #007370;
+            --color-primary-rgb: 0, 169, 165;
+            
+            /* ステータスカラー */
+            --color-success: #10b981;
+            --color-error: #f87171;           /* red-400 */
+            --color-warning: #fb923c;
+            --color-info: #00A9A5;
+            
+            /* ボーダーとシャドウ */
+            --color-border: rgba(30, 41, 59, 0.6);  /* slate-800/60 */
+            --color-border-solid: #1e293b;          /* slate-800 */
+            
+            /* タイポグラフィ */
+            --font-family-base: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            
+            --font-size-xs: 0.75rem;     /* 12px */
+            --font-size-sm: 0.875rem;    /* 14px */
+            --font-size-base: 1rem;      /* 16px */
+            --font-size-lg: 1.125rem;    /* 18px */
+            --font-size-xl: 1.25rem;     /* 20px */
+            --font-size-2xl: 1.5rem;     /* 24px */
+            --font-size-3xl: 1.875rem;   /* 30px */
+            --font-size-4xl: 2.25rem;    /* 36px */
+            --font-size-5xl: 3rem;       /* 48px */
+            
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-weight-extrabold: 800;
+            
+            --line-height-tight: 1.25;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.75;
+            
+            /* 余白（Tailwind準拠） */
+            --space-1: 0.25rem;   /* 4px */
+            --space-2: 0.5rem;    /* 8px */
+            --space-3: 0.75rem;   /* 12px */
+            --space-4: 1rem;      /* 16px */
+            --space-5: 1.25rem;   /* 20px */
+            --space-6: 1.5rem;    /* 24px */
+            --space-8: 2rem;      /* 32px */
+            --space-10: 2.5rem;   /* 40px */
+            --space-12: 3rem;     /* 48px */
+            --space-16: 4rem;     /* 64px */
+            
+            /* 角丸（Tailwind準拠） */
+            --radius-sm: 0.25rem;    /* 4px */
+            --radius-base: 0.5rem;   /* 8px, rounded-lg */
+            --radius-md: 0.75rem;    /* 12px, rounded-xl */
+            --radius-lg: 1rem;       /* 16px, rounded-2xl */
+            --radius-xl: 1.5rem;     /* 24px */
+            --radius-full: 9999px;
+            
+            /* シャドウ */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 169, 165, 0.2);     /* shadow-lg shadow-teal-500/20 */
+            --shadow-xl: 0 20px 25px rgba(0, 169, 165, 0.25);    /* shadow-xl shadow-teal-500/25 */
+            --shadow-2xl: 0 25px 50px rgba(0, 169, 165, 0.25);   /* shadow-2xl shadow-teal-500/25 */
+            
+            /* アニメーション */
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms ease;
+        }
+        
+        /* ライトモードは無効化（ダークテーマ専用） */
+        /* @media (prefers-color-scheme: light) は空なので削除 */
+        
+        html {
+            font-size: 16px;
+            font-family: var(--font-family-base);
+            line-height: var(--line-height-normal);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
         body {
-            font-family: 'Inter', sans-serif, 'Noto Sans JP', sans-serif; 
-            /* シンプルな暗い背景色 */
-            background-color: #1a1a1a; /* ダークグレー */
-            min-height: 100vh;
-            color: #e5e7eb; /* 基本フォントカラーを明るい色に */
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: 'Inter', sans-serif, 'Noto Sans JP', sans-serif;
         }
 
         .container {
@@ -29,33 +124,39 @@
 
         /* カードの基本スタイル */
         .card {
-            background: rgba(255, 255, 255, 0.1); /* 半透明の白 */
-            backdrop-filter: blur(8px); /* ぼかし */
-            -webkit-backdrop-filter: blur(8px); 
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08); /* 細い枠線 */
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* ソフトな影 */
-            transition: all 0.3s ease;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-normal);
+        }
+        
+        .card:hover {
+            border-color: rgba(var(--color-primary-rgb), 0.5);
         }
 
         /* 入力フィールドのスタイル */
-        .input-style {
-            padding: 0.75rem;
-            border: none;
-            border-radius: 10px;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3); /* 暗く、やや透明な背景 */
-            color: #ffffff; /* 入力文字を白に */
-            box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5); /* 凹み影 */
-            transition: all 0.3s ease;
+        .input-style,
+        .form-control {
+            background: var(--color-surface-solid);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            padding: var(--space-3) var(--space-4);
+            transition: border-color var(--transition-fast);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
         }
-        .input-style:focus {
-            background: rgba(0, 0, 0, 0.4); 
-            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.7);
+        .input-style:focus,
+        .form-control:focus {
             outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2);
         }
-        .input-style::placeholder {
-            color: rgba(255, 255, 255, 0.4); 
+        .input-style::placeholder,
+        .form-control::placeholder {
+            color: var(--color-text-secondary);
         }
         /* Selectタグの矢印の色 */
         select.input-style {
@@ -68,21 +169,66 @@
             background-size: 1.5em 1.5em;
         }
 
-
-        /* プライマリーボタン */
-        .btn-primary {
-            background-color: #3b82f6; /* 青 */
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 700;
-            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3); /* シンプルな影 */
-            transition: all 0.2s ease;
+        /* ボタンスタイル */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 var(--space-6);
+            height: 44px;
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            line-height: 1;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
         }
+        
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-background);
+            box-shadow: var(--shadow-lg);
+        }
+        
         .btn-primary:hover {
-            background-color: #2563eb;
-            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.5);
+            background: var(--color-primary-hover);
+            box-shadow: var(--shadow-xl);
             transform: translateY(-1px);
+        }
+        
+        .btn-primary:active {
+            background: var(--color-primary-active);
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--color-surface);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--color-surface-solid);
+            border-color: var(--color-primary);
+        }
+        
+        .btn--sm {
+            height: 36px;
+            padding: 0 var(--space-4);
+            font-size: var(--font-size-sm);
+        }
+        
+        .btn--lg {
+            height: 52px;
+            padding: 0 var(--space-8);
+            font-size: var(--font-size-lg);
+        }
+        
+        .btn--full-width {
+            width: 100%;
         }
 
         /* 下部ナビゲーション */
@@ -106,7 +252,7 @@
         }
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #3b82f6;
+            border-top: 4px solid var(--color-primary);
         }
         
         @media (min-width: 640px) {
@@ -119,24 +265,9 @@
         /* 統計サマリーカード */
         .summary-card {
             background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             padding: 1.25rem;
             box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
-        }
-        /* CSVボタン */
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease;
-        }
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
         }
         /* カスタムロゴのスタイル */
         .app-logo-text {
@@ -197,13 +328,13 @@
         }
         .prompt-type:hover {
             background: rgba(255,255,255,0.08);
-            border-color: rgba(59,130,246,0.4);
+            border-color: rgba(var(--color-primary-rgb), 0.4);
             transform: translateY(-2px);
         }
         .prompt-type.active {
-            background: rgba(59,130,246,0.15);
-            border-color: #3b82f6;
-            box-shadow: 0 0 12px rgba(59,130,246,0.2);
+            background: rgba(var(--color-primary-rgb), 0.15);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 12px rgba(var(--color-primary-rgb), 0.2);
         }
         .prompt-type .icon {
             font-size: 1.5rem;
@@ -272,8 +403,8 @@
         }
         .rating-buttons button:hover {
             transform: scale(1.2);
-            background: rgba(59, 130, 246, 0.2);
-            border-color: #3b82f6;
+            background: rgba(var(--color-primary-rgb), 0.2);
+            border-color: var(--color-primary);
         }
         .snackbar .close-btn {
             position: absolute;
@@ -326,7 +457,7 @@
             background: rgba(255,255,255,0.1);
         }
         .ad-cta {
-            color: #3b82f6;
+            color: var(--color-primary);
             font-weight: 600;
         }
         .pro-features {
@@ -359,7 +490,7 @@
             right: 20px;
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(8px);
-            border: 2px solid #3b82f6;
+            border: 2px solid var(--color-primary);
             border-radius: 12px;
             padding: 16px 20px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -383,8 +514,8 @@
         }
         .toast-action {
             padding: 6px 12px;
-            background: #3b82f6;
-            color: #ffffff;
+            background: var(--color-primary);
+            color: var(--color-background);
             border: none;
             border-radius: 8px;
             font-size: 12px;
@@ -393,7 +524,7 @@
             transition: background 0.2s;
         }
         .toast-action:hover {
-            background: #2563eb;
+            background: var(--color-primary-hover);
         }
         
         /* プログレストースト */
@@ -404,7 +535,7 @@
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(8px);
-            border: 2px solid #3b82f6;
+            border: 2px solid var(--color-primary);
             border-radius: 12px;
             padding: 12px 20px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -477,7 +608,7 @@
         }
         .progress-fill {
             height: 100%;
-            background: #3b82f6;
+            background: var(--color-primary);
             border-radius: 2px;
             animation: progress 2000ms linear;
         }
@@ -498,38 +629,44 @@
         /* タブナビゲーション */
         .app-tabs {
             display: flex;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(6px);
-            border-bottom: 2px solid rgba(255,255,255,0.1);
+            background: var(--color-surface);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
             overflow-x: auto;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-sm);
+            scrollbar-width: none;
         }
+        
+        .app-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
         .tab-btn {
             flex: 1;
-            min-width: 80px;
-            padding: 12px 16px;
+            min-width: 90px;
+            padding: var(--space-4) var(--space-5);
             background: transparent;
             border: none;
-            border-bottom: 3px solid transparent;
+            border-bottom: 2px solid transparent;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            color: rgba(255,255,255,0.5);
-            transition: all 0.2s ease;
+            color: var(--color-text-secondary);
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            letter-spacing: -0.01em;
         }
         .tab-btn:hover {
-            background: rgba(255,255,255,0.05);
-            color: rgba(255,255,255,0.8);
+            color: var(--color-text);
         }
         .tab-btn.active {
-            color: #3b82f6;
-            border-bottom-color: #3b82f6;
-            background: rgba(59,130,246,0.1);
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
         }
         .tab-icon {
             font-size: 20px;
@@ -549,116 +686,524 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .stat-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .stat-label {
-            font-size: 14px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 8px;
-        }
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #3b82f6;
-        }
-        .chart-container {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .chart-container h4 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #ffffff;
-            margin: 0 0 12px 0;
-        }
         @media (max-width: 640px) {
             .tab-label { font-size: 10px; }
             .tab-icon { font-size: 18px; }
             .tab-btn { padding: 8px 12px; }
         }
+        
+        /* ========================================
+           デザイン統一パッチ
+           ======================================== */
+        
+        /* 全体の余白統一 */
+        .settings-section,
+        .chart-container,
+        .trade-section {
+            margin-bottom: var(--space-8);
+        }
+        
+        .settings-section:last-child,
+        .chart-container:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* タイトル階層の統一 */
+        h1 {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            line-height: var(--line-height-tight);
+            color: var(--color-text);
+            margin-bottom: var(--space-4);
+        }
+        
+        h2 {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            line-height: var(--line-height-tight);
+            color: var(--color-text);
+            margin-bottom: var(--space-4);
+        }
+        
+        h3 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            line-height: var(--line-height-tight);
+            color: var(--color-text);
+            margin-bottom: var(--space-3);
+        }
+        
+        h4 {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            line-height: var(--line-height-normal);
+            color: var(--color-text);
+            margin-bottom: var(--space-3);
+        }
+        
+        p {
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-relaxed);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .help-text {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-normal);
+        }
+        
+        /* グラフコンテナの統一 */
+        .chart-container {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition-normal);
+        }
+        
+        .chart-container h4 {
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin: 0 0 var(--space-4) 0;
+            padding-bottom: var(--space-3);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--space-6);
+            margin-top: var(--space-6);
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 週次レポートの最適化 */
+        #weeklyReportOutput,
+        #weeklyReportOutputAnalytics {
+            min-height: 220px;
+            line-height: var(--line-height-relaxed);
+            font-family: 'Courier New', monospace;
+            font-size: var(--font-size-sm);
+            padding: var(--space-4);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            resize: vertical;
+        }
+        
+        /* 統計カードの改善 */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-8);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: var(--space-6) var(--space-4);
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            line-height: var(--line-height-tight);
+        }
+        
+        /* トーストの視認性強化 */
         .completion-toast {
             position: fixed;
             top: 20px;
             z-index: 10003;
-            background: rgba(31, 33, 33, 0.98);
-            border: 2px solid #3b82f6;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            background: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            box-shadow: var(--shadow-xl);
             opacity: 0;
             transform: translateY(-10px);
-            transition: all 0.3s ease;
+            transition: all var(--duration-normal) var(--ease-standard);
             min-width: 320px;
             max-width: 400px;
             backdrop-filter: blur(10px);
         }
+        
         .completion-toast.show {
             opacity: 1;
             transform: translateY(0);
         }
+        
         .completion-toast.toast-left {
             left: 20px;
         }
+        
         .completion-toast.toast-right {
             right: 20px;
         }
+        
         .completion-toast.toast-center {
             left: 50%;
             transform: translate(-50%, -10px);
         }
+        
         .completion-toast.toast-center.show {
             transform: translate(-50%, 0);
         }
+        
         @media (prefers-color-scheme: light) {
             .completion-toast {
-                background: rgba(255, 255, 255, 0.98);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
             }
         }
-        @media (prefers-color-scheme: dark) {
-            .completion-toast {
-                background: rgba(31, 33, 33, 0.98);
-            }
-        }
+        
         [data-color-scheme="light"] .completion-toast {
-            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
         }
-        [data-color-scheme="dark"] .completion-toast {
-            background: rgba(31, 33, 33, 0.98);
+        
+        /* Pro版ヒーローセクションの改善 */
+        .pro-hero {
+            text-align: center;
+            padding: var(--space-12) var(--space-8);
+            background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(147,51,234,0.2));
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-8);
+        }
+        
+        .pro-hero h1 {
+            font-size: var(--font-size-4xl);
+            margin-bottom: var(--space-4);
+            font-weight: var(--font-weight-bold);
+            letter-spacing: -0.02em;
+        }
+        
+        .pro-price {
+            font-size: 48px;
+            font-weight: var(--font-weight-bold);
+            margin: var(--space-6) 0;
+            line-height: 1;
+        }
+        
+        .pro-price span {
+            color: var(--color-primary);
+        }
+        
+        /* フッター広告の改善 */
+        .footer-ad-banner {
+            background: rgba(0,0,0,0.3);
+            border-top: 2px solid var(--color-border);
+            padding: var(--space-5);
+            text-align: center;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 既存の.tab-btnスタイルとの統合 */
+        @media (max-width: 640px) {
+            .tab-btn { padding: 8px 12px; min-width: 70px; }
         }
         .summary-header {
-            margin-bottom: 12px;
-            font-size: 16px;
-            color: #ffffff;
-            font-weight: 600;
+            margin-bottom: var(--space-3);
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            font-weight: var(--font-weight-semibold);
+        }
+        .completion-toast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-3);
+        }
+        .toast-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all var(--transition-fast);
+        }
+        .toast-close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--color-text);
         }
         .summary-row {
             display: flex;
-            gap: 12px;
+            gap: var(--space-3);
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #ffffff;
+            margin-bottom: var(--space-2);
+            font-size: var(--font-size-sm);
+            color: var(--color-text);
+        }
+        .toast-hint {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            margin-top: var(--space-2);
+            margin-bottom: var(--space-4);
+            opacity: 0.8;
         }
         .summary-actions {
             display: flex;
-            gap: 8px;
+            gap: var(--space-2);
             justify-content: flex-end;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: var(--space-3);
+            padding-top: var(--space-3);
+            border-top: 1px solid var(--color-border);
         }
         .summary-actions button {
-            padding: 6px 12px;
-            font-size: 12px;
+            padding: var(--space-2) var(--space-3);
+            font-size: var(--font-size-xs);
+        }
+        
+        /* 相談予約バナー */
+        .consultation-banner {
+            background: linear-gradient(135deg, rgba(0, 169, 165, 0.1), rgba(0, 169, 165, 0.05));
+            padding: var(--space-10);
+            text-align: center;
+            border-radius: var(--radius-lg);
+            border: 2px solid rgba(0, 169, 165, 0.3);
+        }
+        
+        .consultation-badge {
+            display: inline-block;
+            background: var(--color-primary);
+            color: var(--color-background);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-4);
+        }
+        
+        .consultation-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-3);
+            color: var(--color-text);
+        }
+        
+        .consultation-description {
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-relaxed);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .consultation-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-4);
+        }
+        
+        .consultation-completed {
+            padding: var(--space-10);
+            text-align: center;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-lg);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .completion-icon {
+            font-size: 64px;
+            margin-bottom: var(--space-4);
+        }
+        
+        /* モーダル基本構造 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        /* モーダルオーバーレイ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 10001;
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        /* モーダルコンテンツ */
+        .modal-content {
+            position: relative;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 10002;
+            animation: modalSlideUp 0.3s ease;
+        }
+        
+        /* モーダルヘッダー */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+        }
+        
+        /* モーダルボディ */
+        .modal-body {
+            padding: var(--space-6);
+        }
+        
+        /* モーダル閉じるボタン */
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-base);
+            transition: all var(--transition-fast);
+        }
+        
+        .modal-close:hover {
+            background: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        /* 相談フォーム専用スタイル */
+        .consultation-intro {
+            background: rgba(var(--color-primary-rgb), 0.1);
+            padding: var(--space-4);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-6);
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .consultation-intro p {
+            margin: 0;
+            font-size: var(--font-size-sm);
+            line-height: var(--line-height-relaxed);
+            color: var(--color-text-secondary);
+        }
+        
+        .consultation-intro p:first-child {
+            margin-bottom: var(--space-2);
+        }
+        
+        /* アニメーション */
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* スマホ対応 */
+        @media (max-width: 768px) {
+            .modal {
+                padding: var(--space-2);
+                align-items: flex-start;
+            }
+            
+            .modal-content {
+                max-height: 95vh;
+                margin-top: var(--space-4);
+            }
+            
+            .modal-header {
+                padding: var(--space-4);
+            }
+            
+            .modal-header h2 {
+                font-size: var(--font-size-xl);
+            }
+            
+            .modal-body {
+                padding: var(--space-4);
+            }
+            
+            .consultation-intro {
+                padding: var(--space-3);
+            }
+            
+            .form-group {
+                margin-bottom: var(--space-4);
+            }
+        }
+        
+        /* 極小スマホ（iPhone SE等）対応 */
+        @media (max-width: 375px) {
+            .modal {
+                padding: 0;
+            }
+            
+            .modal-content {
+                border-radius: 0;
+                max-height: 100vh;
+                margin-top: 0;
+            }
         }
     </style>
 
@@ -679,17 +1224,56 @@
         let latestPromptText = '';
 
         // ===== プラン管理機能 =====
+        
+        // グローバル定数として定義
+        const PLAN_TYPES = {
+            EARLY_PRO: 'early_pro',  // 先着50人Pro（永久無料）
+            FREE: 'free',            // 通常Free版（50人到達後）
+            PRO: 'pro'               // 有料Pro版（50人到達後）
+        };
+        
+        // キャンペーン設定（手動で管理）
+        const CAMPAIGN_CONFIG = {
+            isEarlyBirdActive: true,  // true = 先着50人期間中、false = 終了
+            currentSignups: 0,        // 現在の登録者数（手動更新）
+            maxEarlyBird: 50         // 上限
+        };
+        
         function initializePlan() {
-            if (!localStorage.getItem('userPlan')) {
-                localStorage.setItem('userPlan', 'free');
+            const existingPlan = localStorage.getItem('userPlan');
+            
+            // 既存のfreeユーザーをearly_proに自動アップグレード
+            if (existingPlan === 'free' && CAMPAIGN_CONFIG.isEarlyBirdActive) {
+                console.log('Upgrading free user to early_pro');
+                localStorage.setItem('userPlan', PLAN_TYPES.EARLY_PRO);
+                localStorage.setItem('planUpgradedDate', new Date().toISOString());
+                return PLAN_TYPES.EARLY_PRO;
+            }
+            
+            // 既にearly_proまたはproの場合はそのまま
+            if (existingPlan === 'early_pro' || existingPlan === 'pro') {
+                return existingPlan;
+            }
+            
+            // 新規ユーザーの場合
+            if (CAMPAIGN_CONFIG.isEarlyBirdActive && 
+                CAMPAIGN_CONFIG.currentSignups < CAMPAIGN_CONFIG.maxEarlyBird) {
+                localStorage.setItem('userPlan', PLAN_TYPES.EARLY_PRO);
                 localStorage.setItem('planStartDate', new Date().toISOString());
+                localStorage.setItem('planGrantedDate', new Date().toISOString());
+                return PLAN_TYPES.EARLY_PRO;
+            } else {
+                localStorage.setItem('userPlan', PLAN_TYPES.FREE);
+                localStorage.setItem('planStartDate', new Date().toISOString());
+                return PLAN_TYPES.FREE;
             }
         }
         function getUserPlan() {
             return localStorage.getItem('userPlan') || 'free';
         }
         function isPro() {
-            return getUserPlan() === 'pro';
+            const plan = getUserPlan();
+            return plan === 'pro' || plan === 'early_pro';
         }
         function setPlan(plan) {
             localStorage.setItem('userPlan', plan);
@@ -707,14 +1291,57 @@
             const footerAd = document.getElementById('footerAdBanner');
             const modalAd = document.getElementById('modalAd');
             const settingsAd = document.getElementById('settingsAd');
+            const consultationBooked = localStorage.getItem('consultationBooked') === 'true';
             
             console.log('広告要素:', { footerAd: !!footerAd, modalAd: !!modalAd, settingsAd: !!settingsAd });
             
-            if (plan === 'pro') {
+            if (plan === PLAN_TYPES.EARLY_PRO) {
+                // early_proユーザー向けの表示
+                if (footerAd) footerAd.style.display = 'block';
+                if (modalAd) modalAd.style.display = 'none';
+                if (settingsAd) settingsAd.style.display = 'none';
+                
+                if (!consultationBooked) {
+                    // 未予約：相談予約バナー表示
+                    footerAd.innerHTML = `
+                        <div class="consultation-banner">
+                            <div class="consultation-badge">
+                                🎉 先着50人限定・Pro版永久無料ユーザー特典
+                            </div>
+                            <h3 class="consultation-title">
+                                無料トレード相談（60分）を受付中
+                            </h3>
+                            <p class="consultation-description">
+                                あなたのトレード記録をもとに、プロトレーダーが改善点を個別アドバイス。<br>
+                                先着順・完全無料・オンライン対応（Zoom/Google Meet）
+                            </p>
+                            <div class="consultation-actions">
+                                <button class="btn btn-primary btn--lg" onclick="openConsultationForm()">
+                                    📅 無料相談を予約する
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // 予約済み：完了メッセージ
+                    footerAd.innerHTML = `
+                        <div class="consultation-completed">
+                            <div class="completion-icon">✅</div>
+                            <h3>無料相談の予約が完了しました</h3>
+                            <p>担当者から48時間以内にメールでご連絡します。<br>それまでアプリをどんどん活用してください！</p>
+                            <button class="btn btn-secondary" onclick="this.parentElement.parentElement.style.display='none'">
+                                閉じる
+                            </button>
+                        </div>
+                    `;
+                }
+            } else if (plan === PLAN_TYPES.PRO) {
+                // Pro版：広告非表示
                 if (footerAd) footerAd.style.display = 'none';
                 if (modalAd) modalAd.style.display = 'none';
                 if (settingsAd) settingsAd.style.display = 'none';
-                } else {
+            } else {
+                // Free版：既存の広告表示
                 if (footerAd) footerAd.style.display = 'block';
                 if (settingsAd) settingsAd.style.display = 'block';
                 
@@ -724,6 +1351,73 @@
                     modalAd.style.display = 'block';
                 }
             }
+        }
+        
+        // 相談予約フォーム関連の関数
+        window.openConsultationForm = function() {
+            const modal = document.getElementById('consultationModal');
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // フォームをリセット
+            document.getElementById('consultationForm').reset();
+            
+            console.log('Consultation modal opened');
+        }
+        
+        window.closeConsultationModal = function() {
+            const modal = document.getElementById('consultationModal');
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            
+            console.log('Consultation modal closed');
+        }
+        
+        window.submitConsultation = function(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('consultSubmitBtn');
+            const originalText = submitBtn.textContent;
+            
+            if (!submitBtn) return;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '送信中...';
+            
+            const data = {
+                name: document.getElementById('consultName').value,
+                email: document.getElementById('consultEmail').value,
+                date1: document.getElementById('consultDate1').value,
+                date2: document.getElementById('consultDate2').value || '希望なし',
+                content: document.getElementById('consultContent').value || '特になし',
+                userId: localStorage.getItem('userId') || 'unknown',
+                userPlan: localStorage.getItem('userPlan'),
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('相談予約データ:', data);
+            
+            // 実際のAPI送信処理をここに追加
+            // fetch('YOUR_ENDPOINT', { method: 'POST', body: JSON.stringify(data) })
+            
+            // デモ用：1秒後に完了
+            setTimeout(() => {
+                localStorage.setItem('consultationBooked', 'true');
+                localStorage.setItem('consultationData', JSON.stringify(data));
+                localStorage.setItem('consultationDate', data.date1);
+                
+                closeConsultationModal();
+                updateAdDisplay();
+                
+                showCustomMessage('✅ 無料相談の予約を受け付けました！担当者から48時間以内にメールでご連絡します。', 'success');
+                
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                
+                console.log('Consultation booking completed');
+            }, 1000);
         }
         function logAdClick(placement) {
             logEvent({
@@ -779,8 +1473,25 @@
             }, duration);
         }
         
+        // AI表示名取得関数
+        function getAIDisplayName(ai) {
+            const names = {
+                'chatgpt': 'ChatGPT',
+                'gemini': 'Gemini',
+                'claude': 'Claude'
+            };
+            return names[ai] || ai;
+        }
+        
         // 完了サマリートーストの表示
         function showCompletionSummary({ promptType, ai, imageCount, logsOk }) {
+            console.log('showCompletionSummary called with:', {
+                ai: ai,
+                prompt: promptType,
+                imageCount: imageCount,
+                logsOk: logsOk
+            });
+            
             const windowPos = localStorage.getItem('windowPosition') || 'right';
             const toastSide = windowPos === 'right' ? 'left' : windowPos === 'left' ? 'right' : 'center';
             
@@ -801,8 +1512,9 @@
             const div = document.createElement('div');
             div.className = `completion-toast show toast-${toastSide}`;
             div.innerHTML = `
-                <div class="summary-header">
+                <div class="completion-toast-header">
                     <span style="font-weight: 600;">✅ AI分析準備完了</span>
+                    <button class="toast-close-btn" onclick="this.closest('.completion-toast').remove()">×</button>
                 </div>
                 <div class="summary-row">
                     <span>📚 ${promptTypeNames[promptType] || promptType || '基本分析'}</span>
@@ -812,10 +1524,11 @@
                     <span>🖼️ 画像 ${imageCount || 0} 枚</span>
                     <span>${logsOk ? '🗒️ ログ記録済' : ''}</span>
                 </div>
+                <div class="toast-hint">
+                    別のAIで分析したい場合は、設定タブでAIを切り替えてください
+                </div>
                 <div class="summary-actions">
-                    <button class="btn-secondary px-3 py-1 text-xs" id="reCopyBtn">📋 再コピー</button>
-                    <button class="btn-secondary px-3 py-1 text-xs" id="openOtherBtn">🔄 別AIで開く</button>
-                    <button class="btn-secondary px-3 py-1 text-xs" id="closeToastBtn">×</button>
+                    <button class="btn-secondary px-3 py-1 text-xs toast-action-recopy" id="reCopyBtn">📋 データを再コピー</button>
                 </div>
             `;
             
@@ -830,20 +1543,13 @@
                 }
             };
             
-            div.querySelector('#openOtherBtn').onclick = () => {
-                const modal = document.getElementById('ai-select-modal');
-                if (modal) modal.classList.remove('hidden');
-                closeCompletionToast(div);
-            };
-            
-            div.querySelector('#closeToastBtn').onclick = () => {
-                closeCompletionToast(div);
-            };
-            
-            // 5秒後に自動で消す
+            // 30秒後に自動で消す
+            console.log('Completion toast displayed - will auto-close in 30 seconds');
             setTimeout(() => {
-                closeCompletionToast(div);
-            }, 5000);
+                if (document.body.contains(div)) {
+                    closeCompletionToast(div);
+                }
+            }, 30000);
         }
         
         function closeCompletionToast(div) {
@@ -2185,6 +2891,17 @@ ${worstHours.length > 0
             // 前回のタブを復元
             const savedTab = localStorage.getItem('currentTab') || 'record';
             switchTab(savedTab);
+            
+            // 相談予約モーダル：オーバーレイクリックで閉じる
+            const consultationModal = document.getElementById('consultationModal');
+            const overlay = consultationModal?.querySelector('.modal-overlay');
+            if (overlay) {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        closeConsultationModal();
+                    }
+                });
+            }
         };
 
         // ===== AI分析機能 =====
@@ -2424,6 +3141,15 @@ ${csv}
             const prompt = buildAiPrompt(csv);
             lastGeneratedPrompt = prompt;
             latestPromptText = prompt; // グローバルに保存
+            
+            // 分析データをlocalStorageに保存（別AIで分析用）
+            localStorage.setItem('lastAnalysisCSV', csv);
+            localStorage.setItem('lastAnalysisPrompt', prompt);
+            console.log('Analysis data saved:', {
+                csv: csv.substring(0, 100) + '...',
+                prompt: prompt.substring(0, 100) + '...',
+                tradesCount: trades.length
+            });
 
             const btn = document.getElementById('btn-ai-analyze');
             const originalHtml = btn ? btn.innerHTML : '';
@@ -2665,6 +3391,17 @@ ${csv}
                 device: isMobile ? 'mobile' : 'desktop',
                 actions: { copied: true, ai: type }
             });
+            
+            // データが保存されていない場合は保存
+            if (!localStorage.getItem('lastAnalysisCSV') || !localStorage.getItem('lastAnalysisPrompt')) {
+                const trades = getTradesFromLocalStorage();
+                if (trades && trades.length > 0) {
+                    const csv = convertTradesToCsv(trades);
+                    const prompt = buildAiPrompt(csv);
+                    localStorage.setItem('lastAnalysisCSV', csv);
+                    localStorage.setItem('lastAnalysisPrompt', prompt);
+                }
+            }
             
             // 完了サマリートーストを表示
             showCompletionSummary({
@@ -3519,7 +4256,7 @@ ${csv}
             </footer>
             
             <!-- フッター広告バナー -->
-            <div id="footerAdBanner" class="ad-banner mt-4" style="display:none;">
+            <div id="footerAdBanner" class="footer-ad-banner ad-banner mt-4" style="display:none;">
                 <span class="ad-label">広告</span>
                 <div class="ad-content">
                     <a href="#" onclick="logAdClick('footer-banner'); return true;">
@@ -3728,12 +4465,21 @@ ${csv}
                     </div>
 
                     <!-- データ管理 -->
-                    <div class="p-5 rounded-xl card">
+                    <div class="p-5 rounded-xl card mb-6">
                         <div class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">データ管理</div>
                         <button class="text-xs text-gray-400 underline hover:text-white block mb-2" onclick="resetPreferredAI()">🔄 既定AI設定をリセット</button>
                         <button class="btn-secondary px-4 py-2 text-sm w-full" onclick="exportToCSV()">
                             <svg class="inline-block w-4 h-4 mr-2 -mt-0.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                             CSVエクスポート
+                        </button>
+                    </div>
+
+                    <!-- 開発者用 -->
+                    <div class="p-5 rounded-xl card" style="border-top: 2px dashed var(--color-border); margin-top: 40px;">
+                        <h3 class="text-xl font-bold mb-2 border-b border-gray-700 pb-2">🛠️ 開発者用</h3>
+                        <p class="help-text" style="margin-bottom: 12px;">管理者ページでテストデータを投入できます</p>
+                        <button class="btn btn-secondary" onclick="window.open('admin.html', '_blank')">
+                            管理者ページを開く
                         </button>
                     </div>
                 </div>
@@ -3742,11 +4488,11 @@ ${csv}
             <!-- Proタブ -->
             <div class="tab-content" id="tab-pro">
                 <div style="padding: 20px;">
-                    <div class="text-center p-10 mb-6" style="background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(147,51,234,0.2)); border-radius: 16px;">
+                    <div class="pro-hero text-center">
                         <h1 class="text-4xl font-bold mb-4">FXトレード記録 Pro</h1>
                         <p class="text-xl text-gray-300 mb-6">本格的なトレーダーのための<br>プレミアムプラン</p>
-                        <div class="text-4xl font-bold mb-6">
-                            月額 <span style="color: #3b82f6;">¥2,980</span>
+                        <div class="pro-price text-4xl font-bold mb-6">
+                            月額 <span style="color: var(--color-primary);">¥2,980</span>
                         </div>
                         <button class="btn-primary px-8 py-3 text-lg" onclick="alert('近日公開予定')">
                             今すぐ始める
@@ -3902,6 +4648,66 @@ ${csv}
         </div>
     </div>
 
+    <!-- 無料相談予約モーダル -->
+    <div id="consultationModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="closeConsultationModal()"></div>
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>📅 無料トレード相談 予約フォーム</h2>
+                <button class="modal-close" onclick="closeConsultationModal()">×</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="consultation-intro">
+                    <p>TradeLog Pro 先着50人限定特典として、プロトレーダーによる個別相談（60分）を無料で提供いたします。</p>
+                    <p>あなたのトレード記録をもとに、改善点を具体的にアドバイスします。</p>
+                </div>
+                
+                <form id="consultationForm" onsubmit="submitConsultation(event)">
+                    <div class="form-group">
+                        <label class="form-label">お名前 *</label>
+                        <input type="text" class="form-control" id="consultName" required 
+                               placeholder="山田太郎">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">メールアドレス *</label>
+                        <input type="email" class="form-control" id="consultEmail" required 
+                               placeholder="example@mail.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">希望日時（第1希望） *</label>
+                        <input type="datetime-local" class="form-control" id="consultDate1" required>
+                        <p class="help-text">平日10:00〜20:00、土日13:00〜18:00で受付中</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">希望日時（第2希望）</label>
+                        <input type="datetime-local" class="form-control" id="consultDate2">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">相談したい内容</label>
+                        <textarea class="form-control" id="consultContent" rows="4" 
+                                  placeholder="例：損切りのタイミング、エントリーポイントの見極め方、メンタル管理など"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="consultAgree" required>
+                            <span>個人情報の取り扱いに同意する</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn--full-width btn--lg" id="consultSubmitBtn">
+                        予約を確定する
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- AIコピー成功：巨大チュートリアルポップアップ（最前面） -->
     <div id="ai-copy-tutorial" class="fixed inset-0 hidden" style="z-index:80;">
         <div class="absolute inset-0" style="background: rgba(16,185,129,0.25);"></div>
@@ -4037,6 +4843,11 @@ ${csv}
                 const proModal = document.getElementById('proInfoModal');
                 if (proModal) proModal.classList.add('hidden');
                 closeSurvey();
+                // 相談予約モーダルも閉じる
+                const consultationModal = document.getElementById('consultationModal');
+                if (consultationModal && consultationModal.classList.contains('active')) {
+                    closeConsultationModal();
+                }
             }
             
             // 数字キー1-3でAIを選択（モーダルが開いている時）
