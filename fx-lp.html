@@ -236,7 +236,7 @@
             width: 100%;
             max-width: 420px;
             margin: 0 auto var(--spacing-xl);
-            padding-top: 2rem;
+            padding-top: 0; /* 2rem → 0 に変更 */
             margin-top: 0;
         }
         
@@ -250,11 +250,11 @@
         .section-divider-bar {
             width: 100%;
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
-            padding: 1rem;
+            padding: 1.5rem 1rem; /* 1rem → 1.5rem */
             text-align: center;
             border-left: 3px solid var(--color-gold);
             border-right: 3px solid var(--color-gold);
-            min-height: 150px; /* 200px → 150px */
+            min-height: 120px; /* 150px → 120px に削減 */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -288,17 +288,11 @@
         
         /* ===== Section Padding ===== */
         .section {
-            height: 100vh !important; /* auto → 100vh に戻す */
-            min-height: 100vh;
-            padding-top: 0 !important; /* 一旦リセット */
-            padding-bottom: 0;
-            overflow-y: auto; /* 縦スクロール可能 */
-        }
-        
-        /* ===== 各セクションの最初の要素の上マージンを削除 ===== */
-        .section > :first-child,
-        .content-section > :first-child {
-            margin-top: 0 !important;
+            height: 100vh !important; /* そのまま */
+            min-height: 100vh; /* そのまま */
+            padding-top: 0 !important; /* そのまま */
+            padding-bottom: 0; /* そのまま */
+            position: relative; /* 追加 */
         }
         
         /* ===== Hero Section ===== */
@@ -311,6 +305,7 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            overflow-y: auto; /* 追加：ヒーローだけスクロール可 */
         }
         
         .hero-image-wrapper {
@@ -318,20 +313,21 @@
             max-width: 420px;
             margin: 0 auto;
             padding-top: 0;
-            max-height: 40vh; /* 画面の40%まで */
+            max-height: 60vh; /* 40vh → 60vh に変更（もっと大きく） */
             overflow: hidden;
+            flex-shrink: 0; /* 追加 */
         }
         
         .hero-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* cover → contain に変更（全体を表示） */
             object-position: center top;
         }
         
         .hero-content {
             flex: 1;
-            overflow-y: auto; /* スクロール可能 */
+            overflow-y: auto; /* そのまま */
             padding: 20px;
         }
         
@@ -788,15 +784,15 @@
             }
             
             .hero-image-wrapper {
-                max-height: 35vh; /* もう少し小さく */
+                max-height: 50vh; /* 35vh → 50vh */
             }
             
             .section-divider-title {
-                font-size: 20px;
+                font-size: 20px; /* そのまま */
             }
             
             .section-divider-bar {
-                min-height: 120px;
+                min-height: 100px; /* 120px → 100px */
                 padding: 1rem 0.5rem;
             }
             
@@ -2772,7 +2768,49 @@
     
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js"></script>
-    <script src="./js/lp-main.js"></script>
+    <script>
+        // fullpage.js初期化
+        new fullpage('#fullpage', {
+            // 基本設定
+            licenseKey: 'YOUR_LICENSE_KEY',
+            autoScrolling: true,
+            scrollHorizontally: true,
+            
+            // スクロール設定
+            scrollOverflow: true,
+            scrollOverflowReset: true,
+            scrollOverflowOptions: {
+                click: false,
+                preventDefaultException: { tagName: /.*/ }
+            },
+            
+            // タッチ感度
+            touchSensitivity: 5,
+            
+            // ナビゲーション
+            navigation: false,
+            navigationPosition: 'right',
+            
+            // スクロール速度
+            scrollingSpeed: 700,
+            
+            // アンカー
+            anchors: ['hero', 'bridge1', 'ifthen', 'about', 'bridge2', 'bridge3', 
+                      'ch1-flick1', 'ch1-flick2', 'ch1-flick3', 'ch1-flick4', 'ch1-flick5', 'ch1-flick6', 'ch1-flick7',
+                      'ch2-flick1', 'ch2-flick2', 'ch2-flick3', 'ch2-flick4', 'ch2-flick5', 'ch2-flick6', 'ch2-flick7',
+                      'ch3-flick1', 'ch3-flick2', 'ch3-flick3', 'ch3-flick4', 'ch3-flick5', 'ch3-flick6', 'ch3-flick7',
+                      'ch4-flick1', 'ch4-flick2', 'ch4-flick3', 'ch4-flick4', 'ch4-flick5', 'ch4-flick6', 'ch4-flick7',
+                      'ch5-flick1', 'ch5-flick2', 'ch5-flick3', 'ch5-flick4', 'ch5-flick5', 'ch5-flick6', 'ch5-flick7',
+                      'ch6-flick1', 'ch6-flick2', 'ch6-flick3', 'ch6-flick4', 'ch6-flick5', 'ch6-flick6', 'ch6-flick7',
+                      'ch7-flick1', 'ch7-flick2', 'ch7-flick3', 'ch7-flick4', 'ch7-flick5', 'ch7-flick6', 'ch7-flick7',
+                      'ch8-flick1', 'ch8-flick2', 'ch8-flick3', 'ch8-flick4', 'ch8-flick5', 'ch8-flick6', 'ch8-flick7',
+                      'profile', 'testimonials', 'final-cta'],
+            
+            // レスポンシブ
+            responsiveWidth: 0,
+            responsiveHeight: 0,
+        });
+    </script>
 </body>
 </html>
 
