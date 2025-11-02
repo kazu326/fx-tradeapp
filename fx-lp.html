@@ -236,7 +236,7 @@
             width: 100%;
             max-width: 420px;
             margin: 0 auto var(--spacing-xl);
-            padding-top: var(--spacing-2xl);
+            padding-top: 0 !important; /* 区切りバーは余白なし */
         }
         
         .section-divider-line {
@@ -257,6 +257,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            margin-top: 0; /* バーの上余白もなし */
         }
         
         .section-divider-title {
@@ -283,18 +284,24 @@
             margin-bottom: var(--spacing-xl);
         }
         
+        /* ===== Section Padding ===== */
+        .section {
+            padding-top: 150px !important;
+        }
+        
+        /* ===== 各セクションの最初の要素の上マージンを削除 ===== */
+        .section > :first-child,
+        .content-section > :first-child {
+            margin-top: 0 !important;
+        }
+        
         /* ===== Hero Section ===== */
         .hero-section {
             width: 100%;
             max-width: 420px;
             margin: 0 auto;
             background: var(--color-bg);
-            padding-top: 100px;
-        }
-        
-        /* ===== Section Padding ===== */
-        .section[data-anchor] {
-            padding-top: 100px !important;
+            padding-top: 100px; /* ヒーローは少し小さめ */
         }
         
         .hero-image-wrapper {
@@ -639,7 +646,10 @@
         
         /* ===== Content Section ===== */
         .content-section {
-            padding: var(--spacing-xl) var(--spacing-lg);
+            padding-top: 150px;
+            padding-left: var(--spacing-lg);
+            padding-right: var(--spacing-lg);
+            padding-bottom: var(--spacing-xl);
         }
         
         .content-section h3 {
@@ -762,6 +772,18 @@
         @media (max-width: 420px) {
             .container {
                 padding: 0 16px;
+            }
+            
+            .section {
+                padding-top: 120px !important; /* スマホは少し小さめ */
+            }
+            
+            .hero-section {
+                padding-top: 80px; /* スマホのヒーローはさらに小さめ */
+            }
+            
+            .content-section {
+                padding-top: 120px;
             }
             
             .section-divider-title {
