@@ -232,11 +232,12 @@
         }
         
         /* ===== Section Divider with Gold Lines ===== */
+        /* セクション区切りバーの余白削除 */
         .section-divider {
             width: 100%;
             max-width: 420px;
-            margin: 0 auto var(--spacing-xl);
-            padding-top: 0; /* 2rem → 0 に変更 */
+            margin: 0 auto var(--spacing-lg);
+            padding-top: 0 !important;
             margin-top: 0;
         }
         
@@ -244,7 +245,7 @@
         .chapter-header,
         [data-anchor*="ch"] .section-divider {
             padding-top: 0 !important;
-            margin-top: 0;
+            margin-top: 0 !important;
         }
         
         /* 区切りバーの前後のラインも調整 */
@@ -260,24 +261,21 @@
         .section-divider-bar {
             width: 100%;
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
-            padding: 1.5rem 1rem; /* 内側の余白のみ */
-            text-align: center;
+            padding: 1.5rem 1rem;
+            display: block; /* flex → block */
+            text-align: left; /* center → left */
             border-left: 3px solid var(--color-gold);
             border-right: 3px solid var(--color-gold);
-            min-height: 120px; /* 150px → 120px に削減 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            min-height: auto; /* 高さ固定を解除 */
             margin-top: 0;
-            padding-top: 1.5rem; /* 内側の余白のみ */
         }
         
         .section-divider-title {
-            font-size: 24px; /* 28px → 24px */
+            font-size: var(--font-size-2xl);
             font-weight: 900;
             color: var(--color-text);
             margin-bottom: var(--spacing-sm);
-            line-height: 1.3;
+            text-align: left; /* 左寄せ */
             max-width: 100%;
             word-break: keep-all;
             overflow-wrap: break-word;
@@ -287,6 +285,7 @@
             font-size: var(--font-size-base);
             color: var(--color-text-secondary);
             font-weight: 500;
+            text-align: left; /* 左寄せ */
         }
         
         .section-divider-line-bottom {
@@ -298,13 +297,47 @@
         }
         
         /* ===== Section Padding ===== */
-        /* 全セクションの基本余白 */
+        /* Section基本設定 */
         .section {
             height: 100vh !important;
-            min-height: 100vh;
-            padding-top: max(60px, env(safe-area-inset-top)) !important; /* 統一（Safe Area対応） */
-            padding-bottom: 20px; /* 下も統一 */
+            overflow: visible !important; /* auto → visible */
             position: relative;
+            padding-top: 0 !important;
+            padding-bottom: 0;
+        }
+        
+        /* fullpage.js が自動追加する fp-overflow クラス */
+        .fp-overflow {
+            height: 100vh !important;
+            overflow-y: scroll !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* スクロールバーのカスタマイズ */
+        .fp-overflow::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .fp-overflow::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+        
+        .fp-overflow::-webkit-scrollbar-thumb {
+            background: var(--color-gold);
+            border-radius: 3px;
+        }
+        
+        .fp-overflow::-webkit-scrollbar-thumb:hover {
+            background: var(--color-gold-light);
+        }
+        
+        /* 全セクションの統一padding */
+        .section > .container,
+        .section > .hero-content,
+        .section > .content-section {
+            padding-top: 60px;
+            padding-bottom: 40px; /* 下部余白も追加 */
         }
         
         /* ===== Hero Section ===== */
@@ -313,11 +346,11 @@
             max-width: 420px;
             margin: 0 auto;
             background: var(--color-bg);
-            padding-top: 0 !important; /* ヒーローは画像が上部にあるので0 */
+            padding-top: 0 !important;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            overflow-y: auto; /* 追加：ヒーローだけスクロール可 */
+            overflow: visible !important;
         }
         
         /* ヒーロー画像の上に余白を追加 */
@@ -325,11 +358,10 @@
             width: 100%;
             max-width: 420px;
             margin: 0 auto;
-            padding-top: 0;
-            margin-top: max(60px, env(safe-area-inset-top)); /* 上部に60pxの余白（Safe Area対応） */
-            max-height: 60vh; /* 40vh → 60vh に変更（もっと大きく） */
+            padding-top: 60px;
+            max-height: calc(60vh - 60px);
             overflow: hidden;
-            flex-shrink: 0; /* 追加 */
+            flex-shrink: 0;
         }
         
         .hero-image {
@@ -671,16 +703,53 @@
         
         /* ===== Content Section ===== */
         .content-section {
-            padding-top: max(60px, env(safe-area-inset-top)); /* 統一（Safe Area対応） */
+            padding-top: 60px;
+            padding-bottom: 40px;
             padding-left: 20px;
             padding-right: 20px;
-            padding-bottom: 20px;
-            overflow-y: auto; /* スクロール可能 */
         }
         
         /* コンテンツ内の最初の要素の上マージンを削除 */
         .content-section > *:first-child {
             margin-top: 0 !important;
+        }
+        
+        /* 章タイトルセクションの背景色と余白 */
+        /* 第1章などの背景色を白に */
+        [data-anchor*="ch"] {
+            background: var(--color-bg) !important; /* 黒 → 白 */
+        }
+        
+        /* 章タイトルバーの余白 */
+        [data-anchor*="ch"] .section-divider {
+            padding-top: 0 !important;
+        }
+        
+        [data-anchor*="ch"] .content-section {
+            padding-top: 60px !important;
+        }
+        
+        /* ブリッジセクション */
+        [data-anchor="bridge1"],
+        [data-anchor="bridge2"],
+        [data-anchor="bridge3"] {
+            padding-top: 0 !important;
+        }
+        
+        [data-anchor="bridge1"] .content-section,
+        [data-anchor="bridge2"] .content-section,
+        [data-anchor="bridge3"] .content-section {
+            padding-top: 60px !important;
+        }
+        
+        /* イフゼンセクション */
+        [data-anchor="ifthen"] .content-section {
+            padding-top: 60px !important;
+        }
+        
+        /* 筆者紹介セクション */
+        [data-anchor="about"] .content-section {
+            padding-top: 60px !important;
         }
         
         .content-section h3 {
@@ -805,18 +874,17 @@
                 padding: 0 16px;
             }
             
-            .section {
-                padding-top: max(50px, env(safe-area-inset-top)) !important; /* スマホは少し小さめ（Safe Area対応） */
-                padding-bottom: 20px;
+            .section > .container,
+            .section > .hero-content,
+            .section > .content-section,
+            .content-section {
+                padding-top: 50px;
+                padding-bottom: 30px;
             }
             
             .hero-image-wrapper {
-                max-height: 50vh;
-                margin-top: max(50px, env(safe-area-inset-top)); /* スマホも調整（Safe Area対応） */
-            }
-            
-            .content-section {
-                padding-top: max(50px, env(safe-area-inset-top)); /* スマホも調整（Safe Area対応） */
+                padding-top: 50px;
+                max-height: calc(50vh - 50px);
             }
             
             .section-divider-title {
@@ -2799,34 +2867,41 @@
     </div>
     
     <!-- Scripts -->
+    <!-- fullPage.js Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js"></script>
+    
+    <!-- fullPage.js ScrollOverflow 拡張（必須） -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.scrolloverflow.min.js"></script>
+    
     <script>
-        // fullpage.js初期化
+        // fullpage.js初期化（scrollOverflow完全対応版）
         new fullpage('#fullpage', {
             // 基本設定
             licenseKey: 'YOUR_LICENSE_KEY',
             autoScrolling: true,
             scrollHorizontally: true,
+            fitToSection: true,
+            fitToSectionDelay: 300,
             
-            // スクロール設定
+            // ScrollOverflow設定（重要）
             scrollOverflow: true,
-            scrollOverflowReset: true,
+            scrollOverflowReset: false,
+            scrollOverflowMacStyle: true,
             scrollOverflowOptions: {
-                click: false,
-                preventDefaultException: { tagName: /.*/ }
+                scrollbars: true,
+                fadeScrollbars: false,
+                interactiveScrollbars: true,
+                click: true,
+                preventDefault: false
             },
             
-            // タッチ感度
-            touchSensitivity: 5,
-            
-            // ナビゲーション
-            navigation: false,
-            navigationPosition: 'right',
+            // タッチ感度（長文ページでも快適）
+            touchSensitivity: 10,
             
             // スクロール速度
             scrollingSpeed: 700,
             
-            // アンカー
+            // アンカー（そのまま）
             anchors: ['hero', 'bridge1', 'ifthen', 'about', 'bridge2', 'bridge3', 
                       'ch1-flick1', 'ch1-flick2', 'ch1-flick3', 'ch1-flick4', 'ch1-flick5', 'ch1-flick6', 'ch1-flick7',
                       'ch2-flick1', 'ch2-flick2', 'ch2-flick3', 'ch2-flick4', 'ch2-flick5', 'ch2-flick6', 'ch2-flick7',
@@ -2841,6 +2916,11 @@
             // レスポンシブ
             responsiveWidth: 0,
             responsiveHeight: 0,
+            
+            // コールバック（デバッグ用）
+            afterLoad: function(origin, destination, direction){
+                console.log('Loaded:', destination.anchor);
+            }
         });
     </script>
 </body>
