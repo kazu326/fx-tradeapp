@@ -286,7 +286,10 @@
         
         /* ===== Section Padding ===== */
         .section {
-            padding-top: 150px !important;
+            padding-top: 80px !important; /* 150px → 80px に削減 */
+            padding-bottom: 40px; /* 下側の余白追加 */
+            min-height: 100vh !important; /* fullpage.jsのセクション高さを自動調整 */
+            height: auto !important; /* 固定高さを解除 */
         }
         
         /* ===== 各セクションの最初の要素の上マージンを削除 ===== */
@@ -646,10 +649,12 @@
         
         /* ===== Content Section ===== */
         .content-section {
-            padding-top: 150px;
+            padding-top: 80px; /* 150px → 80px */
             padding-left: var(--spacing-lg);
             padding-right: var(--spacing-lg);
             padding-bottom: var(--spacing-xl);
+            overflow-y: auto; /* 縦スクロール可能に */
+            max-height: 100vh; /* 画面高さ上限 */
         }
         
         .content-section h3 {
@@ -775,15 +780,16 @@
             }
             
             .section {
-                padding-top: 120px !important; /* スマホは少し小さめ */
+                padding-top: 60px !important; /* さらに削減 */
+                padding-bottom: 30px;
             }
             
             .hero-section {
-                padding-top: 80px; /* スマホのヒーローはさらに小さめ */
+                padding-top: 80px;
             }
             
             .content-section {
-                padding-top: 120px;
+                padding-top: 60px;
             }
             
             .section-divider-title {
