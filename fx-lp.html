@@ -46,64 +46,1167 @@
     <div id="fullpage">
         <!-- Hero Section -->
         <section class="section hero-section" data-anchor="hero">
-            <div class="hero-bg">
-                <div class="hero-image-placeholder"></div>
-                <div class="hero-overlay"></div>
+            <div class="hero-image-wrapper">
+                <img src="./images/hero/hero-image.jpg" alt="人生を変えたFXスキル" class="hero-image">
             </div>
             
             <div class="hero-content container">
-                <h1 class="hero-title fade-in-up">
-                    もう手法集めを<br>やめませんか?
-                </h1>
-                
-                <p class="hero-subtitle fade-in-up delay-1">
-                    人生を変えた最強のFXスキル
-                </p>
-                
-                <p class="hero-subtitle-2 fade-in-up delay-2">
-                    負けないトレード設計
-                </p>
-                
-                <p class="hero-body fade-in-up delay-3">
-                    9割が脱落すると言われるFXの世界。<br>
-                    でも、あなたが負け続ける理由は<br>
-                    「手法が悪い」からではありません。<br><br>
-                    必要なのは、<br>
-                    どんな手法でも機能する"土台"です。
-                </p>
-                
-                <div class="scroll-down fade-in-up delay-4">
-                    <span class="scroll-icon">↓</span>
-                    <span>続きを読む</span>
+                <!-- 66日イフゼン帯バナー -->
+                <div class="ifthen-banner fade-in-up delay-3" onclick="document.getElementById('ifthen').scrollIntoView({behavior:'smooth'})">
+                    <div class="ifthen-badge">NEW</div>
+                    <p class="ifthen-copy">66日で人生が変わるイフゼンプランニングとは？</p>
+                    <span class="ifthen-arrow">→</span>
                 </div>
-            </div>
-        </section>
-        
-        <!-- Bridge Section 1 -->
-        <section class="section bridge-section" data-anchor="bridge1">
-            <div class="content-wrapper container">
-                <h3 class="section-heading fade-in-up">このLPで得られる3つのこと</h3>
                 
-                <div class="section-body fade-in-up delay-1">
-                    <p><strong>【所要時間: 約50分】</strong></p>
+                <!-- 折りたたみ式の3つの価値提案 -->
+                <div class="hero-value-cards fade-in-up">
+                    <h2 class="value-heading">【限定公開】このLPで得られる3つの設計図</h2>
+                    <p class="value-subheading">所要時間: 3分</p>
                     
-                    <p>このLPを読み終えたとき、あなたは:</p>
+                    <!-- 1. 論理（赤色強調） -->
+                    <div class="accordion-card">
+                        <div class="accordion-button" onclick="toggleAccordion('hero-logic')">
+                            <div class="accordion-icon">📌</div>
+                            <div class="accordion-title-wrapper">
+                                <div class="accordion-title">
+                                    <span class="highlight-red">1. 論理：</span>手法を変えても勝てない"構造"が1分で理解できる
+                                </div>
+                            </div>
+                            <div class="accordion-arrow" id="arrow-hero-logic">▼</div>
+                        </div>
+                        
+                        <div class="accordion-content" id="hero-logic">
+                            <ul class="check-list">
+                                <li>❌ 資金管理が崩れている → 2%ルール無視でロット暴走</li>
+                                <li>❌ 出金ルールがない → 利益を溶かすサイクル</li>
+                                <li>❌ メンタルが壊れている → リベンジトレード地獄</li>
+                                <li>❌ トレード頻度が多すぎる → ポチポチ病で消耗</li>
+                                <li>❌ 記録をしていない → 同じ失敗を繰り返す</li>
+                            </ul>
+                            <p class="conclusion-text">
+                                <strong>結論:</strong> 手法の優劣ではなく、"土台"の設計が勝敗を分けます。
+                            </p>
+                        </div>
+                    </div>
                     
-                    <p><strong>1️⃣</strong> なぜ手法を変えても勝てないのか、<br>
-                    その"構造的な理由"を理解できます</p>
+                    <!-- 2. 設計（緑色強調） -->
+                    <div class="accordion-card">
+                        <div class="accordion-button" onclick="toggleAccordion('hero-design')">
+                            <div class="accordion-icon">🛠</div>
+                            <div class="accordion-title-wrapper">
+                                <div class="accordion-title">
+                                    <span class="highlight-green">2. 設計：</span>負けにくい土台を作る7ステップがそのまま真似できる
+                                </div>
+                            </div>
+                            <div class="accordion-arrow" id="arrow-hero-design">▼</div>
+                        </div>
+                        
+                        <div class="accordion-content" id="hero-design">
+                            <ol class="step-list">
+                                <li><strong>ステップ1:</strong> 資金管理ルールの設定（2%ルール・破産確率）</li>
+                                <li><strong>ステップ2:</strong> 出金設計の確立（ドローダウン連動ルール）</li>
+                                <li><strong>ステップ3:</strong> トレード頻度の最適化（打席を減らす技術）</li>
+                                <li><strong>ステップ4:</strong> ガードレールの設置（連敗停止・日次損失上限）</li>
+                                <li><strong>ステップ5:</strong> 検証と継続の仕組み化（PDCAサイクル自動化）</li>
+                                <li><strong>ステップ6:</strong> メンタル管理の設計（感情排除構造）</li>
+                                <li><strong>ステップ7:</strong> 手法の適合理論（土台に合う手法だけ選ぶ）</li>
+                            </ol>
+                            <p class="conclusion-text">
+                                <strong>結論:</strong> この7つが揃って初めて、どんな手法も"機能"します。
+                            </p>
+                        </div>
+                    </div>
                     
-                    <p><strong>2️⃣</strong> 土台を設計する具体的なステップを<br>
-                    明日から実践できます</p>
+                    <!-- 3. ツール（ゴールド色強調） -->
+                    <div class="accordion-card">
+                        <div class="accordion-button" onclick="toggleAccordion('hero-tool')">
+                            <div class="accordion-icon">🎁</div>
+                            <div class="accordion-title-wrapper">
+                                <div class="accordion-title">
+                                    <span class="highlight-gold">3. ツール：</span>日々の記録・リスク・頻度を自動化する管理ツールが無料で手に入る
+                                </div>
+                                <div class="accordion-badge">先着50名限定</div>
+                            </div>
+                            <div class="accordion-arrow" id="arrow-hero-tool">▼</div>
+                        </div>
+                        
+                        <div class="accordion-content" id="hero-tool">
+                            <h4>TradeLog Pro でできること</h4>
+                            <ul class="feature-list">
+                                <li>✅ トレード記録を3タップで登録</li>
+                                <li>✅ 記録データをグラフで可視化</li>
+                                <li>✅ AI分析で勝ち/負けパターンを自動抽出</li>
+                                <li>✅ ガードレール機能で自動アラート</li>
+                                <li>✅ 週次レポート自動生成</li>
+                            </ul>
+                            
+                            <div class="limited-reason">
+                                <p><strong>なぜ50名限定？</strong></p>
+                                <p>無料サポート・AI分析にかかるサーバコストを最小化するため、本気で取り組む方だけに絞らせていただいています。</p>
+                                <p class="remaining-count">残り枠: <span class="count-number">32名</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 強烈なCTA -->
+                <div class="hero-final-message fade-in-up delay-1">
+                    <p class="final-message-text">
+                        本気で手法ジプシーを終わらせたい方だけ、<br>
+                        この先へお進みください。
+                    </p>
                     
-                    <p><strong>3️⃣</strong> 本気で取り組む覚悟ができた方だけに、<br>
-                    "一生使える管理ツール"を無料提供します</p>
-                    
-                    <div class="scroll-down" style="margin-top: 2rem;">
-                        <span>↓ 続きを読む</span>
+                    <div class="scroll-down-emphasized">
+                        <span class="scroll-text">↓ 本編で詳しく見る</span>
+                        <span class="scroll-subtext">(あと2分で、あなたの人生が変わります)</span>
                     </div>
                 </div>
             </div>
         </section>
+        
+        <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --color-bg: #ffffff;
+            --color-text: #1F2121;
+            --color-text-secondary: #666666;
+            --color-gold: #D4AF37;
+            --color-gold-light: #FFD700;
+            --color-red: #C0152F;
+            --color-teal: #21808D;
+            --color-border: #e5e5e5;
+            --color-surface: #fafafa;
+            
+            --font-family: 'Noto Sans JP', sans-serif;
+            --font-size-base: 16px;
+            --font-size-lg: 20px;
+            --font-size-xl: 24px;
+            --font-size-2xl: 28px;
+            --font-size-3xl: 32px;
+            
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-neumorphic: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.9);
+            --shadow-neumorphic-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+        }
+        
+        /* ===== Reset & Base ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* ===== Container - 420px Fixed Width ===== */
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 0 20px;
+            background: var(--color-bg);
+        }
+        
+        /* ===== Section Divider with Gold Lines ===== */
+        .section-divider {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto var(--spacing-xl);
+            padding-top: var(--spacing-2xl);
+        }
+        
+        .section-divider-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+            margin-bottom: 0;
+        }
+        
+        .section-divider-bar {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+            padding: var(--spacing-xl) var(--spacing-lg);
+            text-align: center;
+            border-left: 3px solid var(--color-gold);
+            border-right: 3px solid var(--color-gold);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .section-divider-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 900;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.3;
+        }
+        
+        .section-divider-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+        
+        .section-divider-line-bottom {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+            margin-top: 0;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        /* ===== Hero Section ===== */
+        .hero-section {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+            background: var(--color-bg);
+        }
+        
+        .hero-image-wrapper {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .hero-content {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+        
+        /* ===== 66日イフゼン帯バナー ===== */
+        .ifthen-banner {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            border: 2px solid var(--color-gold);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md) var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ifthen-banner:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.08));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+        
+        .ifthen-badge {
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+            color: #2b2b2b;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            flex-shrink: 0;
+        }
+        
+        .ifthen-copy {
+            margin: 0;
+            font-weight: 700;
+            color: var(--color-text);
+            flex: 1;
+            line-height: 1.4;
+        }
+        
+        .ifthen-arrow {
+            margin-left: auto;
+            color: var(--color-teal);
+            font-weight: 700;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        /* ===== Value Proposition Box ===== */
+        .value-box {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            border: 3px solid var(--color-gold);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .value-box-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .value-box-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .value-box-title {
+            font-size: var(--font-size-xl);
+            font-weight: 900;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.3;
+        }
+        
+        .value-box-subtitle {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+        
+        /* ===== Neumorphic Accordion Buttons ===== */
+        .accordion-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+        }
+        
+        .accordion-button {
+            width: 100%;
+            background: var(--color-bg);
+            border: none;
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-neumorphic);
+            border-radius: var(--radius-lg);
+            position: relative;
+        }
+        
+        .accordion-button:hover {
+            box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.12), -6px -6px 12px rgba(255, 255, 255, 0.95);
+        }
+        
+        .accordion-button:active,
+        .accordion-button.active {
+            box-shadow: var(--shadow-neumorphic-inset);
+            transform: scale(0.98);
+        }
+        
+        .accordion-icon {
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+        
+        .accordion-title-wrapper {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .accordion-title {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: var(--color-text);
+            line-height: 1.4;
+        }
+        
+        .accordion-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+            color: var(--color-text);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-top: var(--spacing-sm);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        .accordion-arrow {
+            font-size: 1.5rem;
+            color: var(--color-teal);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .accordion-button.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            padding: 0 var(--spacing-lg);
+            background: var(--color-surface);
+        }
+        
+        .accordion-content.active {
+            max-height: 2000px;
+            padding: var(--spacing-lg);
+        }
+        
+        .accordion-content ul {
+            list-style: none;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .accordion-content li {
+            padding: var(--spacing-sm) 0;
+            line-height: 1.6;
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .accordion-content li:last-child {
+            border-bottom: none;
+        }
+        
+        .accordion-content ol {
+            list-style: none;
+            counter-reset: step-counter;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .accordion-content ol li {
+            counter-increment: step-counter;
+            padding-left: var(--spacing-xl);
+            position: relative;
+        }
+        
+        .accordion-content ol li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: var(--spacing-sm);
+            width: 24px;
+            height: 24px;
+            background: var(--color-teal);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .conclusion-box {
+            background: linear-gradient(135deg, rgba(33, 128, 141, 0.1), rgba(33, 128, 141, 0.05));
+            border-left: 4px solid var(--color-teal);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .conclusion-box strong {
+            color: var(--color-teal);
+            font-weight: 700;
+        }
+        
+        .conclusion-text {
+            background: linear-gradient(135deg, rgba(33, 128, 141, 0.1), rgba(33, 128, 141, 0.05));
+            border-left: 4px solid var(--color-teal);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .conclusion-text strong {
+            color: var(--color-teal);
+            font-weight: 700;
+        }
+        
+        .limited-box {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+            border: 2px solid var(--color-gold);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-top: var(--spacing-md);
+        }
+        
+        .limited-box h4 {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text);
+        }
+        
+        .remaining-count {
+            font-size: var(--font-size-lg);
+            font-weight: 900;
+            color: var(--color-red);
+            text-align: center;
+            margin-top: var(--spacing-md);
+        }
+        
+        .remaining-count .number {
+            font-size: var(--font-size-3xl);
+            display: block;
+            margin-top: var(--spacing-sm);
+        }
+        
+        /* ===== Highlight Colors ===== */
+        .highlight-red {
+            color: var(--color-red);
+            font-weight: 700;
+        }
+        
+        .highlight-green {
+            color: #2d8659;
+            font-weight: 700;
+        }
+        
+        .highlight-gold {
+            color: var(--color-gold);
+            font-weight: 700;
+        }
+        
+        /* ===== CTA Section ===== */
+        .cta-section {
+            text-align: center;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+        }
+        
+        .cta-message {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .scroll-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .scroll-text {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--color-teal);
+        }
+        
+        .scroll-subtext {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+        
+        /* ===== Content Section ===== */
+        .content-section {
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+        
+        .content-section h3 {
+            font-size: var(--font-size-xl);
+            font-weight: 900;
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.3;
+            text-align: center;
+        }
+        
+        .content-section p {
+            margin-bottom: var(--spacing-md);
+            line-height: 1.7;
+        }
+        
+        .content-section strong {
+            font-weight: 700;
+            color: var(--color-text);
+        }
+        
+        .gold-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+            margin: var(--spacing-xl) 0;
+            opacity: 0.5;
+        }
+        
+        .checklist {
+            list-style: none;
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .checklist li {
+            padding: var(--spacing-sm) 0;
+            padding-left: var(--spacing-lg);
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .checklist li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            top: var(--spacing-sm);
+        }
+        
+        /* ===== Info Box ===== */
+        .info-box {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            border-left: 4px solid var(--color-gold);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .info-box p {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* ===== Fixed CTA Button ===== */
+        .fixed-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+            padding: var(--spacing-md);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .cta-button {
+            display: block;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--color-teal), #1a6570);
+            color: white;
+            text-decoration: none;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(33, 128, 141, 0.3);
+        }
+        
+        .cta-button:active {
+            transform: translateY(0);
+        }
+        
+        /* ===== Responsive Adjustments ===== */
+        @media (max-width: 420px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .section-divider-title {
+                font-size: var(--font-size-xl);
+            }
+            
+            .value-box-title {
+                font-size: var(--font-size-lg);
+            }
+        }
+        
+        /* ===== Utility Classes ===== */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-0 { margin-bottom: 0; }
+        .mb-sm { margin-bottom: var(--spacing-sm); }
+        .mb-md { margin-bottom: var(--spacing-md); }
+        .mb-lg { margin-bottom: var(--spacing-lg); }
+        .mb-xl { margin-bottom: var(--spacing-xl); }
+        
+        .mt-0 { margin-top: 0; }
+        .mt-sm { margin-top: var(--spacing-sm); }
+        .mt-md { margin-top: var(--spacing-md); }
+        .mt-lg { margin-top: var(--spacing-lg); }
+        .mt-xl { margin-top: var(--spacing-xl); }
+        
+        /* ===== 既存クラス互換性 ===== */
+        .hero-value-cards {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .value-heading {
+            font-size: var(--font-size-xl);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text);
+        }
+        
+        .value-subheading {
+            text-align: center;
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .section-heading {
+            font-size: var(--font-size-xl);
+            font-weight: 900;
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.3;
+            text-align: center;
+        }
+        
+        .section-body {
+            line-height: 1.7;
+        }
+        
+        .content-wrapper {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .scroll-down {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-xl);
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-down span {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--color-teal);
+        }
+        
+        .check-list, .step-list, .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .check-list li, .feature-list li {
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--color-border);
+            line-height: 1.6;
+        }
+        
+        .step-list li {
+            padding: var(--spacing-md) 0 var(--spacing-md) var(--spacing-xl);
+            border-bottom: 1px solid var(--color-border);
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        .step-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--color-teal);
+            border-radius: 50%;
+        }
+        
+        .badge-limited {
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+            color: var(--color-text);
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            animation: pulse 2s infinite;
+        }
+        
+        .limited-reason {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--color-gold);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .cta-button-inline {
+            display: inline-block;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-teal), #1a6570);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button-inline:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(33, 128, 141, 0.3);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        .hero-final-message {
+            text-align: center;
+            margin-top: var(--spacing-xl);
+        }
+        
+        .final-message-text {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .scroll-down-emphasized {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            animation: bounce 2s infinite;
+        }
+        
+        @media (max-width: 420px) {
+            .ifthen-banner {
+                padding: 0.875rem var(--spacing-md);
+            }
+            
+            .ifthen-copy {
+                font-size: 0.95rem;
+            }
+            
+            .ifthen-arrow {
+                font-size: 1.25rem;
+            }
+        }
+        
+        </style>
+        
+        <script>
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const arrow = document.getElementById('arrow-' + id);
+            const button = arrow ? arrow.closest('.accordion-button') : null;
+            
+            if (content && arrow) {
+                content.classList.toggle('active');
+                arrow.classList.toggle('active');
+                if (button) {
+                    button.classList.toggle('active');
+                }
+            }
+        }
+        </script>
+        
+        <!-- Bridge Section 1 -->
+        <section class="section content-section" data-anchor="bridge1">
+            <div class="content-wrapper container">
+                <h3 class="section-heading">今、あなたは重要な分岐点に立っています</h3>
+                
+                <div class="section-body">
+                    <p>ここまで読んだあなたは、<br>
+                    すでに<strong>上位10%</strong>です。</p>
+                    
+                    <p>なぜなら、<br>
+                    9割の人は「手法がほしい」と言いながら<br>
+                    本質的な話を読もうとしないから。</p>
+                    
+                    <hr style="margin: 2rem 0; border: 1px solid var(--color-gold); opacity: 0.3;">
+                    
+                    <p>ここから先は、<br>
+                    <strong>本気で変わりたい人だけ</strong>が<br>
+                    読むべき内容です。</p>
+                    
+                    <p><strong>【これから読む8つの章】</strong></p>
+                    
+                    <p>✅ なぜ手法を変えても勝てないのか?<br>
+                    ✅ メンタルを設計する技術<br>
+                    ✅ 資金管理の完全マニュアル<br>
+                    ✅ 出金設計という名の人生設計<br>
+                    ✅ トレード頻度の最適化<br>
+                    ✅ ガードレールで自動的に止まる<br>
+                    ✅ 検証と継続の自動化<br>
+                    ✅ 本気で変わる覚悟</p>
+                    
+                    <hr style="margin: 2rem 0; border: 1px solid var(--color-gold); opacity: 0.3;">
+                    
+                    <p>所要時間: <strong>約5分</strong></p>
+                    
+                    <p>たった5分で、<br>
+                    あなたの<strong>人生が変わり始めます。</strong></p>
+                    
+                    <hr style="margin: 2rem 0; border: 1px solid var(--color-gold); opacity: 0.3;">
+                    
+                    <p>本気で変わりたい方だけ、<br>
+                    この先に進んでください。</p>
+                    
+                    <div class="scroll-down" style="margin-top: 2rem;">
+                        <span>↓ 第1章へ</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 66日イフゼン折りたたみセクション -->
+        <section class="section content-section" data-anchor="ifthen" id="ifthen">
+            <div class="content-wrapper container">
+                <h3 class="section-heading">66日で"土台"が定着する If-Then（イフゼン）</h3>
+                
+                <div class="section-body">
+                    <!-- 科学的根拠 -->
+                    <div style="background: rgba(212, 175, 55, 0.05); border-left: 4px solid #D4AF37; padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-base);">
+                        <p style="margin: 0; font-weight: var(--font-weight-medium); line-height: 1.7;">
+                            <strong>実証済み:</strong> ロンドン大学の研究では「新しい習慣は平均66日で身につく」と判明。<br>
+                            特に「イフゼンプランニング（If-Thenルール）」は世界的心理学者Gollwitzerらの実験で<strong>成功率が2倍以上</strong>に高まることが知られています。
+                        </p>
+                    </div>
+                    
+                    <p>
+                        「もしXならYする」を事前に決めるだけで、<br>
+                        感情に左右されない行動が生まれます。
+                    </p>
+                    
+                    <p style="font-size: 0.875rem; color: var(--color-text-secondary);">
+                        ※個人差はありますが、約66日の定着を見据えて<br>
+                        「毎日1ステップ」で実装します。
+                    </p>
+                    
+                    <hr style="margin: 2rem 0; border: 1px solid var(--color-border);">
+                    
+                    <!-- 折りたたみ詳細 -->
+                    <div class="accordion-card">
+                        <div class="accordion-button" onclick="toggleAccordion('ifthen-detail')">
+                            <div class="accordion-icon">📋</div>
+                            <div class="accordion-title-wrapper">
+                                <div class="accordion-title">
+                                    <span class="highlight-green">具体例：</span>トレードで使える If-Then ルール
+                                </div>
+                            </div>
+                            <div class="accordion-arrow" id="arrow-ifthen-detail">▼</div>
+                        </div>
+                        
+                        <div class="accordion-content" id="ifthen-detail">
+                            <h4>【3つの基本If-Then】</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="padding: 0.75rem; border-bottom: 1px solid var(--color-border); background: rgba(33, 128, 141, 0.05);">
+                                    <strong>1️⃣ もし3連敗したら、</strong><br>
+                                    その日は終了して翌朝のチェックリストから再開する
+                                </li>
+                                <li style="padding: 0.75rem; border-bottom: 1px solid var(--color-border); background: rgba(33, 128, 141, 0.05);">
+                                    <strong>2️⃣ もし含み益が1Rに到達したら、</strong><br>
+                                    逆指値を建値に移動する
+                                </li>
+                                <li style="padding: 0.75rem; background: rgba(33, 128, 141, 0.05);">
+                                    <strong>3️⃣ もし新規エントリーを行ったら、</strong><br>
+                                    即時にログへ記録し、ロット遵守フラグを確認する
+                                </li>
+                            </ul>
+                            
+                            <hr style="margin: 1.5rem 0; border: 1px solid var(--color-border);">
+                            
+                            <h4>【実践者の声】</h4>
+                            <p style="background: var(--color-secondary); padding: 1rem; border-radius: var(--radius-base);">
+                                「もし3連敗したら終了」を決めただけで、<br>
+                                リベンジトレードが<strong>完全に消えました</strong>。<br>
+                                — Bさん（30代男性）
+                            </p>
+                            
+                            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05)); border: 2px solid #D4AF37; border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 1.5rem; text-align: center;">
+                                <h4 style="margin-top: 0; color: #D4AF37;">🎁 66日チャレンジ用チェックリスト</h4>
+                                <p>TradeLog Pro には、<br>
+                                66日間のイフゼン実践をサポートする<br>
+                                <strong>チェックリスト機能</strong>が実装されています。</p>
+                                <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" class="cta-button-inline pulse-animation" style="display: inline-block; margin-top: 1rem;">
+                                    今すぐ無料で受け取る
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr style="margin: 2rem 0; border: 1px solid var(--color-gold); opacity: 0.3;">
+                    
+                    <p style="text-align: center; font-weight: var(--font-weight-medium); font-size: 1.125rem;">
+                        今日から66日、If-Thenを"1つ"だけ<br>
+                        実装してみませんか？
+                    </p>
+                    
+                    <div class="scroll-down" style="margin-top: 2rem;">
+                        <span>↓ 筆者について</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section class="section content-section" data-anchor="about">
+            <div class="content-wrapper container">
+                <h3 class="section-heading">筆者について ― 心理学×脳科学×NLPの実装家</h3>
+                
+                <div class="section-body">
+                    <!-- 肩書き -->
+                    <div style="background: rgba(212, 175, 55, 0.05); border-left: 4px solid #D4AF37; padding: 1rem; margin-bottom: 2rem; border-radius: var(--radius-base);">
+                        <p style="margin: 0; font-weight: var(--font-weight-bold);">
+                            ✅ FX歴10年 / コーチング支援<br>
+                            ✅ NLP（神経言語プログラミング）認定プラクティショナー<br>
+                            ✅ 行動デザイン（If-Then）と検証自動化の設計者
+                        </p>
+                    </div>
+                    
+                    <!-- 60秒版ティザー -->
+                    <div style="background: var(--color-secondary); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem;">
+                        <p style="font-weight: var(--font-weight-medium); line-height: 1.7;">
+                            行動は単純な性格診断で決まりません。<br>
+                            過去・環境・トリガーが交差する<strong>複雑系</strong>です。
+                        </p>
+                        <p style="font-weight: var(--font-weight-medium); line-height: 1.7;">
+                            だからこそ<strong>心理学×脳科学×NLP</strong>を<br>
+                            "行動設計"に翻訳し、<br>
+                            あなたのトレードに実装します。
+                        </p>
+                        <hr style="margin: 1.5rem 0; border: 1px solid var(--color-border); opacity: 0.3;">
+                        <p style="font-weight: var(--font-weight-medium); line-height: 1.7;">
+                            唯一、誰でも機能しやすい汎用テクニックが<br>
+                            <strong>「イフゼン・プランニング」</strong>。
+                        </p>
+                        <p style="line-height: 1.7;">
+                            "もしXならYする"を土台に埋め込むと、<br>
+                            感情に流されない意思決定が再現できます。
+                        </p>
+                    </div>
+                    
+                    <!-- 折りたたみ詳細 -->
+                    <div class="accordion-card">
+                        <div class="accordion-button" onclick="toggleAccordion('about-detail')">
+                            <div class="accordion-icon">📖</div>
+                            <div class="accordion-title-wrapper">
+                                <div class="accordion-title">
+                                    詳しく知る：なぜ心理学は"魔法"ではないのか？
+                                </div>
+                            </div>
+                            <div class="accordion-arrow" id="arrow-about-detail">▼</div>
+                        </div>
+                        
+                        <div class="accordion-content" id="about-detail">
+                            <h4 style="margin-top: 1rem;">【立場】心理や脳の知識は"魔法"ではありません</h4>
+                            <p>
+                                人の行動は過去・環境・トリガーが絡む<strong>複雑系</strong>で、<br>
+                                単純な性格タグでは未来の行動を当てられません。
+                            </p>
+                            <p>
+                                本屋に並ぶ心理学本が何百冊もあるのは、<br>
+                                "万能な一冊"が存在しないからです。
+                            </p>
+                            <p>
+                                科学的根拠でさえ、5〜6割の再現率で<br>
+                                「効果あり」と判定されます。
+                            </p>
+                            
+                            <hr style="margin: 1.5rem 0; border: 1px solid var(--color-border);">
+                            
+                            <h4>【見解】だからこそ、理論は"使える形"に翻訳する</h4>
+                            <p>
+                                資金・頻度・出金・メンタルという土台に、<br>
+                                <strong>イフゼン・プランニングのガードレール</strong>を埋め込む。
+                            </p>
+                            <p>
+                                これが勝ちを"続ける"設計です。
+                            </p>
+                            
+                            <hr style="margin: 1.5rem 0; border: 1px solid var(--color-border);">
+                            
+                            <h4>【約束】誇張はしません</h4>
+                            <p>
+                                効くときはなぜ効くか、<br>
+                                効かないときはなぜかを検証します。
+                            </p>
+                            <p>
+                                ツールとルールで、<br>
+                                <strong>感覚を仕組みに変えます。</strong>
+                            </p>
+                            
+                            <hr style="margin: 1.5rem 0; border: 1px solid var(--color-border);">
+                            
+                            <h4>【イフゼン・プランニングの具体例】</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                    ✅ もし<strong>3連敗</strong>したら、その日は終了して<br>
+                                    　翌朝のチェックリストから再開する
+                                </li>
+                                <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+                                    ✅ もし含み益が<strong>1R</strong>に到達したら、<br>
+                                    　逆指値を建値に移動する
+                                </li>
+                                <li style="padding: 0.5rem 0;">
+                                    ✅ もし新規エントリーを行ったら、<br>
+                                    　即時にログへ記録し、ロット遵守フラグを確認する
+                                </li>
+                            </ul>
+                            
+                            <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid #D4AF37; border-radius: var(--radius-base); padding: 1rem; margin-top: 1.5rem;">
+                                <p style="font-weight: var(--font-weight-bold); margin: 0;">
+                                    この設計を、TradeLog Pro に実装しています。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr style="margin: 2rem 0; border: 1px solid var(--color-gold); opacity: 0.3;">
+                    
+                    <p style="text-align: center; font-weight: var(--font-weight-medium); font-size: 1.125rem;">
+                        準備はいいですか？<br>
+                        ここから先は、本気で変わりたい人だけが<br>
+                        読むべき内容です。
+                    </p>
+                    
+                    <div class="scroll-down" style="margin-top: 2rem;">
+                        <span>↓ 第1章へ進む</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
         
         <!-- Bridge Section 2 -->
         <section class="section bridge-section" data-anchor="bridge2">
