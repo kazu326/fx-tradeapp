@@ -236,7 +236,8 @@
             width: 100%;
             max-width: 420px;
             margin: 0 auto var(--spacing-xl);
-            padding-top: 0 !important; /* 区切りバーは余白なし */
+            padding-top: 2rem;
+            margin-top: 0;
         }
         
         .section-divider-line {
@@ -249,23 +250,24 @@
         .section-divider-bar {
             width: 100%;
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
-            padding: var(--spacing-xl) var(--spacing-lg);
+            padding: 1.5rem 1rem;
             text-align: center;
             border-left: 3px solid var(--color-gold);
             border-right: 3px solid var(--color-gold);
-            min-height: 200px;
+            min-height: 150px; /* 200px → 150px に削減 */
             display: flex;
             flex-direction: column;
             justify-content: center;
-            margin-top: 0; /* バーの上余白もなし */
+            margin-top: 0;
         }
         
         .section-divider-title {
-            font-size: var(--font-size-2xl);
+            font-size: 1.5rem; /* 28px → 24px に削減 */
             font-weight: 900;
             color: var(--color-text);
             margin-bottom: var(--spacing-sm);
             line-height: 1.4;
+            max-width: 100%;
             word-break: keep-all;
             overflow-wrap: break-word;
         }
@@ -286,10 +288,10 @@
         
         /* ===== Section Padding ===== */
         .section {
-            padding-top: 80px !important; /* 150px → 80px に削減 */
-            padding-bottom: 40px; /* 下側の余白追加 */
-            min-height: 100vh !important; /* fullpage.jsのセクション高さを自動調整 */
-            height: auto !important; /* 固定高さを解除 */
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            height: auto !important;
+            min-height: 100vh;
         }
         
         /* ===== 各セクションの最初の要素の上マージンを削除 ===== */
@@ -304,19 +306,24 @@
             max-width: 420px;
             margin: 0 auto;
             background: var(--color-bg);
-            padding-top: 100px; /* ヒーローは少し小さめ */
+            padding-top: 0;
+            margin-top: 0;
         }
         
         .hero-image-wrapper {
             width: 100%;
             max-width: 420px;
             margin: 0 auto;
+            padding-top: 0;
+            margin-top: 0;
+            overflow: visible; /* はみ出しを許可 */
         }
         
         .hero-image {
             width: 100%;
             height: auto;
             display: block;
+            max-height: none; /* 高さ制限を削除 */
         }
         
         .hero-content {
@@ -649,12 +656,7 @@
         
         /* ===== Content Section ===== */
         .content-section {
-            padding-top: 80px; /* 150px → 80px */
-            padding-left: var(--spacing-lg);
-            padding-right: var(--spacing-lg);
-            padding-bottom: var(--spacing-xl);
-            overflow-y: auto; /* 縦スクロール可能に */
-            max-height: 100vh; /* 画面高さ上限 */
+            padding: 1rem;
         }
         
         .content-section h3 {
@@ -779,21 +781,13 @@
                 padding: 0 16px;
             }
             
-            .section {
-                padding-top: 60px !important; /* さらに削減 */
-                padding-bottom: 30px;
-            }
-            
-            .hero-section {
-                padding-top: 80px;
-            }
-            
-            .content-section {
-                padding-top: 60px;
-            }
-            
             .section-divider-title {
-                font-size: var(--font-size-xl);
+                font-size: 1.25rem; /* さらに削減 */
+            }
+            
+            .section-divider-bar {
+                min-height: 120px;
+                padding: 1rem 0.5rem;
             }
             
             .value-box-title {
