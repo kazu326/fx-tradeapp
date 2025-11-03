@@ -50,7 +50,8 @@ a {
   --color-text-primary: #2C3E50;
   --color-text-secondary: #626C7C;
   --color-error: #C0152F;
-  
+  --color-success: #21808D;  /* Teal color for success */
+
   /* Typography */
   --font-primary: "Noto Sans JP", "Hiragino Sans", sans-serif;
   --font-heading: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
