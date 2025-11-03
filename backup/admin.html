@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者ページ - FX TradeLog Pro</title>
+    <style>
+        /* app.htmlと同じCSS変数を使用 */
+        :root {
+            --color-background: #020617;
+            --color-surface: rgba(15, 23, 42, 0.5);
+            --color-text: #f1f5f9;
+            --color-text-secondary: #cbd5e1;
+            --color-primary: #00A9A5;
+            --color-border: rgba(30, 41, 59, 0.6);
+            --font-family-base: ui-sans-serif, system-ui, sans-serif;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --radius-lg: 1rem;
+        }
+        
+        body {
+            font-family: var(--font-family-base);
+            background: var(--color-background);
+            color: var(--color-text);
+            padding: var(--space-6);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .admin-section {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-bottom: var(--space-4);
+        }
+        
+        .btn {
+            background: var(--color-primary);
+            color: #020617;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(203, 213, 225, 0.2);
+            color: var(--color-text);
+        }
+        
+        input, select {
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-right: 8px;
+        }
+        
+        .log {
+            background: #0f172a;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- パスコード認証画面 -->
+    <div id="passcodeScreen" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--color-background);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    ">
+        <div style="
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        ">
+            <h2 style="margin-bottom: 24px;">🔐 管理者認証</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 24px;">
+                パスコードを入力してください
+            </p>
+            <input 
+                type="password" 
+                id="passcodeInput" 
+                placeholder="パスコードを入力"
+                style="
+                    width: 100%;
+                    padding: 12px 16px;
+                    font-size: 16px;
+                    border-radius: 8px;
+                    border: 1px solid var(--color-border);
+                    background: var(--color-background);
+                    color: var(--color-text);
+                    margin-bottom: 16px;
+                "
+            >
+            <button 
+                onclick="checkPasscode()" 
+                class="btn" 
+                style="width: 100%;"
+            >
+                ログイン
+            </button>
+            <p id="passcodeError" style="
+                color: #ef4444;
+                margin-top: 16px;
+                display: none;
+            ">
+                パスコードが間違っています
+            </p>
+        </div>
+    </div>
+
+    <div id="adminContent" style="display: none;">
+        <h1>🛠️ 管理者ページ</h1>
+        <p style="color: var(--color-text-secondary);">テストデータ投入とキャンペーン管理</p>
+        
+        <!-- テストデータ投入 -->
+    <div class="admin-section">
+        <h2>📊 テストデータ投入</h2>
+        <p>スクリーンショット用のリアルなトレードデータを生成します。</p>
+        
+        <label>
+            データ数: 
+            <input type="number" id="testDataCount" value="20" min="5" max="100">
+        </label>
+        
+        <label>
+            期間（日数）: 
+            <input type="number" id="testDataDays" value="30" min="7" max="90">
+        </label>
+        
+        <br><br>
+        <button class="btn" onclick="generateTestData()">テストデータ生成</button>
+        <button class="btn-danger btn" onclick="clearAllData()">全データ削除</button>
+        
+        <div class="log" id="dataLog"></div>
+    </div>
+    
+    <!-- プラン管理 -->
+    <div class="admin-section">
+        <h2>👤 プラン管理</h2>
+        <p>現在のプラン: <strong id="currentPlan">-</strong></p>
+        
+        <button class="btn" onclick="setPlan('early_pro')">Early Pro</button>
+        <button class="btn" onclick="setPlan('free')">Free</button>
+        <button class="btn" onclick="setPlan('pro')">Pro</button>
+        <button class="btn-secondary btn" onclick="resetConsultation()">相談予約リセット</button>
+    </div>
+    
+    <!-- キャンペーン設定 -->
+    <div class="admin-section">
+        <h2>🎉 キャンペーン設定</h2>
+        
+        <label>
+            先着50人キャンペーン: 
+            <select id="campaignActive" onchange="updateCampaign()">
+                <option value="true">有効</option>
+                <option value="false">無効</option>
+            </select>
+        </label>
+        
+        <label>
+            現在の登録者数: 
+            <input type="number" id="campaignSignups" value="0" min="0" max="50">
+        </label>
+        
+        <button class="btn" onclick="updateCampaign()">設定を保存</button>
+    </div>
+    
+    <!-- アプリに戻る -->
+    <div class="admin-section">
+        <h2>🔙 アクション</h2>
+        <button class="btn" onclick="window.location.href='app.html'">アプリに戻る</button>
+        <button class="btn-secondary btn" onclick="window.open('app.html', '_blank')">新規タブでアプリを開く</button>
+        <button class="btn-danger btn" onclick="logout()">ログアウト</button>
+    </div>
+    </div>
+    
+    <script>
+        // パスコード設定（変更可能）
+        const ADMIN_PASSCODE = 'tradelog2025';  // ← お好きなパスコードに変更してください
+        
+        // パスコードチェック
+        function checkPasscode() {
+            const input = document.getElementById('passcodeInput');
+            const error = document.getElementById('passcodeError');
+            
+            if (input.value === ADMIN_PASSCODE) {
+                // 認証成功
+                localStorage.setItem('adminAuthenticated', 'true');
+                document.getElementById('passcodeScreen').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                logMessage('✅ 管理者認証成功');
+            } else {
+                // 認証失敗
+                error.style.display = 'block';
+                input.value = '';
+                input.focus();
+            }
+        }
+        
+        // ログアウト機能
+        function logout() {
+            localStorage.removeItem('adminAuthenticated');
+            location.reload();
+        }
+        
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('passcodeInput');
+            input?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkPasscode();
+                }
+            });
+            
+            // 既に認証済みかチェック（セッション継続）
+            const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+            if (isAuthenticated) {
+                document.getElementById('passcodeScreen').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                updatePlanDisplay();
+                loadCampaignSettings();
+            } else {
+                input?.focus();
+            }
+        });
+        
+        // テストデータ生成
+        function generateTestData() {
+            const count = parseInt(document.getElementById('testDataCount').value);
+            const days = parseInt(document.getElementById('testDataDays').value);
+            
+            const pairs = ['USD/JPY', 'EUR/JPY', 'GBP/JPY', 'AUD/JPY', 'EUR/USD'];
+            const directions = ['buy', 'sell'];
+            
+            const trades = [];
+            const now = new Date();
+            
+            for (let i = 0; i < count; i++) {
+                const daysAgo = Math.floor(Math.random() * days);
+                const date = new Date(now);
+                date.setDate(date.getDate() - daysAgo);
+                
+                const pair = pairs[Math.floor(Math.random() * pairs.length)];
+                const direction = directions[Math.floor(Math.random() * 2)];
+                const isWin = Math.random() > 0.4; // 60%勝率
+                
+                const pnl = isWin 
+                    ? Math.floor(Math.random() * 5000) + 1000
+                    : -Math.floor(Math.random() * 3000) - 500;
+                
+                const entryPrice = direction === 'buy' ? 150.00 : 150.50;
+                const exitPrice = isWin 
+                    ? (direction === 'buy' ? entryPrice + 0.30 : entryPrice - 0.30)
+                    : (direction === 'buy' ? entryPrice - 0.20 : entryPrice + 0.20);
+                
+                const trade = {
+                    id: Date.now() + '-' + i,
+                    date: date.toISOString(),
+                    pair: pair,
+                    direction: direction,
+                    entryPrice: parseFloat(entryPrice.toFixed(2)),
+                    exitPrice: parseFloat(exitPrice.toFixed(2)),
+                    lotSize: parseFloat((Math.random() * 2 + 0.1).toFixed(2)),
+                    pnl: pnl,
+                    notes: isWin ? 'トレンドフォロー成功' : '損切り実行',
+                    timestamp: date.getTime(),
+                    pipSize: pair.includes('JPY') ? 0.01 : 0.0001
+                };
+                
+                // 損益計算
+                if (pair.includes('JPY')) {
+                    if (direction === 'buy') {
+                        trade.pips = parseFloat(((exitPrice - entryPrice) * 100).toFixed(2));
+                    } else {
+                        trade.pips = parseFloat(((entryPrice - exitPrice) * 100).toFixed(2));
+                    }
+                } else {
+                    trade.pips = parseFloat((Math.abs(exitPrice - entryPrice) * 10000).toFixed(2));
+                }
+                
+                trades.push(trade);
+            }
+            
+            // localStorageに保存（app.htmlと同じキーを使用）
+            const FULL_TRADES_KEY = 'fx_trades_full';
+            const existingTrades = JSON.parse(localStorage.getItem(FULL_TRADES_KEY) || '[]');
+            const allTrades = [...existingTrades, ...trades];
+            localStorage.setItem(FULL_TRADES_KEY, JSON.stringify(allTrades));
+            
+            // AI用簡易データにも同期
+            const lsTrades = trades.map(t => ({
+                date: t.date.slice(0, 10),
+                pair: t.pair,
+                side: t.direction === 'buy' ? '買' : '売',
+                lot: t.lotSize,
+                entry: t.entryPrice,
+                exit: t.exitPrice,
+                pnl: t.pnl,
+                rule: '—',
+                memo: t.notes
+            }));
+            const existingSimpleTrades = JSON.parse(localStorage.getItem('fx_trades') || '[]');
+            localStorage.setItem('fx_trades', JSON.stringify([...existingSimpleTrades, ...lsTrades]));
+            
+            logMessage(`✅ ${count}件のテストデータを生成しました（過去${days}日分）`);
+            logMessage(`勝率: ${Math.floor((trades.filter(t => t.pnl > 0).length / trades.length) * 100)}%`);
+        }
+        
+        // 全データ削除
+        function clearAllData() {
+            if (!confirm('本当に全データを削除しますか？')) return;
+            
+            localStorage.removeItem('fx_trades_full');
+            localStorage.removeItem('fx_trades');
+            logMessage('🗑️ 全データを削除しました');
+        }
+        
+        // プラン設定
+        function setPlan(plan) {
+            localStorage.setItem('userPlan', plan);
+            updatePlanDisplay();
+            logMessage(`✅ プランを ${plan} に変更しました`);
+        }
+        
+        function updatePlanDisplay() {
+            const plan = localStorage.getItem('userPlan') || 'free';
+            document.getElementById('currentPlan').textContent = plan;
+        }
+        
+        // 相談予約リセット
+        function resetConsultation() {
+            localStorage.removeItem('consultationBooked');
+            localStorage.removeItem('consultationData');
+            localStorage.removeItem('consultationDate');
+            logMessage('✅ 相談予約をリセットしました');
+        }
+        
+        // キャンペーン設定読み込み
+        function loadCampaignSettings() {
+            const active = localStorage.getItem('campaignActive') !== 'false';
+            const signups = localStorage.getItem('campaignSignups') || '0';
+            
+            document.getElementById('campaignActive').value = active.toString();
+            document.getElementById('campaignSignups').value = signups;
+        }
+        
+        // キャンペーン設定更新
+        function updateCampaign() {
+            const active = document.getElementById('campaignActive').value === 'true';
+            const signups = document.getElementById('campaignSignups').value;
+            
+            localStorage.setItem('campaignActive', active.toString());
+            localStorage.setItem('campaignSignups', signups);
+            
+            logMessage(`✅ キャンペーン設定を更新しました（有効: ${active}, 登録者: ${signups}）`);
+        }
+        
+        // ログ出力
+        function logMessage(msg) {
+            const log = document.getElementById('dataLog');
+            const time = new Date().toLocaleTimeString('ja-JP');
+            log.innerHTML += `[${time}] ${msg}<br>`;
+            log.scrollTop = log.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+
