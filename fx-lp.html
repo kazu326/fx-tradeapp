@@ -149,6 +149,18 @@
             margin-top: 1.5rem !important;
         }
         
+        .mt-small {
+            margin-top: 0.75rem;
+        }
+        
+        .mb-1 {
+            margin-bottom: 1rem;
+        }
+        
+        .mt-1rem {
+            margin-top: 1rem;
+        }
+        
         /* 区切り線 */
         .hr-gold {
             margin: 2rem 0;
@@ -170,6 +182,126 @@
             font-weight: 600;
         }
         
+        /* Amazon電子書籍告知 */
+        .book-announcement {
+            margin: 2rem 0;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid var(--color-gold);
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 12px;
+        }
+        
+        .book-announcement h3 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            color: var(--color-gold);
+        }
+        
+        .price-highlight {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-gold);
+        }
+        
+        .announcement-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 1rem 0;
+        }
+        
+        .bonus-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-top: 1.5rem;
+        }
+        
+        /* 50名限定理由セクション */
+        .notice-section {
+            padding: 4rem 0;
+            background: var(--color-surface);
+        }
+        
+        .notice-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .notice-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--color-gold);
+            font-weight: 700;
+        }
+        
+        .notice-content {
+            background: var(--color-surface);
+            padding: 2rem;
+            line-height: 1.8;
+        }
+        
+        .honest-message {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 4px solid var(--color-gold);
+            border-radius: 8px;
+        }
+        
+        .honest-message h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-text);
+        }
+        
+        .honest-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .honest-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .honest-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-gold);
+            font-weight: bold;
+        }
+        
+        .final-note {
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        /* fullpage.js コンテナ */
+        #fullpage {
+            touch-action: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 各セクション */
+        .section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            touch-action: pan-y;
+        }
+        
         /* レスポンシブ */
         @media (max-width: 768px) {
             .section-heading {
@@ -182,6 +314,64 @@
             
             .content-wrapper {
                 padding: 1.5rem 1rem;
+            }
+            
+            .book-announcement {
+                padding: 1.5rem;
+                margin: 1.5rem 0;
+            }
+            
+            .book-announcement h3 {
+                font-size: 1.25rem;
+            }
+            
+            .price-highlight {
+                font-size: 1.25rem;
+            }
+            
+            .announcement-text {
+                font-size: 1rem;
+            }
+            
+            .bonus-text {
+                font-size: 0.9rem;
+            }
+            
+            .notice-title {
+                font-size: 1.5rem;
+            }
+            
+            .notice-content {
+                padding: 1.5rem;
+            }
+            
+            .honest-message {
+                padding: 1rem;
+            }
+        }
+        
+        /* スマホ専用調整 */
+        @media (max-width: 900px) {
+            .section {
+                min-height: auto;
+                padding: 3rem 1rem;
+            }
+            
+            /* 固定ボタン削除 */
+            .fixed-cta,
+            .fixed-button,
+            .sticky-cta,
+            .floating-nav {
+                display: none !important;
+            }
+            
+            /* 行間最適化 */
+            body {
+                line-height: 1.5;
+            }
+            
+            p {
+                line-height: 1.6;
             }
         }
     </style>
@@ -294,6 +484,20 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- Amazon電子書籍告知 -->
+                <div class="book-announcement card-gold fade-in-up delay-1">
+                    <h3>📚 Amazon電子書籍として出版決定！</h3>
+                    <p class="announcement-text">
+                        本書『TradeLog Pro - 手法ではなく土台で勝つFXの教科書』は<br>
+                        <span class="highlight-gold">Amazon Kindleで電子書籍として正式出版</span><br>
+                        <span class="price-highlight">定価: 2,980円</span>
+                    </p>
+                    <p class="bonus-text">
+                        <span class="highlight-red">今だけLINE登録者限定で無料特典版を配布中！</span><br>
+                        書籍版の内容に加え、LINE限定の特典コンテンツも受け取れます。
+                    </p>
                 </div>
                 
                 <!-- 強烈なCTA -->
@@ -884,7 +1088,7 @@
                         </div>
                         
                         <div class="accordion-content" id="about-detail">
-                            <h4 style="margin-top: 1rem;">【立場】心理や脳の知識は"魔法"ではありません</h4>
+                            <h4 class="mt-1rem">【立場】心理や脳の知識は"魔法"ではありません</h4>
                             <p>
                                 人の行動は過去・環境・トリガーが絡む<strong>複雑系</strong>で、<br>
                                 単純な性格タグでは未来の行動を当てられません。
@@ -1201,17 +1405,17 @@
                     
                     <!-- 解決策カード -->
                     <div class="card card-gold">
-                        <p style="font-weight: 600; margin-bottom: 1rem;">安心してください。</p>
+                        <p class="text-bold mb-1">安心してください。</p>
                         
                         <p>次のスライドから、<br>
                         <strong>"土台を作る7つのステップ"</strong>を1つずつ解説していきます。</p>
                         
-                        <p style="margin-top: 1rem;">さらに、それを<strong>"毎日使える形"</strong>に落とし込んだツールも用意しました。</p>
+                        <p class="mt-1rem">さらに、それを<strong>"毎日使える形"</strong>に落とし込んだツールも用意しました。</p>
                     </div>
                     
                     <hr class="hr-gold">
                     
-                    <p style="text-align: center; font-size: 1.1rem;">
+                    <p class="text-emphasis text-center">
                         <strong>本気で変わりたい方だけ、この先に進んでください。</strong>
                     </p>
                 </div>
@@ -1421,7 +1625,7 @@
                     <p>コインを投げて、表か裏かを当てるだけなら勝率50%のはず。</p>
                     <p class="subsection-heading">なのに、なぜ9割が負けるのか?</p>
                     
-                    <p style="font-weight: 600; margin: 1rem 0;">答えは明確です。</p>
+                    <p class="text-bold" style="margin: 1rem 0;">答えは明確です。</p>
                     
                     <!-- 結論カード -->
                     <div class="card card-gold">
@@ -1560,7 +1764,7 @@
                           そして、それを回避する"設計図"も公開します。</p>
                     </div>
                     
-                    <p style="text-align: center; font-size: 1.1rem; margin-top: 1.5rem;">
+                    <p class="text-emphasis text-center mt-2">
                         <strong>本気で変わりたい方だけ、この先に進んでください。</strong>
                     </p>
                 </div>
@@ -1591,7 +1795,7 @@
                         <p class="text-secondary">
                             (プロスペクト理論 / ダニエル・カーネマン)
                         </p>
-                        <p style="margin-top: 0.75rem;">
+                        <p class="mt-small">
                             <strong class="highlight-gold">✅</strong> 利益はすぐ確定したくなる(利確が早い)<br>
                             <strong class="highlight-red">❌</strong> 損失は認めたくない(損切りできない)
                         </p>
@@ -1604,7 +1808,7 @@
                         <p class="subsection-heading"><strong>【脳のバグ2: 確証バイアス】</strong></p>
                         <p>人間は、自分に都合のいい情報だけを見ます。</p>
                         <p>「上がるはず」と信じた後、下落のサインを無視してしまう。</p>
-                        <p style="margin-top: 0.75rem;">
+                        <p class="mt-small">
                             <strong class="highlight-gold">✅</strong> 含み損を「戻るはず」と放置<br>
                             <strong class="highlight-red">❌</strong> 損切りラインを動かす
                         </p>
@@ -1616,7 +1820,7 @@
                     <div class="reason-card">
                         <p class="subsection-heading"><strong>【脳のバグ3: 過信バイアス】</strong></p>
                         <p>人間は、連勝すると「自分は天才」と錯覚します。</p>
-                        <p style="margin-top: 0.75rem;">
+                        <p class="mt-small">
                             <strong class="highlight-gold">✅</strong> ロットを上げる<br>
                             <strong class="highlight-gold">✅</strong> ルールを無視する<br>
                             <strong class="highlight-red">❌</strong> 一発で口座が飛ぶ
@@ -2059,7 +2263,7 @@
                     <!-- テンプレカード -->
                     <div class="card">
                         <p class="subsection-heading">テンプレ:</p>
-                        <p style="font-weight: 600;">「DD ○%以下なら、利益の○%を出金する」</p>
+                        <p class="text-bold">「DD ○%以下なら、利益の○%を出金する」</p>
                     </div>
                     
                     <!-- 例カード -->
@@ -2514,7 +2718,7 @@
                     <!-- テンプレカード -->
                     <div class="card">
                         <p class="subsection-heading">テンプレート:</p>
-                        <p style="font-weight: 600;">「○連敗 or 日次損失○% で強制終了」</p>
+                        <p class="text-bold">「○連敗 or 日次損失○% で強制終了」</p>
                     </div>
                     
                     <!-- 例カード -->
@@ -2992,7 +3196,7 @@
                     
                     <hr class="hr-gold">
                     
-                    <p style="text-align: center; font-size: 1.1rem;">
+                    <p class="text-emphasis text-center">
                         <strong>できることから1つずつ始めてください。</strong>
                     </p>
                 </div>
@@ -3051,6 +3255,20 @@
                         <p class="text-emphasis text-center">
                             土台の設計図は渡しました。<br>
                             <strong>あとはあなたが実行するだけ。</strong>
+                        </p>
+                    </div>
+                    
+                    <!-- Amazon電子書籍告知 -->
+                    <div class="book-announcement card-gold">
+                        <h3>📚 Amazon電子書籍として出版決定！</h3>
+                        <p class="announcement-text">
+                            本書『TradeLog Pro - 手法ではなく土台で勝つFXの教科書』は<br>
+                            <span class="highlight-gold">Amazon Kindleで電子書籍として正式出版</span><br>
+                            <span class="price-highlight">定価: 2,980円</span>
+                        </p>
+                        <p class="bonus-text">
+                            <span class="highlight-red">今だけLINE登録者限定で無料特典版を配布中！</span><br>
+                            書籍版の内容に加え、LINE限定の特典コンテンツも受け取れます。
                         </p>
                     </div>
                     
@@ -3114,6 +3332,20 @@
                     
                     <p>先着50名限定、Pro版永久無料・無料相談1回・高級焼肉仲間の権利…今すぐ公式LINEに登録して、一緒に人生変えましょう！</p>
                     
+                    <!-- Amazon電子書籍告知 -->
+                    <div class="book-announcement card-gold">
+                        <h3>📚 Amazon電子書籍として出版決定！</h3>
+                        <p class="announcement-text">
+                            本書『TradeLog Pro - 手法ではなく土台で勝つFXの教科書』は<br>
+                            <span class="highlight-gold">Amazon Kindleで電子書籍として正式出版</span><br>
+                            <span class="price-highlight">定価: 2,980円</span>
+                        </p>
+                        <p class="bonus-text">
+                            <span class="highlight-red">今だけLINE登録者限定で無料特典版を配布中！</span><br>
+                            書籍版の内容に加え、LINE限定の特典コンテンツも受け取れます。
+                        </p>
+                    </div>
+                    
                     <div class="inline-cta">
                         <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="cta-button pulse-animation">
                             今すぐ公式LINEに登録
@@ -3124,10 +3356,87 @@
                 </div>
             </div>
         </section>
+        
+        <!-- Notice Section: 50名限定の理由 -->
+        <section class="section notice-section" data-anchor="notice">
+            <div class="notice-container container">
+                <h3 class="notice-title">なぜ50名限定なのか？</h3>
+                <div class="notice-content card">
+                    <p>
+                        本プロジェクトでは、無料サポート・AI分析機能を提供するため、<br>
+                        <span class="highlight-gold">サーバー運用コストと専任対応リソース</span>に限りがあります。
+                    </p>
+                    <p>
+                        品質を保証し、全ての登録者様に最高のサポートを提供するため、<br>
+                        <span class="highlight-red">今回は50名様までの限定募集</span>とさせていただいております。
+                    </p>
+                    <div class="honest-message">
+                        <h4>正直にお伝えします</h4>
+                        <ul class="honest-list">
+                            <li>「今回が最後！」という煽りはいたしません</li>
+                            <li>今回の枠が埋まった後も、再募集を予定しています</li>
+                            <li>ただし、次回募集の時期や人数は<strong>現時点では未定</strong>です</li>
+                            <li>増枠や再募集の際は、LINE・メールでお知らせします</li>
+                        </ul>
+                    </div>
+                    <p class="final-note">
+                        この限定募集は、運営の都合によるものです。<br>
+                        内容にご納得いただける方のみ、ご登録をお願いいたします。
+                    </p>
+                </div>
+            </div>
+        </section>
     </div>
     
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            new fullpage('#fullpage', {
+                licenseKey: 'YOUR_LICENSE_KEY', // ライセンスキーを入れる（またはGPL-3.0）
+                
+                // 基本設定
+                autoScrolling: true,
+                scrollHorizontally: false,
+                scrollingSpeed: 700,
+                fitToSection: true,
+                fitToSectionDelay: 600,
+                
+                // ナビゲーション
+                navigation: false,
+                navigationPosition: 'right',
+                showActiveTooltip: false,
+                
+                // スクロール制御
+                scrollBar: false,
+                css3: true,
+                
+                // タッチ感度（重要！）
+                touchSensitivity: 5,
+                normalScrollElements: '.scrollable-content',
+                
+                // スマホ対応（900px以下で無効化）
+                responsiveWidth: 900,
+                
+                // アンカー設定
+                anchors: ['hero', 'bridge1', 'ifthen', 'about', 'bridge2', 'bridge3',
+                    'ch1-flick1', 'ch1-flick2', 'ch1-flick3', 'ch1-flick4', 'ch1-flick5', 'ch1-flick6', 'ch1-flick7',
+                    'ch2-flick1', 'ch2-flick2', 'ch2-flick3', 'ch2-flick4', 'ch2-flick5', 'ch2-flick6', 'ch2-flick7',
+                    'ch3-flick1', 'ch3-flick2', 'ch3-flick3', 'ch3-flick4', 'ch3-flick5', 'ch3-flick6', 'ch3-flick7',
+                    'ch4-flick1', 'ch4-flick2', 'ch4-flick3', 'ch4-flick4', 'ch4-flick5', 'ch4-flick6', 'ch4-flick7',
+                    'ch5-flick1', 'ch5-flick2', 'ch5-flick3', 'ch5-flick4', 'ch5-flick5', 'ch5-flick6', 'ch5-flick7',
+                    'ch6-flick1', 'ch6-flick2', 'ch6-flick3', 'ch6-flick4', 'ch6-flick5', 'ch6-flick6', 'ch6-flick7',
+                    'ch7-flick1', 'ch7-flick2', 'ch7-flick3', 'ch7-flick4', 'ch7-flick5', 'ch7-flick6', 'ch7-flick7',
+                    'ch8-flick1', 'ch8-flick2', 'ch8-flick3', 'ch8-flick4', 'ch8-flick5', 'ch8-flick6', 'ch8-flick7',
+                    'profile', 'testimonials', 'notice', 'final-cta'],
+                    
+                // コールバック（オプション）
+                afterLoad: function(origin, destination, direction){
+                    console.log('Section loaded: ' + destination.anchor);
+                }
+            });
+        });
+    </script>
     <script src="./js/lp-main.js"></script>
 </body>
 </html>
