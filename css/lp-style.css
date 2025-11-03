@@ -119,22 +119,6 @@ a {
   overflow: hidden;
 }
 
-/* Background Chart Image (全セクション共通) */
-.section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('../images/decorations/bg-chart-light.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: var(--opacity-bg-chart);
-  z-index: 0;
-  pointer-events: none;
-}
 
 /* ========================================
    Fixed CTA Button (フッター固定)
@@ -210,7 +194,7 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 3;
 }
 
 .hero-image-placeholder {
@@ -226,14 +210,6 @@ a {
   object-position: left center;
 }
 
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
-}
 
 .hero-content {
   position: relative;
