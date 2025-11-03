@@ -286,22 +286,117 @@
             line-height: 1.6;
         }
         
-        /* fullpage.js コンテナ */
-        #fullpage {
-            touch-action: none;
-            -webkit-overflow-scrolling: touch;
+        /* ========== fullpage.js基本設定（PC用） ========== */
+        @media (min-width: 901px) {
+            #fullpage {
+                touch-action: none;
+            }
+
+            .section {
+                position: relative;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
         }
-        
-        /* 各セクション */
-        .section {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            touch-action: pan-y;
+
+        /* ========== スマホ用完全通常スクロール ========== */
+        @media (max-width: 900px) {
+            #fullpage {
+                /* fullpage.js無効化 */
+                height: auto !important;
+                touch-action: auto !important;
+            }
+
+            .section {
+                position: relative !important;
+                min-height: auto !important;
+                height: auto !important;
+                padding: 3rem 1rem !important;
+                display: block !important;
+            }
+            
+            /* ページ内スクロール要素 */
+            .scrollable-content,
+            .long-content,
+            .overflow-scroll {
+                overflow-y: auto !important;
+                max-height: none !important;
+            }
         }
-        
+
+        /* ========== ヒーロー直下の視認性修正 ========== */
+        .bridge-section,
+        .section[data-anchor="bridge1"],
+        .section[data-anchor="bridge2"],
+        .section[data-anchor="bridge3"] {
+            background: var(--color-background) !important;
+            color: var(--color-text) !important;
+        }
+
+        .bridge-section h2,
+        .bridge-section h3,
+        .bridge-section p {
+            color: var(--color-text) !important;
+        }
+
+        /* 白背景に白文字を防止 */
+        [style*="color: white"],
+        [style*="color: #fff"],
+        [style*="color: #ffffff"] {
+            color: var(--color-text) !important;
+        }
+
+        /* LINE登録ボタンスタイル */
+        .cta-emotion-trigger {
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn--primary {
+            background: var(--color-primary, #217d8d);
+            color: var(--color-btn-primary-text, #fff);
+        }
+
+        .btn--primary:hover {
+            background: var(--color-primary-hover, #1a626e);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 125, 141, 0.3);
+        }
+
+        .btn--lg {
+            font-size: 1.1rem;
+            padding: 1.2rem 2.5rem;
+        }
+
+        .btn--full-width {
+            width: 100%;
+            max-width: 420px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .btn--lg {
+                font-size: 1rem;
+                padding: 1rem 2rem;
+            }
+            
+            .btn--full-width {
+                max-width: 100%;
+            }
+        }
+
         /* レスポンシブ */
         @media (max-width: 768px) {
             .section-heading {
@@ -1562,6 +1657,16 @@
                             これが、勝ち続けるための最初の一歩です。
                         </p>
                     </div>
+                    
+                    <!-- LINE登録CTA -->
+                    <div class="cta-emotion-trigger" style="margin-top: 3rem; text-align: center;">
+                        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="btn btn--primary btn--lg btn--full-width">
+                            今すぐLINE登録して無料特典を受け取る
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            残り枠: 32名
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1890,6 +1995,16 @@
                             でも、設計で回避できます。
                         </p>
                     </div>
+                    
+                    <!-- LINE登録CTA -->
+                    <div class="cta-emotion-trigger" style="margin-top: 3rem; text-align: center;">
+                        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="btn btn--primary btn--lg btn--full-width">
+                            今すぐLINE登録して無料特典を受け取る
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            残り枠: 32名
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -2152,6 +2267,16 @@
                             自動化して守れる仕組みにする。これが負けない資金管理。
                         </p>
                     </div>
+                    
+                    <!-- LINE登録CTA -->
+                    <div class="cta-emotion-trigger" style="margin-top: 3rem; text-align: center;">
+                        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="btn btn--primary btn--lg btn--full-width">
+                            今すぐLINE登録して無料特典を受け取る
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            残り枠: 32名
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -2401,6 +2526,16 @@
                             これが、第4ステップです。
                         </p>
                     </div>
+                    
+                    <!-- LINE登録CTA -->
+                    <div class="cta-emotion-trigger" style="margin-top: 3rem; text-align: center;">
+                        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="btn btn--primary btn--lg btn--full-width">
+                            今すぐLINE登録して無料特典を受け取る
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            残り枠: 32名
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -2618,6 +2753,16 @@
                             <strong>まとめ:</strong> 打席を減らすことが勝率UPの最短ルート。A級だけに絞り、リベンジトレード克服。
                         </p>
                     </div>
+                    
+                    <!-- LINE登録CTA -->
+                    <div class="cta-emotion-trigger" style="margin-top: 3rem; text-align: center;">
+                        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="btn btn--primary btn--lg btn--full-width">
+                            今すぐLINE登録して無料特典を受け取る
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            残り枠: 32名
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -2829,6 +2974,16 @@
                     <div class="card card-gold">
                         <p class="text-emphasis">
                             <strong>まとめ:</strong> ガードレールがないと人は無限に突っ走る。止める仕組みで破産防止！
+                        </p>
+                    </div>
+                    
+                    <!-- LINE登録CTA -->
+                    <div class="cta-emotion-trigger" style="margin-top: 3rem; text-align: center;">
+                        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="btn btn--primary btn--lg btn--full-width">
+                            今すぐLINE登録して無料特典を受け取る
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            残り枠: 32名
                         </p>
                     </div>
                 </div>
@@ -3045,6 +3200,16 @@
                     <div class="card card-gold">
                         <p class="text-emphasis">
                             <strong>まとめ:</strong> 1人では続かない。AI＋人の仕組みが要る。検証自動化、孤独解消で継続できます。
+                        </p>
+                    </div>
+                    
+                    <!-- LINE登録CTA -->
+                    <div class="cta-emotion-trigger" style="margin-top: 3rem; text-align: center;">
+                        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="btn btn--primary btn--lg btn--full-width">
+                            今すぐLINE登録して無料特典を受け取る
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            残り枠: 32名
                         </p>
                     </div>
                 </div>
@@ -3272,6 +3437,16 @@
                         </p>
                     </div>
                     
+                    <!-- LINE登録CTA -->
+                    <div class="cta-emotion-trigger" style="margin-top: 3rem; text-align: center;">
+                        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="btn btn--primary btn--lg btn--full-width">
+                            今すぐLINE登録して無料特典を受け取る
+                        </a>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            残り枠: 32名
+                        </p>
+                    </div>
+                    
                     <p style="margin-top: 1.5rem; text-align: center;">次はプロフィール・無料相談・アプリ紹介です。</p>
                 </div>
             </div>
@@ -3392,8 +3567,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 900px以下では完全に通常スクロール
+            if (window.innerWidth <= 900) {
+                // fullpage.jsを無効化
+                document.getElementById('fullpage').classList.remove('fullpage-wrapper');
+                console.log('Mobile: Normal scroll enabled');
+                return;
+            }
+
+            // PC用fullpage.js初期化
             new fullpage('#fullpage', {
-                licenseKey: 'YOUR_LICENSE_KEY', // ライセンスキーを入れる（またはGPL-3.0）
+                licenseKey: 'YOUR_LICENSE_KEY',
                 
                 // 基本設定
                 autoScrolling: true,
@@ -3404,22 +3588,21 @@
                 
                 // ナビゲーション
                 navigation: false,
-                navigationPosition: 'right',
-                showActiveTooltip: false,
                 
                 // スクロール制御
                 scrollBar: false,
                 css3: true,
                 
-                // タッチ感度（重要！）
+                // タッチ感度
                 touchSensitivity: 5,
-                normalScrollElements: '.scrollable-content',
                 
-                // スマホ対応（900px以下で無効化）
-                responsiveWidth: 900,
+                // ページ内スクロール要素（競合回避）
+                normalScrollElements: '.scrollable-content, .long-content, .overflow-scroll',
+                scrollOverflow: false,
                 
                 // アンカー設定
-                anchors: ['hero', 'bridge1', 'ifthen', 'about', 'bridge2', 'bridge3',
+                anchors: [
+                    'hero', 'bridge1', 'ifthen', 'about', 'bridge2', 'bridge3',
                     'ch1-flick1', 'ch1-flick2', 'ch1-flick3', 'ch1-flick4', 'ch1-flick5', 'ch1-flick6', 'ch1-flick7',
                     'ch2-flick1', 'ch2-flick2', 'ch2-flick3', 'ch2-flick4', 'ch2-flick5', 'ch2-flick6', 'ch2-flick7',
                     'ch3-flick1', 'ch3-flick2', 'ch3-flick3', 'ch3-flick4', 'ch3-flick5', 'ch3-flick6', 'ch3-flick7',
@@ -3428,13 +3611,20 @@
                     'ch6-flick1', 'ch6-flick2', 'ch6-flick3', 'ch6-flick4', 'ch6-flick5', 'ch6-flick6', 'ch6-flick7',
                     'ch7-flick1', 'ch7-flick2', 'ch7-flick3', 'ch7-flick4', 'ch7-flick5', 'ch7-flick6', 'ch7-flick7',
                     'ch8-flick1', 'ch8-flick2', 'ch8-flick3', 'ch8-flick4', 'ch8-flick5', 'ch8-flick6', 'ch8-flick7',
-                    'profile', 'testimonials', 'notice', 'final-cta'],
+                    'profile', 'testimonials', 'notice', 'final-cta'
+                ],
                     
-                // コールバック（オプション）
                 afterLoad: function(origin, destination, direction){
-                    console.log('Section loaded: ' + destination.anchor);
+                    console.log('Loaded: ' + destination.anchor);
                 }
             });
+        });
+
+        // リサイズ時の再初期化
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 900 && typeof fullpage_api !== 'undefined') {
+                fullpage_api.destroy('all');
+            }
         });
     </script>
     <script src="./js/lp-main.js"></script>
