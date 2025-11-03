@@ -76,7 +76,7 @@ a {
   
   /* Layout */
   --container-max-width: 1200px;
-  --container-padding: 2rem;
+  --container-padding: 1rem;
   
   /* Border & Shadow */
   --radius-sm: 4px;
@@ -103,7 +103,7 @@ a {
 .container {
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 0 var(--container-padding);
+  padding: 0 1rem(--container-padding);
   position: relative;
   z-index: 2;
 }
